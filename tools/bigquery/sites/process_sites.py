@@ -6,13 +6,14 @@ https://docs.google.com/spreadsheets/d/16h41_3Nyyxt696FKWIzsj5sev2dCsMb7w9-DYpSo
 """
 from __future__ import print_function
 
+import os
 import csv
 import base64
 from ipaddr import IPNetwork
 
-
-OUTPUT_FILE = "./output/mlab_sites_processed.csv"
-INPUT_FILE = "./dataflow/data/bigquery/mlab-sites/M-Lab Sites - Sites.csv"
+OUTPUT_DIRECTORY = "./output"
+OUTPUT_FILE = "{0}/mlab_sites_processed.csv".format(OUTPUT_DIRECTORY)
+INPUT_FILE = "../../../dataflow/data/bigquery/mlab-sites/M-Lab Sites - Sites.csv"
 IP_MIN_COLUMN = "Machine IPv4 Min IP"
 IP_MAX_COLUMN = "Machine IPv4 Max IP"
 IP_NETMASK_COLUMN = "Machine IPv4 IP prefix netmask"
@@ -162,6 +163,11 @@ def main():
     """
     The main program starting point, processes the CSV.
     """
+
+    # Ensure the output directory exists
+    if not os.path.exists(OUTPUT_DIRECTORY):
+        os.makedirs(OUTPUT_DIRECTORY)
+
     process_csv()
 
 

@@ -1,0 +1,62 @@
+{
+  "row_keys": [
+    {
+      "length": 60, 
+      "type": "string", 
+      "name": "location_key", 
+      "family": "meta"
+    }
+  ], 
+  "bigquery_queryfile": "./dataflow/data/bigtable/queries/location_search.sql", 
+  "bigtable_table_name": "", 
+  "key": "location_key", 
+  "bigquery_table": "location_search", 
+  "columns": [
+    {
+      "length": 60, 
+      "type": "string", 
+      "name": "location_key", 
+      "family": "meta"
+    }, 
+    {
+      "type": "integer", 
+      "name": "test_count", 
+      "family": "data"
+    }, 
+    {
+      "type": "integer", 
+      "name": "last_three_month_test_count", 
+      "family": "data"
+    }, 
+    {
+      "length": 40, 
+      "type": "string", 
+      "name": "location", 
+      "family": "meta"
+    }, 
+    {
+      "length": 40, 
+      "type": "string", 
+      "name": "type", 
+      "family": "meta"
+    }, 
+    {
+      "length": 40, 
+      "type": "string", 
+      "name": "client_region", 
+      "family": "meta"
+    }, 
+    {
+      "length": 40, 
+      "type": "string", 
+      "name": "client_country", 
+      "family": "meta"
+    }, 
+    {
+      "length": 40, 
+      "type": "string", 
+      "name": "client_continent", 
+      "family": "meta"
+    }
+  ]
+}

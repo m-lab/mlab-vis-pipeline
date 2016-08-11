@@ -1,0 +1,26 @@
+{
+  "bigquery_queryfile":"",
+  "bigquery_table":"",
+  "bigtable_table_name":"",
+  "key":"",
+  "frequency":"",
+  "row_keys": [],
+  "columns" : [
+    {"name": "download_speed_mbps_median", "type": "double", "family": "data"},
+    {"name": "upload_speed_mbps_median", "type": "double", "family": "data"},
+
+    {"name": "download_speed_mbps_avg", "type": "double", "family": "data"},
+    {"name": "upload_speed_mbps_avg", "type": "double", "family": "data"},
+
+    {"name": "download_speed_mbps_min", "type": "double", "family": "data"},
+    {"name": "upload_speed_mbps_min", "type": "double", "family": "data"},
+
+    {"name": "download_speed_mbps_max", "type": "double", "family": "data"},
+    {"name": "upload_speed_mbps_max", "type": "double", "family": "data"},
+
+    {"name": "download_speed_mbps_stddev", "type": "double", "family": "data"},
+    {"name": "upload_speed_mbps_stddev", "type": "double", "family": "data"},
+
+    {"name": "count", "type": "integer", "family": "data"}
+  ]
+}

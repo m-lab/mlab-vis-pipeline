@@ -1,0 +1,62 @@
+[
+    {
+        "name": "site",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "min_ip_hex",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "max_ip_hex",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "transit_provider",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "min_ip",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "max_ip",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "ip_prefix",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "min_ipv6_hex",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "max_ipv6_hex",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "min_ipv6",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "max_ipv6",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "ipv6_prefix",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "name": "upload_test_count",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "test_date",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_ip",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_ip_base64",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_ip_family",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_city",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_region_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_continent_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_country_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_latitude",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "client_longitude",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "server_ip",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "server_ip_base64",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "server_ip_family",
+    "type": "INTEGER",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "server_city",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "server_region_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "server_continent_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "server_country_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "server_latitude",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "server_longitude",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "upload_speed_mbps",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  }
+]

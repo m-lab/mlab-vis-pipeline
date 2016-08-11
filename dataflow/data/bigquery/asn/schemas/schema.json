@@ -1,0 +1,42 @@
+[
+    {
+        "name": "asn_string",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "asn_number",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "asn_name",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "min_ip_hex",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "max_ip_hex",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "min_ip",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "max_ip",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "ip_family",
+        "type": "INTEGER",
+        "mode": "REQUIRED"
+    }
+]

@@ -1,0 +1,342 @@
+Site,Country,State,City,Host,In service,Retired,Machine count,Machine IPv4 prefix,Uplink IPv4 prefix,Machine IPv6 prefix,Type of IPv6 connectivity,Transit provider,Servers by,Host Point of Contact,Transit Point of Contact,Patch panel label base,Site Vendor,Site Vendor Contact,POP code,Vendor site code,Address,Region
+ACC01,GH,,Accra,Ghana IXP,12/3/2014,8/1/2015,3,196.201.2.192/26,,,,Ghana IXP,Google,"Emmanuel Kwarteng <emml.kwarteng@gmail.com>, Eric Osiakwan <ericosiakwan@me.com>",,,,,,,,Africa
+ACC02,GH,,Accra,Ghana IXP,11/17/2014,,3,196.49.14.192/26,,,,Ghana IXP,Google,"Emmanuel Kwarteng <emml.kwarteng@gmail.com>, Eric Osiakwan <ericosiakwan@me.com>",,,,,,,,Africa
+AKL01,NZ,,Auckland,REANNZ,1/2/2013,,3,163.7.129.0/26,,2404:138:4009::/64,native,REANNZ,Google,Jamie Curtis jamie.curtis@reannz.co.nz,,,,,,,,Oceania
+AMS01,NL,,Amsterdam,Google,07/09/09,,3,213.244.128.128/26,,2001:4C08:2003:2::/64 ,native,Level3,Google,,,,,,,,,Europe
+AMS02,NL,,Amsterdam,"Internap (Voxel.Net, Inc.)",07/23/09,,3,72.26.217.64/26,,2001:48c8:7::/64,,Voxel,Google,agile-support@internap.com                                                                                                                                                                                                       ,,,,,,,,Europe
+ARN01,SE,,Stockholm,Google,,,3,213.248.112.64/26,,2001:2030:0000:001B::/64,native,Telia,Google,,,,,,,,,Europe
+ATH01,GR,,Athens,EETT/GRnet,08/10/09,7/6/2016,3,83.212.4.0/26,,2001:648:2ffc:2101::/64,native,GRNET,EETT,"P.christias@noc.ntua.gr, VGogou@EETT.GR, hyperiontest@eett.gr, dkoutsoukos@admin.grnet.gr",,,,,,,,Europe
+ATH02,GR,,Athens,EETT/GRnet,07/11/11,7/6/2016,3,83.212.5.128/26,,2001:648:2ffc:2102::/64,native,GRNET,EETT,"P.christias@noc.ntua.gr, VGogou@EETT.GR, hyperiontest@eett.gr, dkoutsoukos@admin.grnet.gr",,,,,,,,Europe
+ATL01,US,GA,Atlanta,Google,05/04/09,,3,4.71.254.128/26,4.71.254.100/30,2001:1900:3001:C::/64,native,Level3,Google,,,,,,,,,North America
+ATL02,US,GA,Atlanta,Equinix,06/17/16,,4,38.112.151.64/26,,2001:550:5B00:1::/64,native,Cogent,Google,,,mlab-atl02-264,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",ATL23,AT2,"Google MLAB Cage 50000
+c/o Equinix AT2
+56 Marietta Street NW
+5th Floor
+Atlanta, GA 30303",North America
+ATL03,US,GA,Atlanta,Equinix,09/25/14,,4,64.86.200.192/26,,2001:5a0:3b02::/64,native,Tata,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",ATL23,AT2,"Google MLAB Cage 50000
+c/o Equinix AT2
+56 Marietta Street NW
+5th Floor
+Atlanta, GA 30303",North America
+ATL04,US,GA,Atlanta,Equinix,09/25/14,,4,173.205.0.192/26,,2001:0668:001F:001C::/64,native,GTT,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",ATL23,AT2,"Google MLAB Cage 50000
+c/o Equinix AT2
+56 Marietta Street NW
+5th Floor
+Atlanta, GA 30303",North America
+ATL05,US,GA,Atlanta,Equinix,01/01/16,,,67.106.215.192/26,,2610:0018:0111:C002::/64,native,XO,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",ATL23,AT2,"Google MLAB Cage 50000
+c/o Equinix AT2
+56 Marietta Street NW
+5th Floor
+Atlanta, GA 30303",North America
+BEG01,RS,,Belgrade,Serbian Open eXchange,06/13/14,,3,188.120.127.0/26,,2001:7f8:1e:6::/64,native,Serbian Open eXchange,Google,"Zoran Perović <iConsult@perke.NET>, noc@sox.rs, info@sox.rs ",,,,,,,,Europe
+BKK01,TH,,Bangkok,CAT Telecom,1/28/2015,,3,61.7.252.0/26,,2001:c38:902f::/64,,CAT Telecom,Google,"Suparerk Lerskrai CAT Thailand <suparerk.l@cattelecom.com>, Mr.Surin Tanrat <surin.t@cattelecom.com>, Ms. Suneerat Jaiharn <jsuneerat@idc.cattelecom.com>",,,,,,,,Asia
+BOG01,CO,,Bogota,RENATA,05/20/14,,3,190.15.11.0/26,,,,Telefonica,Google,"Carlos Alberto Ramírez Guzmán <ingenieria@renata.edu.co>, Hernán García <hernan.garcia@renata.edu.co>",,,,,,,,South America
+DEN01,US,CO,Denver,Equinix,11/06/14,,4,184.105.23.64/26,,2001:470:1:250::/64,native,GTT,Google,,,,Coresite,,DEN14,DE2,"639 East 18th Avenue, Denver CO 80203",North America
+DEN02,US,CO,Denver,Equinix,08/01/15,,4,4.34.58.0/26,,2001:1900:2200:49::/64,,Level3,Google,,,,Coresite,,DEN14,DE2,"639 East 18th Avenue, Denver CO 80203",North America
+DEN03,US,CO,Denver,Equinix,01/01/16,,4,65.46.46.128/26,,2610:0018:010e:8003::/64,native,XO,Google,,,,Coresite,,DEN14,DE2,"639 East 18th Avenue, Denver CO 80203",North America
+DEN04,US,CO,Denver,Equinix,11/06/14,,4,128.177.109.64/26,,2001:438:fffd:2c::/64,native,Zayo,Google,,,,Coresite,,DEN14,DE2,"639 East 18th Avenue, Denver CO 80203",North America
+DFW01,US,TX,Dallas,Google,07/08/09,,3,38.107.216.0/26,38.96.204.24/29,2001:550:2000::/64,native,Cogent,Google,,,,,,,,,North America
+DFW02,US,TX,Dallas,Equinix,09/25/14,,4,64.86.132.64/26,,2001:5a0:3f00::/64,native,Tata,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",DFW26,DA2,"Google MLAB Cage 02120
+c/o Equinix DA2
+1950 N Stemmons Fwy
+Suite 2027
+Dallas, TX 75207",North America
+DFW03,US,TX,Dallas,Equinix,01/05/15,,4,4.15.35.128/26,,2001:1900:2200:44::/64,native,Level3,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",DFW26,DA2,"Google MLAB Cage 02120
+c/o Equinix DA2
+1950 N Stemmons Fwy
+Suite 2027
+Dallas, TX 75207",North America
+DFW04,US,TX,Dallas,Equinix,01/01/16,,,208.177.76.64/26,,2610:0018:010E:0002::64,native,XO,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",DFW26,DA2,"Google MLAB Cage 02120
+c/o Equinix DA2
+1950 N Stemmons Fwy
+Suite 2027
+Dallas, TX 75207",North America
+DFW05,US,TX,Dallas,Equinix,10/01/14,,4,128.177.163.64/26,,2001:438:fffd:30::/64,native,Zayo,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",DFW26,DA2,"Google MLAB Cage 02120
+c/o Equinix DA2
+1950 N Stemmons Fwy
+Suite 2027
+Dallas, TX 75207",North America
+DUB01,IE,,Dublin,HEAnet,,,3, 193.1.12.192/26,,2001:770:B5::/64,,HEanet,Google,"Cormac Ó Cianáin <cormac.ocianain@heanet.ie>, Brian Nisbet <brian.nisbet@heanet.ie>",,,,,,,,Europe
+HAM01,DE,,Hamburg,Google,10/19/09,,3,80.239.142.192/26,,2001:2030:0000:0019::/64,native,Telia,Google,,,,,,,,,Europe
+HND01,JP,,Tokyo,WIDE,11/28/2011,,3,203.178.130.192/26,,2001:200:0:b801::/64,native,WIDE, University of Tokyo,"Yoshihiro Kawahara kawahara@akg.t.u-tokyo.ac.jp, sekiya@wide.ad.jp",,,,,,,,Asia
+IAD01,US,VA,Reston,Google,10/12/11,,3,216.156.197.128/26,216.156.116.208/30,2610:18:111:8001::/64,native,XO,Google,,,,,,,,,North America
+IAD02,US,VA,Ashburn,Equinix,09/01/14,,4,38.90.140.128/26,,2001:550:200:7::/64,native,Cogent,Google,,,mlab-iad02-264,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",IAD29,DC2,"Google MLAB Cage 02050
+c/o Equinix DC2
+21715 Filigree Ct.
+Bldg F
+Ashburn, VA 20147",North America
+IAD03,US,VA,Ashburn,Equinix,11/17/14,,4,66.198.10.128/26,,2001:5a0:3c03::/64,native,Tata,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",IAD29,DC2,"Google MLAB Cage 02050
+c/o Equinix DC2
+21715 Filigree Ct.
+Bldg F
+Ashburn, VA 20147",North America
+IAD04,US,VA,Ashburn,Equinix,09/25/14,,4,173.205.4.0/26,,2001:0668:001F:0021::/64,native,GTT,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",IAD29,DC2,"Google MLAB Cage 02050
+c/o Equinix DC2
+21715 Filigree Ct.
+Bldg F
+Ashburn, VA 20147",North America
+IAD05,US,VA,Ashburn,Equinix,12/17/14,,4,4.35.238.192/26,,2001:1900:2200:46::/64,native,Level3,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",IAD29,DC2,"Google MLAB Cage 02050
+c/o Equinix DC2
+21715 Filigree Ct.
+Bldg F
+Ashburn, VA 20147",North America
+JNB01,ZA,,Johannesburg,Tenet,2/11/2013,,3,196.24.45.128/26,,2001:4200:fff0:4512::/64,native,Tenet,Google," Patrick Holahan <patrickh@tenet.ac.za>,TENET NOC <noc@tenet.ac.za>",,,,,,,,Africa
+LAX01,US,CA,Los Angeles,Google,05/14/09,,3,38.98.51.0/26,38.104.77.232/30,2001:550:6800::/64 ,native,Cogent,Google,,,,,,,,,North America
+LAX02,US,CA,Los Angeles,Equinix,11/10/14,,4,63.243.240.64/26,,2001:550:A600::/64,native,Tata,Google,,,,Equinix,,LAX18,LA1,"Google MLAB Cage 00535
+c/o Equinix LA1
+600 West 7th St
+6th Floor
+Los Angeles, CA 90017",North America
+LAX03,US,CA,Los Angeles,Equinix,09/25/14,,4,173.205.3.64/26,,2001:0668:001F:001E::/64,native,GTT,Google,,,,Equinix,,LAX18,LA1,"Google MLAB Cage 00535
+c/o Equinix LA1
+600 West 7th St
+6th Floor
+Los Angeles, CA 90017",North America
+LAX04,US,CA,Los Angeles,Equinix,12/17/14,,4,4.15.166.0/26,,2001:1900:2100:15::/64,native,Level3,Google,,,,Equinix,,LAX18,LA1,"Google MLAB Cage 00535
+c/o Equinix LA1
+600 West 7th St
+6th Floor
+Los Angeles, CA 90017",North America
+LAX05,US,CA,Los Angeles,Equinix,09/25/14,,4,128.177.109.192/26,,2001:438:fffd:2e::/64,native,Zayo,Google,,,,Equinix,,LAX18,LA1,"Google MLAB Cage 00535
+c/o Equinix LA1
+600 West 7th St
+6th Floor
+Los Angeles, CA 90017",North America
+LBA01,UK,,Leeds,aql,08/03/12,,3,109.239.110.0/26,,2a00:1a80:1:8::/64,,aql,Google,"Craig Hopkins <craig.hopkins@uk.aql.com>, Richard Gration <richard.gration@uk.aql.com>",,,,,,,,Europe
+LCA01,CY,,Nicosia,OCECPR,02/20/13,,3,82.116.199.0/26 ,,,,CyNet,,"Panagiotis Christias <p.christias@noc.ntua.gr>, Constantinos Stylianou <Constantinos.Stylianou@ocecpr.org.cy>",,,,,,,,Europe
+LGA01,US,NY,New York,"Voxel
+Internap",02/10/09,04/21/16,3,74.63.50.0/26,,2001:48c8:5:f::/64,,Voxel,Google,support@voxel.net or agile-support@internap.com                                                                                                                                                                                                       ,,,,,,,,North America
+LGA02,US,NY,New York,Google,06/08/09,,4,38.106.70.128/26,38.104.42.68/30, 2001:550:1D00:100::/64 ,native,Cogent,Google,,,,,,,,,North America
+LGA03,US,NY,New York,Equinix,05/05/15,,4,64.86.148.128/26,,2001:5a0:4300::/64,native,Tata,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",LGA32,NY8,"Google MLAB Cage 15100
+c/o Equinix NY8
+60 Hudson St.
+Suite 1602
+New York, NY 10013",North America
+LGA04,US,NY,New York,Equinix,09/25/14,,4,173.205.4.64/26,,2001:0668:001F:0022::/64,native,GTT,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",LGA32,NY8,"Google MLAB Cage 15100
+c/o Equinix NY8
+60 Hudson St.
+Suite 1602
+New York, NY 10013",North America
+LGA05,US,NY,New York,Equinix,11/14/14,,4,4.35.94.0/26,,2001:1900:2100:14::/64,native,Level3,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",LGA32,NY8,"Google MLAB Cage 15100
+c/o Equinix NY8
+60 Hudson St.
+Suite 1602
+New York, NY 10013",North America
+LGA06,US,NY,New York,Equinix,10/21/14,,4,128.177.119.192/26,,2001:438:fffd:2b::/64,native,Zayo,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",LGA32,NY8,"Google MLAB Cage 15100
+c/o Equinix NY8
+60 Hudson St.
+Suite 1602
+New York, NY 10013",North America
+LGA07,US,NY,New York,Google,,,4,66.151.223.128/26,66.151.223.190 – Internap,2600:c0f:2002::/64,,Internap,Google,mlab-support@google.com,"sclyde@internap.com, mwomack@internap.com",,,,LGA42,,,North America
+LHR01,UK,,London,Google,06/04/09,,3,217.163.1.64/26,,2001:4C08:2003:3::/64,native,Level3,Google,,,,,,,,,Europe
+LJU01,SI,,Ljubljana,go6,08/03/12,,3,91.239.96.64/26,,2001:67c:27e4:100::/64,native?,go6,go6,"Jan Zorz @ go6.si <jan@go6.si>, if the go6.si address isn't working you can try zorz@isoc.org or even janzorz@gmail.com",,,,,,,,Europe
+LOS01,NG,,Lagos,Nigeria IXP,1/15/2015,,3,196.216.149.64/26,,,,Nigeria IXP,Google,"Anibe Onuche<a.onuche@ixp.net.ng>, netops@ixp.net.ng",,,,,,,,Africa
+MAD01,ES,,Madrid,Google,,,3,213.200.103.128/26,,2001:0668:001F:0016::/64,native,Tinet,Google,,,,,,,,,Europe
+MIA01,US,FL,Miami,Google,05/28/09,,3,4.71.210.192/26,4.30.17.0/30,2001:1900:3001:A::/64,native,Level3,Google,,,,,,,,,North America
+MIA02,US,FL,Miami,Terremark,11/10/2014,,4,38.109.21.0/26,,2001:550:6C01::/64,native,Cogent,Google,,,mlab-mia02-264,Terremark,,MIA08,NOTA,"50 NE 9th Street, Miami 33132
+rack: 4AD095",North America
+MIA03,US,FL,Miami,Terremark,11/10/2014,,4,66.110.73.0/26,,2001:5a0:3801::/64,native,Tata,Google,,,,Terremark,,MIA08,NOTA,"50 NE 9th Street, Miami 33132
+rack: 4AD095",North America
+MIA04,US,FL,Miami,Terremark,11/10/2014,,4,173.205.3.128/26,,2001:0668:001F:001F::/64,native,GTT,Google,,,,Terremark,,MIA08,NOTA,"50 NE 9th Street, Miami 33132
+rack: 4AD095",North America
+MIA05,US,FL,Miami,Terremark,11/10/2014,,4,128.177.109.0/26,,2001:438:FFFD:29::/64,native,Zayo,Google,,,,Terremark,,MIA08,NOTA,"50 NE 9th Street, Miami 33132
+rack: 4AD095",North America
+MIL01,IT,,Milan,Google,,,3, 213.200.99.192/26,,2001:0668:001F:0017::/64,native,Tinet,Google,,,,,,,,,Europe
+MNL01,PH,,Quezon City,PHOpenIX,,,4,202.90.156.0/26,,2001:d18:0:35::/64,native,PHOpenIX,Google,"Denis F. Villorente denis@asti.dost.gov.ph, Bayani Benjamin Lara <banilara@gmail.com>",,,,,,,,Asia
+NBO01,KE,,Nairobi,KENET,2/13/2013,,3,197.136.0.64/26,,2C0F:FE08:13:64::/64,native,ubuntunet,Google,"Josphat Karanja <jkaranja@kenet.or.ke>
+Meoli Kashorda <mkashorda@kenet.or.ke>
+Hezron Mwangi Murugi <hmwangi@kenet.or.ke> 
+Kennedy Aseda <kaseda@kenet.or.ke>",,,,,,,,Africa
+NUQ01,US,CA,Mountain View,Google,01/28/09,01/01/15,4,64.9.225.128/26,,2604:ca00:f000::/64,native,Google,Google,,,,,,,,,North America
+NUQ02,US,CA,Redwood,ISC,10/26/2012,,3, 149.20.5.64/26,,2001:4F8:1:1001::/64,native,ISC,Google,hosted@isc.org,,,,,,,,North America
+NUQ03,US,CA,San Jose,Equinix,10/1/2014,,4,38.102.163.128/26,,2001:550:1502::/64,native,Cogent,Google,,,mlab-nuq03-264,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",SJC28,SV1,"Google MLAB Cage 01270
+c/o Equinix SV1
+11 Great Oaks Blvd
+San Jose, CA 95119",North America
+NUQ04,US,CA,San Jose,Equinix,09/25/14,,4,66.110.32.64/26,,2001:5a0:3e00::/64,native,Tata,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",SJC28,SV1,"Google MLAB Cage 01270
+c/o Equinix SV1
+11 Great Oaks Blvd
+San Jose, CA 95119",North America
+NUQ05,US,CA,San Jose,Equinix,01/01/16,,4,216.156.85.192/26,,2610:0018:0111:0007::/64,native,XO,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",SJC28,SV1,"Google MLAB Cage 01270
+c/o Equinix SV1
+11 Great Oaks Blvd
+San Jose, CA 95119",North America
+NUQ06,US,CA,San Jose,Equinix,10/1/2014,,4,128.177.109.128/26,,2001:438:fffd:2d::/64,native,Zayo,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",SJC28,SV1,"Google MLAB Cage 01270
+c/o Equinix SV1
+11 Great Oaks Blvd
+San Jose, CA 95119",North America
+ORD01,US,IL,Chicago,Google,03/20/09,,3,4.71.251.128/26,4.71.251.20/30,2001:1900:3001:B::/64,native,Level3,Google,,,,,,,,,North America
+ORD02,US,IL,Chicago,Equinix,10/1/2014,,4,38.65.210.192/26,,2001:550:1B01:1::/64,native,Cogent,Google,,,mlab-ord02-264,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",ORD33,CH2,"Google MLAB Cage 01050
+c/o Equinix CH2
+350 East Cermak Rd
+6th Floor, Ste 650
+Chicago, IL 60616",North America
+ORD03,US,IL,Chicago,Equinix,10/1/2014,,4,66.198.24.64/26,,2001:5a0:4400::/64,native,Tata,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",ORD33,CH2,"Google MLAB Cage 01050
+c/o Equinix CH2
+350 East Cermak Rd
+6th Floor, Ste 650
+Chicago, IL 60616",North America
+ORD04,US,IL,Chicago,Equinix,09/25/14,,4,173.205.3.192/26,,2001:0668:001F:0020::/64,native,GTT,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",ORD33,CH2,"Google MLAB Cage 01050
+c/o Equinix CH2
+350 East Cermak Rd
+6th Floor, Ste 650
+Chicago, IL 60616",North America
+ORD05,US,IL,Chicago,Equinix,10/1/2014,,4,128.177.163.0/26,,2001:438:fffd:2f::/64,native,Zayo,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",ORD33,CH2,"Google MLAB Cage 01050
+c/o Equinix CH2
+350 East Cermak Rd
+6th Floor, Ste 650
+Chicago, IL 60616",North America
+PAR01,FR,,Paris,Google,07/09/09,,3,80.239.168.192/26,,2001:2030:0000:001A::/64,native,Telia,Google,,,,,,,,,Europe
+PRG01,CZ,,Prague,Google,12/5/2012,,4,212.162.51.64/26 ,,2001:4c08:2003:4::/64,native,Level3,Google,,,,,,,,,Europe
+SEA01,US,WA,Seattle,Google,03/13/09,,3,38.102.0.64/26,38.104.126.72/30,2001:550:3200:1::/64 ,native,Cogent,Google,,,,,,,,,North America
+SEA02,US,WA,Seattle,Equinix,09/25/14,,4,63.243.224.0/26,,2001:5a0:4400::/64,native,Tata,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",SEA16,SE2,"Google MLAB Cage 50010
+c/o Equinix SE2
+The Westin Building -
+2001 Sixth Ave.
+Suite 350
+Seattle, WA 98121",North America
+SEA03,US,WA,Seattle,Equinix,09/25/14,,4,173.205.3.0/26,,2001:0668:001F:001D::/64,native,GTT,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",SEA16,SE2,"Google MLAB Cage 50010
+c/o Equinix SE2
+The Westin Building -
+2001 Sixth Ave.
+Suite 350
+Seattle, WA 98121",North America
+SEA04,US,WA,Seattle,Equinix,01/05/15,,4,4.71.157.128/26,,2001:1900:2100:16::/64,native,Level3,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",SEA16,SE2,"Google MLAB Cage 50010
+c/o Equinix SE2
+The Westin Building -
+2001 Sixth Ave.
+Suite 350
+Seattle, WA 98121",North America
+SEA05,US,WA,Seattle,Equinix,01/01/16,,,64.3.225.64/26,,2610:0018:0114:4001::/64,native,XO,Google,,,,Equinix,"Glenda Downum 
+Client Service Manager 
+
+EQUINIX | 1735 Lundy Avenue, San Jose, CA 95131 
+E gdownum@equinix.com | T +1 408 451 1994 | M +1 925 963 4615 ",SEA16,SE2,"Google MLAB Cage 50010
+c/o Equinix SE2
+The Westin Building -
+2001 Sixth Ave.
+Suite 350
+Seattle, WA 98121",North America
+SIN01,SG,,Changi,Google,1/30/2014,,3,180.87.97.64/26,,2405:2000:301::/64,,Tata,Google,,,,,,,,,Asia
+SVG01,NO,,Sola,Altibox,,,3,81.167.39.0/26,,2a01:798:0:13::/64,native,Altibox,Altibox," <Ragnar.Anfinsen@altibox.no>, ""Hovland, Morten"" <Morten.Hovland@altibox.no>",,,,,,,,Europe
+SYD01,AU,,Sydney,AARNET,05/05/10,,3,203.5.76.128/26,,2001:388:00d0::/64,native,AARNET,Google,Bruce Morgan <bruce.morgan@aarnet.edu.au>,,,,,,,,Oceania
+SYD02,AU,,Sydney,Vocus,5/14/2012,,3,175.45.79.0/26,,2402:7800:0:12::/64,native,Vocus,Google,"Damien Coxall <Damien.Coxall@vocus.com.au>, noc@vocus.com.au",,,,,,,,Oceania
+TNR01,MG,,Antananarivo,Telecom Malagasy,4/14/2016,,3,41.188.12.64/26,,,,Telecom Malagasy,Google,"Harilandy RABEARISOA <Harilandy.RABEARISOA@telma.mg>
+Didier HUNG WAN LUK <Didier.HUNG@telma.mg>",,,,,,,,Africa
+TPE01,TW,,Taipei,,5/29/2012,,3,163.22.28.0/26,,2001:e10:6840:28::/64,native,National Chi Nan University,Google,quincy.wu@gmail.com,,,,,,,,Asia
+TRN01,IT,,Turin,Topix,2/3/2012,,3,194.116.85.192/26,,2001:7F8:23:307::/64,native,Topix,Topix,gabriele.rocca@top-ix.org,,,,,,,,Europe
+TUN01,TN,,Tunis,ATI,4/24/2013,,3,41.231.21.0/26,,2c0f:fab0:ffff:1000::/64,native,ATI,ATI,"Mohamed Saidene <meds@ati.tn>, Moez Chakchouk <moez.chakchouk@ati.tn>, equipe-reseaux@ati.tn",,,,,,,,Africa
+VIE01,AT,,Vienna,RTR,5/10/2012,,3,213.208.152.0/26,,2a01:190:1700:38::/64,,RTR,RTR,Dietmar.Zlabinger@rtr.at,,,,,,,,Europe
+WLG01,NZ,,Wellington,Victoria University of Wellington,09/13/11,1/1/2016,3,103.10.233.0/26,,2404:2000:3000::/64,native,Victoria University of Wellington,Google,"mark.davies@ecs.vuw.ac.nz, joshb@google.com",,,,,,,,Oceania
+WLG02,NZ,,Wellington,Victoria University of Wellington,01/01/16,,3,163.7.129.64/26,,2404:138:4009:1::/64,native,Victoria University of Wellington,Google,"mark.davies@ecs.vuw.ac.nz, joshb@google.com",,,,,,,,Oceania
+YUL01,CA,,Montreal,CIRA,,,3,162.219.49.0/26,,2620:10a:80fe::/48,native,Hurricane Electric,CIRA,"Seokhee.Kim@cira.ca, jacques.latour@cira.ca",,,No,No,,,,
+YYC01,CA,,Calgary,CIRA,9/1/2014,,3,162.219.50.0/26,,2620:10a:80ff::/48,native,Hurricane Electric,CIRA,"Seokhee.Kim@cira.ca, jacques.latour@cira.ca",,,,,,,,North America
+YYZ01,CA,,Toronto,CIRA,,,3,162.219.48.0/26,,2620:10a:80fd::/48,native,Hurricane Electric,CIRA,"Seokhee.Kim@cira.ca, jacques.latour@cira.ca",,,,,,,,North America

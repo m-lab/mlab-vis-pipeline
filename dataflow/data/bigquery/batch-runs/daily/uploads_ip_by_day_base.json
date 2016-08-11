@@ -1,0 +1,14 @@
+{
+  "queryFile": "./data/queries/base_uploads_ip_by_day.sql",
+  "schemaFile": "./data/schemas/base_uploads_ip.json",
+  "outputTable": "bocoup_prod.update_uploads_ip_by_day",
+
+  "lastDateFrom": "bocoup_prod.all_ip_by_day",
+  "dateColumn": "test_date",
+
+  "mergeTable": "bocoup_prod.update_all_ip_by_day",
+  "mergeTableSchema": "./data/schemas/all_ip.json",
+
+  "withISPTable": "bocoup_prod.all_ip_by_day",
+  "withISPTableSchema": "./data/schemas/all_ip.json"
+}

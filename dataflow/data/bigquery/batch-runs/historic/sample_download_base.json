@@ -1,0 +1,20 @@
+{
+  "queryFile": "./data/queries/base_downloads_ip_by_day.sql",
+  "schemaFile": "./data/schemas/base_downloads_ip.json",
+  "outputTable": "bocoup.zz6_base_downloads_ip_by_day",
+  "numberOfDays": 7,
+
+  "dates": [
+     "2010-01-00T00:00:00Z",
+     "2010-01-05T00:00:00Z"
+  ],
+
+  "lastDateFrom": "bocoup.downloads_ip_by_day_with_isps",
+  "dateColumn": "test_date",
+
+  "mergeTable": "bocoup.zz7_base_merged_ip_by_day",
+  "mergeTableSchema": "./data/schemas/all_ip.json",
+
+  "withISPTable": "bocoup.zz7_all_ip_by_day",
+  "withISPTableSchema": "./data/schemas/all_ip.json"
+}

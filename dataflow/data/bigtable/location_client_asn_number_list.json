@@ -1,0 +1,274 @@
+{
+  "row_keys": [
+    {
+      "length": 20, 
+      "type": "string", 
+      "name": "location_id", 
+      "family": "meta"
+    }, 
+    {
+      "length": 10, 
+      "type": "string", 
+      "name": "client_asn_number", 
+      "family": "meta"
+    }
+  ], 
+  "bigquery_queryfile": "./dataflow/data/bigtable/queries/location_client_asn_number_list.sql", 
+  "bigtable_table_name": "", 
+  "key": "location_id", 
+  "bigquery_table": "location_client_asn_number_list", 
+  "columns": [
+    {
+      "length": 20, 
+      "type": "string", 
+      "name": "location_id", 
+      "family": "meta"
+    }, 
+    {
+      "length": 10, 
+      "type": "string", 
+      "name": "client_asn_number", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_asn_name", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "type", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_city", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_region", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_region_code", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_country", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_country_code", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_continent", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_continent_code", 
+      "family": "meta"
+    }, 
+    {
+      "type": "integer", 
+      "name": "last_month_test_count", 
+      "family": "meta"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_download_speed_mbps_median", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_upload_speed_mbps_median", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_download_speed_mbps_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_upload_speed_mbps_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_download_speed_mbps_min", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_upload_speed_mbps_min", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_download_speed_mbps_max", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_upload_speed_mbps_max", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_download_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_upload_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "integer", 
+      "name": "last_week_test_count", 
+      "family": "meta"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_download_speed_mbps_median", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_upload_speed_mbps_median", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_download_speed_mbps_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_upload_speed_mbps_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_download_speed_mbps_min", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_upload_speed_mbps_min", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_download_speed_mbps_max", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_upload_speed_mbps_max", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_download_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_upload_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "integer", 
+      "name": "last_year_test_count", 
+      "family": "meta"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_download_speed_mbps_median", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_upload_speed_mbps_median", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_download_speed_mbps_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_upload_speed_mbps_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_download_speed_mbps_min", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_upload_speed_mbps_min", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_download_speed_mbps_max", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_upload_speed_mbps_max", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_download_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_upload_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_download_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_upload_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_download_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_upload_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_download_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_upload_speed_mbps_bins", 
+      "family": "data"
+    }
+  ]
+}

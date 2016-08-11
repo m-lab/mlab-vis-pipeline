@@ -1,0 +1,12 @@
+[
+  {
+    "name": "country_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "country_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "country_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "region_code",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "region_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

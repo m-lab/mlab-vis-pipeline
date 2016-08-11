@@ -1,0 +1,31 @@
+SELECT
+  nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
+  nth(51, quantiles(upload_speed_mbps, 101)) AS upload_speed_mbps_median,
+
+  -- AVG(download_speed_mbps) AS download_speed_mbps_avg,
+  -- AVG(upload_speed_mbps) AS upload_speed_mbps_avg,
+
+  -- MIN(download_speed_mbps) AS download_speed_mbps_min,
+  -- MAX(download_speed_mbps) AS download_speed_mbps_max,
+
+  -- MIN(upload_speed_mbps) AS upload_speed_mbps_min,
+  -- MAX(upload_speed_mbps) AS upload_speed_mbps_max,
+
+  -- STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
+  -- STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
+
+  COUNT(*) AS count,
+
+client_asn_number,
+client_asn_name,
+STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), "%Y") as date
+
+FROM
+  {0}
+
+
+GROUP BY
+client_asn_number,
+date,
+client_asn_name
+

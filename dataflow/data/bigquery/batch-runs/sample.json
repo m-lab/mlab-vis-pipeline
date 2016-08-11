@@ -1,0 +1,13 @@
+{
+  "queryFile": "./data/queries/uploads_ip_by_hour_base.sql",
+  "schemaFile": "./data/schemas/uploads_ip_by_day_base.json",
+  "outputTable": "bocoup.zz2_test_batching_remote",
+  "numberOfDays": 2,
+
+  "addToday": false,
+  "dates": [
+     "2010-01-01T00:00:00Z",
+     "2010-01-03T00:00:00Z",
+     "2010-01-05T00:00:00Z"
+  ]
+}

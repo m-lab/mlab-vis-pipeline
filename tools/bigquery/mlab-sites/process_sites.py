@@ -11,7 +11,8 @@ import csv
 import base64
 from ipaddr import IPNetwork
 
-OUTPUT_DIRECTORY = "./output"
+CUR_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIRECTORY = "{0}/output".format(CUR_DIR)
 OUTPUT_FILE = "{0}/mlab_sites_processed.csv".format(OUTPUT_DIRECTORY)
 INPUT_FILE = "../../../dataflow/data/bigquery/mlab-sites/M-Lab Sites - Sites.csv"
 IP_MIN_COLUMN = "Machine IPv4 Min IP"

@@ -22,7 +22,7 @@ STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), "%Y") as date
 
 FROM
   {0}
-
+WHERE LENGTH(client_asn_number) > 0
 
 GROUP BY
 client_asn_number,

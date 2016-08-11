@@ -22,7 +22,7 @@ DATE(test_date) AS date
 
 FROM
   {0}
-
+WHERE LENGTH(client_asn_number) > 0
 
 GROUP BY
 client_asn_number,

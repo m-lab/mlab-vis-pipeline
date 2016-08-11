@@ -10,7 +10,7 @@ from search_table_utils import *
 from create_bigtable_configs import \
     read_text, save_text, read_json, save_json, \
     get_query_relative_filename, get_query_full_filename, \
-    BIGQUERY_DATE_TABLE, CONFIG_DIR, BASE_DIR
+    BIGQUERY_DATE_TABLE, CONFIG_DIR
 from configurations.search_tables import AGGREGATIONS, LOCATION_LEVELS, \
     TIME_RANGES, TEST_DATE_COMPARISONS, HISTOGRAM_BINS, LOCATION_CLIENT_ASN_LEVELS
 
@@ -25,9 +25,8 @@ LOCATION_LIST_LEFTJOIN_TEMPLATE = os.path.join(
                         "templates", "location_list_left_join.sql")
 
 # Location search:
-LOCATION_SEARCH_JOIN_TEMPLATE = os.path.join(
-                        os.path.dirname(os.path.realpath(__file__)),
-                        "templates", "location_search_left_join_section.sql")
+LOCATION_SEARCH_JOIN_TEMPLATE = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                             "templates", "location_search_left_join_section.sql")
 SEARCH_JSON_TEMPLATE = os.path.join(
                         os.path.dirname(os.path.realpath(__file__)),
                         "templates", "search_template.json")
@@ -202,7 +201,8 @@ def setup_base_json(config_name, config):
     json_struct["bigquery_queryfile"] = get_query_relative_filename(config["table_name"])
 
     # big query table name
-    json_struct["bigquery_table"] = config["table_name"]
+    json_struct["bigtable_table_name"] = config["table_name"]
+    json_struct["bigquery_table"] =  BIGQUERY_DATE_TABLE
 
     # key field
     json_struct["key"] = config["key_name"]
@@ -420,8 +420,8 @@ def build_location_search_sql():
     # build initial sql
     key_str = replace(
         lower(
-            concat(config["key_columns"]))
-    , " ", "") + " as {0}".format(config["key_name"])
+            concat(config["key_columns"])),
+            " ", "") + " as {0}".format(config["key_name"])
 
     # build list of fields
     fields = list_fields(config["fields"])

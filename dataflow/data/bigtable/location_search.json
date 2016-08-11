@@ -8,9 +8,9 @@
     }
   ], 
   "bigquery_queryfile": "./data/bigtable/queries/location_search.sql", 
-  "bigtable_table_name": "", 
+  "bigtable_table_name": "location_search", 
   "key": "location_key", 
-  "bigquery_table": "location_search", 
+  "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]", 
   "columns": [
     {
       "length": 60, 

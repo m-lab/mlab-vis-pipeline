@@ -56,10 +56,10 @@ last_year_upload_speed_mbps_bins
 -- Type: city
 -- ============
 (SELECT
-  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ''), ''
-,IFNULL(all.client_country_code, ''), ''
-,IFNULL(all.client_region_code, ''), ''
-,IFNULL(all.client_city, ''), ''
+  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ''), ""
+,IFNULL(all.client_country_code, ''), ""
+,IFNULL(all.client_region_code, ''), ""
+,IFNULL(all.client_city, ''), ""
 )), ' ', '') as location_id,
 
   -- what is its type?
@@ -526,9 +526,9 @@ last_year_upload_speed_mbps_bins
 -- Type: region
 -- ============
 (SELECT
-  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ''), ''
-,IFNULL(all.client_country_code, ''), ''
-,IFNULL(all.client_region_code, ''), ''
+  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ''), ""
+,IFNULL(all.client_country_code, ''), ""
+,IFNULL(all.client_region_code, ''), ""
 )), ' ', '') as location_id,
 
   -- what is its type?
@@ -984,8 +984,8 @@ last_year_upload_speed_mbps_bins
 -- Type: country
 -- ============
 (SELECT
-  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ''), ''
-,IFNULL(all.client_country_code, ''), ''
+  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ''), ""
+,IFNULL(all.client_country_code, ''), ""
 )), ' ', '') as location_id,
 
   -- what is its type?

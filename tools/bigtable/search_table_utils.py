@@ -12,9 +12,9 @@ def concat(fields, prefix="", separator="''"):
     rows = []
     for field in fields:
         if len(prefix) == 0:
-            rows.append("IFNULL({0}, {1}), ''\n".format(field, separator))
+            rows.append("IFNULL({0}, {1}), \"\"\n".format(field, separator))
         else:
-            rows.append("IFNULL({0}.{1}, {2}), ''\n".format(prefix, field, separator))
+            rows.append("IFNULL({0}.{1}, {2}), \"\"\n".format(prefix, field, separator))
     output += ",".join(rows) + ")"
     return output
 

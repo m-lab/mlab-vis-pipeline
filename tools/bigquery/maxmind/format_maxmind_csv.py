@@ -1,5 +1,14 @@
 #!/usr/bin/env python
+"""
+Tool for creating the data for the maxmind_asn table in BigQuery based on
+MaxMind GeoIPASNum input files.
 
+The ASN_NAME_MAP_FILENAME is used to override the names provided from MaxMind.
+
+Usage:
+
+format_maxmind_csv GeoIPASNum2.csv GeoIPASNum2v6.csv asn_name_map.csv
+"""
 from __future__ import print_function
 
 import sys
@@ -14,7 +23,8 @@ IPV6_FILENAME = sys.argv[2]
 ASN_NAME_MAP_FILENAME = sys.argv[3]
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_FILENAME = CUR_DIR + '/output/maxmind_asn.csv'
+OUTPUT_DIRECTORY = CUR_DIR + "/output"
+OUTPUT_FILENAME = OUTPUT_DIRECTORY + '/maxmind_asn.csv'
 
 IP_FAMILY_IPV4 = 2
 IP_FAMILY_IPV6 = 10
@@ -162,6 +172,10 @@ def main():
     """
     The main program starting point, processes the CSV.
     """
+    # Ensure the output directory exists
+    if not os.path.exists(OUTPUT_DIRECTORY):
+        os.makedirs(OUTPUT_DIRECTORY)
+
     asn_name_map = init_asn_name_map(ASN_NAME_MAP_FILENAME)
     process_ipv4_csv(IPV4_FILENAME, asn_name_map)
     process_ipv6_csv(IPV6_FILENAME, asn_name_map)

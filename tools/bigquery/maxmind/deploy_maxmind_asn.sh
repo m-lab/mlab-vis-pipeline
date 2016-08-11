@@ -1,17 +1,23 @@
 #!/bin/bash
 
+basedir=`dirname $0`
+
+ipv4File=$basedir/../../../dataflow/data/bigquery/asn/GeoIPASNum2.csv
+ipv6File=$basedir/../../../dataflow/data/bigquery/asn/GeoIPASNum2v6.csv
+asnNameFile=$basedir/../../../dataflow/data/bigquery/asn/asn_name_map.csv
+
+tableName=bocoup.maxmind_asn
+tableSchema=$basedir/../../../dataflow/data/bigquery/asn/schemas/maxmind_asn_schema.json
+
+# This outputs the ./output/maxmind_asn.csv
 echo "Processing maxmind CSV"
-./format_maxmind_csv.py  ./dataflow/data/bigquery/asn/GeoIPASNum2.csv  ./dataflow/data/bigquery/asn/GeoIPASNum2v6.csv  ./dataflow/data/bigquery/asn/data/asn_name_map.csv
+./format_maxmind_csv.py $ipv4File $ipv6File $asnNameFile
 
-echo "Removing bocoup.maxmind_asn from BigQuery"
-bq rm -f bocoup.maxmind_asn
+echo "Removing $tableName from BigQuery"
+bq rm -f $tableName
 
-# head -n 100 ./output/maxmind_asn.csv > ./output/maxmind_asn_short.csv
-
-echo "Adding bocoup.maxmind_asn to BigQuery"
+echo "Adding $tableName to BigQuery"
 bq load --allow_quoted_newlines --skip_leading_rows=1 --source_format=CSV \
-  bocoup.maxmind_asn \
-  ./output/maxmind_asn.csv \
-  ./dataflow/data/bigquery/asn/schemas/schema.json
+  $tableName $basedir/output/maxmind_asn.csv $tableSchema
 
 echo "Done."

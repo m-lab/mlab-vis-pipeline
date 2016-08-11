@@ -15,7 +15,7 @@
   ], 
   "bigquery_queryfile": "./data/bigtable/queries/location_list.sql", 
   "bigtable_table_name": "location_list", 
-  "key": "parent_location_id", 
+  "key": "location_list", 
   "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]", 
   "columns": [
     {

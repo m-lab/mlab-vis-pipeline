@@ -205,7 +205,9 @@ def setup_base_json(config_name, config):
     json_struct["bigquery_table"] =  BIGQUERY_DATE_TABLE
 
     # key field
-    json_struct["key"] = config["key_name"]
+    # For tables with no time aggregation,
+    # the key field should match the table name
+    json_struct["key"] = config["table_name"]
 
     # add columns
     json_struct["columns"] = config["key_fields"]

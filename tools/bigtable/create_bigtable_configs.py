@@ -73,7 +73,7 @@ ADDITIONAL_FIELDS = {
     ],
     "client_asn_number_client_country": [
         {"name": "client_continent", "type": "string", "family": "meta"},
-        {"name": "client_country",  "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ],
     "client_asn_number_client_continent": [
@@ -82,17 +82,17 @@ ADDITIONAL_FIELDS = {
     ],
     "client_city": [
         {"name": "client_continent", "type": "string", "family": "meta"},
-        {"name": "client_country",  "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
         {"name": "client_region", "type": "string", "family": "meta"}
     ],
     "client_region": [
         {"name": "client_continent", "type": "string", "family": "meta"},
-        {"name": "client_country",  "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
         {"name": "client_region", "type": "string", "family": "meta"}
     ],
     "client_country": [
         {"name": "client_continent", "type": "string", "family": "meta"},
-        {"name": "client_country",  "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
     ],
     "client_continent": [
         {"name": "client_continent", "type": "string", "family": "meta"},

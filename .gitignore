@@ -1,4 +1,4 @@
 **/target
-**/__init__.pyc
+**/*.pyc
 **/dist
 **/output

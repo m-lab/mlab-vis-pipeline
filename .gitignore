@@ -1,3 +1,4 @@
 **/target
 **/__init__.pyc
 **/dist
+**/*.pyc

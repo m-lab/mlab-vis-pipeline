@@ -10,6 +10,10 @@ The pipelines are constructed using Google's Dataflow.
 The dataflow pipelines have been developed using Eclipse. You can see more
 about the pipelines in the nested README files.
 
+You can run linting on the python code in `tools/` by calling:
+
+`make lint`
+
 # Running the pipelines remotely
 
 Since some of the pipelines take a very long time to run, it's best to run them

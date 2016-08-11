@@ -6,6 +6,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -44,7 +45,7 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 	private void addStringColumn(Put put, String colFamily, TableRow row, String field) {
 		String value = (String) row.get(field);
 		if(value != null && value.length() > 0) {
-			put.addColumn(colFamily.getBytes(), field.getBytes(), value == null ? null : value.getBytes());
+			put.addColumn(colFamily.getBytes(), field.getBytes(), value == null ? null : value.getBytes(StandardCharsets.UTF_8));
 		}
 	}
 

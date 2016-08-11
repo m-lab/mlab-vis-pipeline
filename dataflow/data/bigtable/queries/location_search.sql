@@ -1,5 +1,5 @@
 
-SELECT REPLACE(LOWER(CONCAT(IFNULL(location, ''), "",IFNULL(client_region_code, ''), "",IFNULL(client_country_code, ''), "",IFNULL(client_continent_code, ''), "")), ' ', '') as location_key,
+SELECT REPLACE(LOWER(CONCAT(IFNULL(location, ""), "",IFNULL(client_region_code, ""), "",IFNULL(client_country_code, ""), "",IFNULL(client_continent_code, ""), "")), " ", "") as location_key,
        test_count,
        last_three_month_test_count,
        location,
@@ -164,4 +164,3 @@ from -- Type: city
  client_continent_code,
  threemonths.last_three_month_test_count)
 WHERE location IS NOT NULL;
-

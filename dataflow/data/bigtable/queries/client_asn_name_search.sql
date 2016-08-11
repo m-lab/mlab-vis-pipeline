@@ -1,7 +1,7 @@
 SELECT
 
   -- keys:
-  lower(REGEXP_REPLACE(client_asn_name, r'[^\w|_]', '')) as client_asn_name_lookup,
+  lower(REGEXP_REPLACE(client_asn_name, r"[^\w|_]", "")) as client_asn_name_lookup,
   client_asn_number,
 
   -- metadata:

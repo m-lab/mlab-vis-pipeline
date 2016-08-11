@@ -8,8 +8,9 @@ import sqlparse
 from search_table_utils import *
 
 from create_bigtable_configs import \
-    read_text, save_text, read_json, save_json, get_query_filename, \
-    BIGQUERY_DATE_TABLE, QUERY_BASEDIR, CONFIG_DIR, BASE_DIR
+    read_text, save_text, read_json, save_json, \
+    get_query_relative_filename, get_query_full_filename, \
+    BIGQUERY_DATE_TABLE, CONFIG_DIR, BASE_DIR
 from configurations.search_tables import AGGREGATIONS, LOCATION_LEVELS, \
     TIME_RANGES, TEST_DATE_COMPARISONS, HISTOGRAM_BINS, LOCATION_CLIENT_ASN_LEVELS
 
@@ -184,7 +185,7 @@ def build_location_client_asn_number_list_sql():
 
     query_str += ", \n".join(subqueries)
 
-    save_text(get_query_filename(config["table_name"]), query_str)
+    save_text(get_query_full_filename(config["table_name"]), query_str)
 
 def setup_base_json(config_name, config):
     '''
@@ -198,7 +199,7 @@ def setup_base_json(config_name, config):
     json_struct["row_keys"] = copy.copy(config["key_fields"])
 
     # add bigquery file
-    json_struct["bigquery_queryfile"] = get_query_filename(config["table_name"])
+    json_struct["bigquery_queryfile"] = get_query_relative_filename(config["table_name"])
 
     # big query table name
     json_struct["bigquery_table"] = config["table_name"]
@@ -391,7 +392,7 @@ def build_location_list_sql():
 
     query_str += ", \n".join(subqueries)
 
-    save_text(get_query_filename(config["table_name"]), 
+    save_text(get_query_full_filename(config["table_name"]),
             sqlparse.format(query_str, strip_whitespace=False, reindent=True))
 
 ####
@@ -460,7 +461,7 @@ def build_location_search_sql():
         location IS NOT NULL;
     '''
 
-    save_text(get_query_filename(config["table_name"]), 
+    save_text(get_query_full_filename(config["table_name"]),
             sqlparse.format(query_str, strip_whitespace=False, reindent=True))
 
 def main():

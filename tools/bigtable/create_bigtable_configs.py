@@ -9,7 +9,8 @@ import os
 BIGQUERY_DATE_TABLE = "[mlab-oti:bocoup_prod.all_ip_by_day]"
 BIGQUERY_HOUR_TABLE = "[mlab-oti:bocoup_prod.all_ip_by_hour]"
 
-QUERY_BASEDIR = os.path.join(".", "dataflow", "data", "bigtable", "queries")
+QUERY_BASEDIR = os.path.join("..", "..", "dataflow", "data", "bigtable", "queries")
+CONFIG_QUERY_BASEDIR = os.path.join(".", "data", "bigtable", "queries")
 
 # Aggregations that represent keys and query group-bys
 AGGREGATIONS = {
@@ -247,7 +248,15 @@ def save_text(filename, text):
         out_file.write(text)
 
 
-def get_query_filename(table_name):
+def get_query_relative_filename(table_name):
+    '''
+    output relative path to query filename
+    '''
+    filename = "{0}.sql".format(table_name)
+    full_path = os.path.join(CONFIG_QUERY_BASEDIR, filename)
+    return full_path
+
+def get_query_full_filename(table_name):
     '''
     output relative path to query filename
     '''
@@ -326,7 +335,7 @@ def create_config_file(aggregation_id,
     '''
     # compute some names
     bigtable_table_name = get_table_name(aggregation_id, date_id)
-    query_filename = get_query_filename(bigtable_table_name)
+    query_filename = get_query_relative_filename(bigtable_table_name)
 
     # get template
     base_config = read_json(DATE_CONFIG_TEMPLATE_FILENAME)
@@ -371,7 +380,7 @@ def create_query_file(aggregation_id,
     '''
     Creates bigquery sql file.
     '''
-    query_filename = get_query_filename(get_table_name(aggregation_id, date_id))
+    query_filename = get_query_full_filename(get_table_name(aggregation_id, date_id))
     base_query = read_text(SQL_TEMPLATE_FILENAME)
 
     base_query += "\n{0}\n\n".format(select_query)

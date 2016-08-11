@@ -1,14 +1,14 @@
 {
-  "queryFile": "./data/queries/base_downloads_ip_by_day.sql",
-  "schemaFile": "./data/schemas/base_downloads_ip.json",
+  "queryFile": "./data/bigquery/queries/base_downloads_ip_by_day.sql",
+  "schemaFile": "./data/bigquery/schemas/base_downloads_ip.json",
   "outputTable": "bocoup_prod.update_downloads_ip_by_day",
 
   "lastDateFrom": "bocoup_prod.all_ip_by_day",
   "dateColumn": "test_date",
 
   "mergeTable": "bocoup_prod.update_all_ip_by_day",
-  "mergeTableSchema": "./data/schemas/all_ip.json",
+  "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
 
   "withISPTable": "bocoup_prod.all_ip_by_day",
-  "withISPTableSchema": "./data/schemas/all_ip.json"
+  "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
 }

@@ -1,6 +1,6 @@
 {
-  "queryFile": "./data/queries/uploads_ip_by_hour_base.sql",
-  "schemaFile": "./data/schemas/uploads_ip_by_day_base.json",
+  "queryFile": "./data/bigquery/queries/uploads_ip_by_hour_base.sql",
+  "schemaFile": "./data/bigquery/schemas/uploads_ip_by_day_base.json",
   "outputTable": "bocoup.zz2_test_batching_remote",
   "numberOfDays": 2,
 

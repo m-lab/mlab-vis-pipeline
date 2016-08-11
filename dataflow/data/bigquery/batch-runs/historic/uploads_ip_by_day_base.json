@@ -1,6 +1,6 @@
 {
-  "queryFile": "./data/queries/base_uploads_ip_by_day.sql",
-  "schemaFile": "./data/schemas/base_uploads_ip.json",
+  "queryFile": "./data/bigquery/queries/base_uploads_ip_by_day.sql",
+  "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
   "outputTable": "bocoup_prod.base_uploads_ip_by_day",
   "numberOfDays": 9,
   "dates": [
@@ -16,8 +16,8 @@
   ],
 
   "mergeTable": "bocoup_prod.base_merged_ip_by_day",
-  "mergeTableSchema": "./data/schemas/all_ip.json",
+  "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
 
   "withISPTable": "bocoup_prod.all_ip_by_day",
-  "withISPTableSchema": "./data/schemas/all_ip.json"
+  "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
 }

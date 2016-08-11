@@ -232,7 +232,6 @@ public class TimeLocalizer {
 			row = tzRowsIterator.next();
 			
 			if (Long.valueOf(row[2]) > (date.getTime() / 1000)) {
-				System.out.println(timeStart + " " + (date.getTime() / 1000));
 				break;
 			}
 			timeStart = Long.valueOf(row[2]);
@@ -244,41 +243,4 @@ public class TimeLocalizer {
 		
 		return new LocalTimeDetails(dateOutputFormatter.format(cal.getTime()), row[1], tz, hours);
 	}
-
-	public static void main(String[] args) throws NumberFormatException, Exception {
-
-		TimeLocalizer tl = new TimeLocalizer().setMode(BQ_MODE).setup();
-
-		List<List<String>> sampleTimes = new ArrayList<List<String>>();
-		List<String> t1 = Arrays.asList("San Francisco", "2015-05-29 10:00:00 UTC", "37.791500091552734",
-				"-122.40889739990234", "2015-05-29 3:00:00");
-		sampleTimes.add(t1);
-		List<String> t2 = Arrays.asList("Chicago", "2014-12-01 12:00:00 UTC", "41.92060089111328", "-87.70169830322266",
-				"2014-12-01 6:00:00");
-		sampleTimes.add(t2);
-		// no dst
-		List<String> t3 = Arrays.asList("Paris", "2013-02-27 23:12:00 UTC", "48.88169860839844", "2.382200002670288",
-				"2013-02-28 00:12:00");
-		sampleTimes.add(t3);
-		// dst
-		List<String> t4 = Arrays.asList("Paris", "2013-04-27 23:12:00 UTC", "48.88169860839844", "2.382200002670288",
-				"2013-04-28 01:12:00");
-		sampleTimes.add(t4);
-		
-		List<String> t5 = Arrays.asList("???", "2016-04-10 00:00:00 UTC", "33.003501892089844", "-96.9000015258789", "");
-		sampleTimes.add(t5);
-		
-		Iterator<List<String>> i = sampleTimes.iterator();
-		while (i.hasNext()) {
-			List<String> row = i.next();
-			LocalTimeDetails ltd = tl.utcToLocalTime(row.get(1), Double.valueOf(row.get(2)), Double.valueOf(row.get(3)));
-			
-			System.out.println(row.get(0) + " " + tl.getTimeZone(Double.valueOf(row.get(2)), Double.valueOf(row.get(3)))
-					+ " starting: " + row.get(1) 
-					+ " computed: " + ltd.getTimestamp() + "("+ltd.getOffset()+")"
-					+ " expected: " + row.get(4));
-
-		}
-	}
-
 }

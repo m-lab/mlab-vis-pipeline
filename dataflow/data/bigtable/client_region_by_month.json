@@ -25,7 +25,7 @@
       "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./dataflow/data/bigtable/queries/client_region_by_month.sql", 
+  "bigquery_queryfile": "./data/bigtable/queries/client_region_by_month.sql", 
   "bigtable_table_name": "client_region_by_month", 
   "frequency": "month", 
   "key": "client_region", 

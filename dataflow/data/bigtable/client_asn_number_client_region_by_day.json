@@ -31,7 +31,7 @@
       "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./dataflow/data/bigtable/queries/client_asn_number_client_region_by_day.sql", 
+  "bigquery_queryfile": "./data/bigtable/queries/client_asn_number_client_region_by_day.sql", 
   "bigtable_table_name": "client_asn_number_client_region_by_day", 
   "frequency": "day", 
   "key": "client_asn_number_client_region", 

@@ -25,7 +25,7 @@
       "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./dataflow/data/bigtable/queries/client_asn_number_client_country_by_year.sql", 
+  "bigquery_queryfile": "./data/bigtable/queries/client_asn_number_client_country_by_year.sql", 
   "bigtable_table_name": "client_asn_number_client_country_by_year", 
   "frequency": "year", 
   "key": "client_asn_number_client_country", 

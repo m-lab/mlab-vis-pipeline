@@ -31,7 +31,7 @@
       "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./dataflow/data/bigtable/queries/client_region_by_month_hour.sql", 
+  "bigquery_queryfile": "./data/bigtable/queries/client_region_by_month_hour.sql", 
   "bigtable_table_name": "client_region_by_month_hour", 
   "frequency": "month_hour", 
   "key": "client_region", 

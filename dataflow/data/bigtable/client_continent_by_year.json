@@ -13,7 +13,7 @@
       "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./dataflow/data/bigtable/queries/client_continent_by_year.sql", 
+  "bigquery_queryfile": "./data/bigtable/queries/client_continent_by_year.sql", 
   "bigtable_table_name": "client_continent_by_year", 
   "frequency": "year", 
   "key": "client_continent", 

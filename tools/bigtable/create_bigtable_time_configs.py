@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 '''
-
+Create configs and query files for bigtable tables that have time
+as the end parameter.
 '''
 
 import json
@@ -14,6 +15,59 @@ CONFIG_QUERY_BASEDIR = os.path.join(".", "data", "bigtable", "queries")
 
 # Aggregations that represent keys and query group-bys
 AGGREGATIONS = {
+    # SERVER ASN NAME x CLIENT ASN NUMBER x CLIENT LOCATION
+    "server_asn_name_client_asn_number_client_city": [
+        {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_city", "length": 40, "type": "string", "family": "meta"},
+        {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_asn_number_client_region": [
+        {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_asn_number_client_country": [
+        {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_asn_number_client_continent": [
+        {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+    ],
+
+    # SERVER ASN NAME x CLIENT LOCATION
+    "server_asn_name_client_city": [
+        {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_city", "length": 40, "type": "string", "family": "meta"},
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_region": [
+        {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_country": [
+        {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_continent": [
+        {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+    ],
+
+    # CLIENT ASN NUMBER x CLIENT LOCATION
     "client_asn_number_client_city": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
@@ -36,6 +90,8 @@ AGGREGATIONS = {
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
     ],
+
+    # CLIENT LOCATION
     "client_city": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
@@ -54,21 +110,74 @@ AGGREGATIONS = {
     "client_continent": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
     ],
+
+    # OTHERS
     "client_asn_number": [
         {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"}
     ],
+    "server_asn_name": [
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_asn_number": [
+        {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"},
+        {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"}
+    ],
+
 }
 
 ADDITIONAL_FIELDS = {
+    # SERVER ASN NAME x CLIENT ASN NUMBER x CLIENT LOCATION
+    "server_asn_name_client_asn_number_client_city": [
+        {"name": "client_continent", "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
+        {"name": "client_region", "type": "string", "family": "meta"},
+        {"name": "client_asn_name", "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_asn_number_client_region": [
+        {"name": "client_continent", "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
+        {"name": "client_region", "type": "string", "family": "meta"},
+        {"name": "client_asn_name", "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_asn_number_client_country": [
+        {"name": "client_continent", "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
+        {"name": "client_asn_name", "type": "string", "family": "meta"}
+    ],
+    "server_asn_name_client_asn_number_client_continent": [
+        {"name": "client_continent", "type": "string", "family": "meta"},
+        {"name": "client_asn_name", "type": "string", "family": "meta"}
+    ],
+
+    # SERVER ASN NAME x  CLIENT LOCATION
+    "server_asn_name_client_city": [
+        {"name": "client_continent", "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
+        {"name": "client_region", "type": "string", "family": "meta"},
+    ],
+    "server_asn_name_client_region": [
+        {"name": "client_continent", "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
+        {"name": "client_region", "type": "string", "family": "meta"},
+    ],
+    "server_asn_name_client_country": [
+        {"name": "client_continent", "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
+    ],
+    "server_asn_name_client_continent": [
+        {"name": "client_continent", "type": "string", "family": "meta"},
+    ],
+
+    # CLIENT ASN NUMBER x CLIENT LOCATION
     "client_asn_number_client_city": [
         {"name": "client_continent", "type": "string", "family": "meta"},
-        {"name": "client_country",  "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
         {"name": "client_region", "type": "string", "family": "meta"},
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ],
     "client_asn_number_client_region": [
         {"name": "client_continent", "type": "string", "family": "meta"},
-        {"name": "client_country",  "type": "string", "family": "meta"},
+        {"name": "client_country", "type": "string", "family": "meta"},
         {"name": "client_region", "type": "string", "family": "meta"},
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ],
@@ -81,6 +190,8 @@ ADDITIONAL_FIELDS = {
         {"name": "client_continent", "type": "string", "family": "meta"},
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ],
+
+    # CLIENT LOCATION
     "client_city": [
         {"name": "client_continent", "type": "string", "family": "meta"},
         {"name": "client_country", "type": "string", "family": "meta"},
@@ -98,21 +209,70 @@ ADDITIONAL_FIELDS = {
     "client_continent": [
         {"name": "client_continent", "type": "string", "family": "meta"},
     ],
+
+    # OTHERS
     "client_asn_number": [
+        {"name": "client_asn_name", "type": "string", "family": "meta"}
+    ],
+    "server_asn_name": [],
+    "server_asn_name_client_asn_number": [
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ]
 }
 
-# LIST_AGGREGATIONS = {
-    # "client_location": [
-    #     {"name":"client_continent", "length":2, "type":"string", "family":"meta"},
-    #     {"name":"client_country", "length":2, "type":"string", "family":"meta"},
-    #     {"name":"client_region", "length":20, "type":"string", "family":"meta"},
-    #     {"name":"client_city", "length":40, "type":"string", "family":"meta"}
-    # ],
-# }
-
 AGGREGATION_FILTERS = {
+    # SERVER ASN NAME x CLIENT ASN NUMBER x CLIENT LOCATION
+    "server_asn_name_client_asn_number_client_city": [
+        "LENGTH(client_city) > 0",
+        "LENGTH(client_region_code) > 0",
+        "LENGTH(client_country_code) > 0",
+        "LENGTH(client_continent_code) > 0",
+        "LENGTH(client_asn_number) > 0",
+        "LENGTH(client_asn_name) > 0"
+    ],
+    "server_asn_name_client_asn_number_client_region": [
+        "LENGTH(client_region_code) > 0",
+        "LENGTH(client_country_code) > 0",
+        "LENGTH(client_continent_code) > 0",
+        "LENGTH(client_asn_number) > 0",
+        "LENGTH(client_asn_name) > 0",
+        "LENGTH(server_asn_name) > 0"
+    ],
+    "server_asn_name_client_asn_number_client_country": [
+        "LENGTH(client_country_code) > 0",
+        "LENGTH(client_continent_code) > 0",
+        "LENGTH(client_asn_number) > 0",
+        "LENGTH(client_asn_name) > 0",
+        "LENGTH(server_asn_name) > 0"
+    ],
+    "server_asn_name_client_asn_number_client_continent": [
+        "LENGTH(client_continent_code) > 0",
+        "LENGTH(client_asn_number) > 0",
+        "LENGTH(client_asn_name) > 0",
+        "LENGTH(server_asn_name) > 0"
+    ],
+
+    # SERVER ASN NAME x CLIENT LOCATION
+    "server_asn_name_client_city": [
+        "LENGTH(client_city) > 0",
+        "LENGTH(client_region_code) > 0",
+        "LENGTH(client_country_code) > 0",
+        "LENGTH(client_continent_code) > 0",
+    ],
+    "server_asn_name_client_region": [
+        "LENGTH(client_region_code) > 0",
+        "LENGTH(client_country_code) > 0",
+        "LENGTH(client_continent_code) > 0",
+    ],
+    "server_asn_name_client_country": [
+        "LENGTH(client_country_code) > 0",
+        "LENGTH(client_continent_code) > 0",
+    ],
+    "server_asn_nameclient_continent": [
+        "LENGTH(client_continent_code) > 0",
+    ],
+
+    # CLIENT ASN NUMBER x CLIENT LOCATION
     "client_asn_number_client_city": [
         "LENGTH(client_city) > 0",
         "LENGTH(client_region_code) > 0",
@@ -139,6 +299,8 @@ AGGREGATION_FILTERS = {
         "LENGTH(client_asn_number) > 0",
         "LENGTH(client_asn_name) > 0"
     ],
+
+    # CLIENT LOCATION
     "client_city": [
         "LENGTH(client_city) > 0",
         "LENGTH(client_region_code) > 0",
@@ -157,6 +319,18 @@ AGGREGATION_FILTERS = {
     "client_continent": [
         "LENGTH(client_continent_code) > 0"
     ],
+
+    # OTHER
+    "client_asn_number": [
+        "LENGTH(client_asn_number) > 0"
+    ],
+    "server_asn_name": [
+        "LENGTH(server_asn_name) > 0"
+    ],
+    "server_asn_name_client_asn_number": [
+        "LENGTH(client_asn_number) > 0",
+        "LENGTH(server_asn_name) > 0"
+    ]
 }
 
 DATE_AGGEGATIONS = {
@@ -193,9 +367,7 @@ DATE_QUERIES = {
     ]
 }
 
-BASE_DIR = os.path.abspath(os.path.join(
-           os.path.dirname(os.path.realpath(__file__)),
-           "../../", "dataflow"))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../", "dataflow"))
 
 CONFIG_DIR = os.path.join(BASE_DIR, "data", "bigtable")
 QUERY_FOLDER = os.path.abspath(os.path.join(CONFIG_DIR, "queries"))
@@ -340,11 +512,11 @@ def create_config_file(aggregation_id,
     # get template
     base_config = read_json(DATE_CONFIG_TEMPLATE_FILENAME)
 
-    if(date_id):
+    if date_id:
         date_names = [x["name"] for x in date_config_fields]
 
         # fill in template
-        if("hour" in date_names):
+        if "hour" in date_names:
             base_config["bigquery_table"] = BIGQUERY_HOUR_TABLE
         else:
             base_config["bigquery_table"] = BIGQUERY_DATE_TABLE
@@ -395,6 +567,8 @@ def create_query_file(aggregation_id,
 
 
 def create(aggregation_id, aggregation_config_fields, date_id, date_config_fields):
+    '''
+    '''
     print(get_table_name(aggregation_id, date_id))
 
     additional_config_fields = []
@@ -425,6 +599,8 @@ def create(aggregation_id, aggregation_config_fields, date_id, date_config_field
 
 
 def main():
+    '''
+    '''
     print("saving configs to: {0}".format(CONFIG_DIR))
     print("saving queries to: {0}".format(BASE_DIR))
 
@@ -435,13 +611,6 @@ def main():
                    aggregation_config_fields,
                    date_id,
                    date_config_fields)
-
-    # LIST TABLES
-    # for list_id, list_config_fields in LIST_AGGREGATIONS.iteritems():
-    #     create(aggregation_id,
-    #            aggregation_config_fields,
-    #            None,
-    #            None)
 
 # RUN
 main()

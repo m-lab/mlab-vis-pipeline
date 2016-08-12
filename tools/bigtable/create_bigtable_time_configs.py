@@ -16,7 +16,8 @@ CONFIG_QUERY_BASEDIR = os.path.join(".", "data", "bigtable", "queries")
 # Aggregations that represent keys and query group-bys
 AGGREGATIONS = {
     # SERVER ASN NAME x CLIENT ASN NUMBER x CLIENT LOCATION
-    "server_asn_name_client_asn_number_client_city": [
+    # Naming needs to stay under 50 characters
+    "server_asn_client_asn_client_city": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
@@ -24,20 +25,20 @@ AGGREGATIONS = {
         {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
         {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
     ],
-    "server_asn_name_client_asn_number_client_region": [
+    "server_asn_client_asn_client_region": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
         {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
     ],
-    "server_asn_name_client_asn_number_client_country": [
+    "server_asn_client_asn_client_country": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
         {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
     ],
-    "server_asn_name_client_asn_number_client_continent": [
+    "server_asn_client_asn_client_continent": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
         {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
@@ -118,7 +119,7 @@ AGGREGATIONS = {
     "server_asn_name": [
         {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
     ],
-    "server_asn_name_client_asn_number": [
+    "server_asn_client_asn": [
         {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"},
         {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"}
     ],
@@ -127,24 +128,24 @@ AGGREGATIONS = {
 
 ADDITIONAL_FIELDS = {
     # SERVER ASN NAME x CLIENT ASN NUMBER x CLIENT LOCATION
-    "server_asn_name_client_asn_number_client_city": [
+    "server_asn_client_asn_client_city": [
         {"name": "client_continent", "type": "string", "family": "meta"},
         {"name": "client_country", "type": "string", "family": "meta"},
         {"name": "client_region", "type": "string", "family": "meta"},
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ],
-    "server_asn_name_client_asn_number_client_region": [
+    "server_asn_client_asn_client_region": [
         {"name": "client_continent", "type": "string", "family": "meta"},
         {"name": "client_country", "type": "string", "family": "meta"},
         {"name": "client_region", "type": "string", "family": "meta"},
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ],
-    "server_asn_name_client_asn_number_client_country": [
+    "server_asn_client_asn_client_country": [
         {"name": "client_continent", "type": "string", "family": "meta"},
         {"name": "client_country", "type": "string", "family": "meta"},
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ],
-    "server_asn_name_client_asn_number_client_continent": [
+    "server_asn_client_asn_client_continent": [
         {"name": "client_continent", "type": "string", "family": "meta"},
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ],
@@ -215,14 +216,14 @@ ADDITIONAL_FIELDS = {
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ],
     "server_asn_name": [],
-    "server_asn_name_client_asn_number": [
+    "server_asn_client_asn": [
         {"name": "client_asn_name", "type": "string", "family": "meta"}
     ]
 }
 
 AGGREGATION_FILTERS = {
     # SERVER ASN NAME x CLIENT ASN NUMBER x CLIENT LOCATION
-    "server_asn_name_client_asn_number_client_city": [
+    "server_asn_client_asn_client_city": [
         "LENGTH(client_city) > 0",
         "LENGTH(client_region_code) > 0",
         "LENGTH(client_country_code) > 0",
@@ -327,7 +328,7 @@ AGGREGATION_FILTERS = {
     "server_asn_name": [
         "LENGTH(server_asn_name) > 0"
     ],
-    "server_asn_name_client_asn_number": [
+    "server_asn_client_asn": [
         "LENGTH(client_asn_number) > 0",
         "LENGTH(server_asn_name) > 0"
     ]

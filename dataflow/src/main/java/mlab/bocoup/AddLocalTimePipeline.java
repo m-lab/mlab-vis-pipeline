@@ -14,6 +14,7 @@ import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
+import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.transforms.Combine;
 import com.google.cloud.dataflow.sdk.transforms.DoFn;
 import com.google.cloud.dataflow.sdk.transforms.GroupByKey;
@@ -174,16 +175,12 @@ public class AddLocalTimePipeline {
 
 	
 	public static void main(String [] args) throws ClassNotFoundException {
-		// parse out whether we are doing a day or hour update?
-		OptionParser parser = PipelineOptionsSetup.setupOptionParser();
-		OptionSet cmdOpts = PipelineOptionsSetup.getOptions(parser, args);
-	    
-	    // set up big query IO options
-	    BigQueryOptions pipelineOpts = PipelineOptionsSetup.setupBQOptions(cmdOpts);
-	    pipelineOpts.setAppName("AddLocalTime");
+		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
+				.as(BigQueryOptions.class);
+		options.setAppName("AddLocalTime");
 		
 		// pipeline object
-		Pipeline p = Pipeline.create(pipelineOpts);
+		Pipeline p = Pipeline.create(options);
 		
 		AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(p);
 		addLocalTime

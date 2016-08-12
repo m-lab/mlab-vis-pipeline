@@ -17,12 +17,16 @@ import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.PipelineResult.State;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
+import com.google.cloud.dataflow.sdk.options.PipelineOptions;
+import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
 import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import mlab.bocoup.pipelineopts.ExtractHistoricRowsPipelineOptions;
+import mlab.bocoup.pipelineopts.HistoricPipelineOptions;
 import mlab.bocoup.query.BigQueryIONoLargeResults;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.CreateDisposition;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.WriteDisposition;
@@ -180,17 +184,15 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	 */
 	public static void main(String[] args) throws IOException, ParseException, InterruptedException, org.json.simple.parser.ParseException, ClassNotFoundException {
 		
-		OptionParser parser = PipelineOptionsSetup.setupOptionParser();
-		parser.accepts( "configfile" ).withRequiredArg();
+		PipelineOptionsFactory.register(ExtractHistoricRowsPipelineOptions.class);
+		ExtractHistoricRowsPipelineOptions options = PipelineOptionsFactory.fromArgs(args)
+				.withValidation()
+				.as(ExtractHistoricRowsPipelineOptions.class);
 		
-		OptionSet cmdOpts = PipelineOptionsSetup.getOptions(parser, args);
-		
-	    BigQueryOptions options = PipelineOptionsSetup.setupBQOptions(cmdOpts);
 	    options.setAppName("ExtractHistoricRowsPipeline");
 		
 	    ExtractHistoricRowsPipeline ehrP = new ExtractHistoricRowsPipeline(options);
-	    
-	    ehrP.setConfigurationFile((String) cmdOpts.valueOf("configfile"))
+	    ehrP.setConfigurationFile(options.getConfigfile())
 	    	.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
 	    	.setWriteDisposition(WriteDisposition.WRITE_APPEND);
 	    

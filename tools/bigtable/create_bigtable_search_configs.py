@@ -7,7 +7,7 @@ import copy
 import sqlparse
 from search_table_utils import *
 
-from create_bigtable_configs import \
+from create_bigtable_time_configs import \
     read_text, save_text, read_json, save_json, \
     get_query_relative_filename, get_query_full_filename, \
     BIGQUERY_DATE_TABLE, CONFIG_DIR

@@ -241,32 +241,32 @@
       "family": "data"
     }, 
     {
-      "type": "double", 
+      "type": "string", 
       "name": "last_month_download_speed_mbps_bins", 
       "family": "data"
     }, 
     {
-      "type": "double", 
+      "type": "string", 
       "name": "last_month_upload_speed_mbps_bins", 
       "family": "data"
     }, 
     {
-      "type": "double", 
+      "type": "string", 
       "name": "last_week_download_speed_mbps_bins", 
       "family": "data"
     }, 
     {
-      "type": "double", 
+      "type": "string", 
       "name": "last_week_upload_speed_mbps_bins", 
       "family": "data"
     }, 
     {
-      "type": "double", 
+      "type": "string", 
       "name": "last_year_download_speed_mbps_bins", 
       "family": "data"
     }, 
     {
-      "type": "double", 
+      "type": "string", 
       "name": "last_year_upload_speed_mbps_bins", 
       "family": "data"
     }

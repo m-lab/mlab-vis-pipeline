@@ -37,8 +37,8 @@ AGGREGATIONS = {
         ],
 
         "binned_fields" : [
-            {"type": "double", "name": "download_speed_mbps", "family": "data"},
-            {"type": "double", "name": "upload_speed_mbps", "family": "data"},
+            {"type": "string", "name": "download_speed_mbps", "family": "data"},
+            {"type": "string", "name": "upload_speed_mbps", "family": "data"},
         ],
 
         "timed_fields" : [

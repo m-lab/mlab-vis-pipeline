@@ -1,4 +1,4 @@
-def concat(fields, prefix="", separator="''"):
+def concat(fields, prefix="", separator="\"\""):
     '''
     Produces output like the following for an array of fields:
     CONCAT(
@@ -30,7 +30,8 @@ def replace(query, what_str, with_str):
     Produces output like the following:
     REPLACE(<query>, "what", "with")
     '''
-    return "REPLACE({0}, '{1}', '{2}')".format(query, what_str, with_str)
+    return "REPLACE({0}, \"{1}\", \"{2}\")".format(query, what_str, with_str)
+
 
 def list_fields(fields, prefixes=[""]):
     '''

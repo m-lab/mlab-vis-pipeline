@@ -41,4 +41,9 @@ public class DateRange {
 		Date d = new Date((long) (this.endDate));
 		return dtf.format(d);
 	}
+	
+	public boolean equals(DateRange d) {
+		return (d.startDate == this.startDate) &&
+				(d.endDate == this.endDate);
+	}
 }

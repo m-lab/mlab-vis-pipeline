@@ -65,4 +65,14 @@ public class DataRangeTest {
 	public void testGetDisplayEndTimestampStr() {
 		assertEquals(dr.getDisplayEndTimestampStr(), "2015-01-31T19:00:00Z");
 	}
+	
+	@Test
+	public void testEquals() throws ParseException {
+		DateRange good = new DateRange(startdate, enddate);
+		DateRange bad = new DateRange(startdate+10, enddate);
+		
+		assertTrue(dr.equals(good));
+		assertFalse(dr.equals(bad));
+		
+	}
 }

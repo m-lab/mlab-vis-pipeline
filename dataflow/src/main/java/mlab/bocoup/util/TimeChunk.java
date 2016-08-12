@@ -4,8 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
-
 import mlab.bocoup.data.DateRange;
 
 public class TimeChunk {
@@ -86,31 +84,5 @@ public class TimeChunk {
 		cal.setTimeInMillis(fromDateUnix);
 		cal.add(Calendar.DATE, (int) numOfDays);
 		return cal.getTimeInMillis();
-	}
-	
-	// example usage:
-	public static void main(String[]args) throws ParseException {
-		
-		String startDate = "2015-01-01T00:00:00Z";
-		String finalDate = "2015-01-08T00:00:00Z";
-		int numberOfDays = 40;
-		
-		ArrayList<DateRange> dates = TimeChunk.byNumberOfDays(startDate, finalDate, numberOfDays);
-		Iterator<DateRange> i = dates.iterator();
-		System.out.println("by number of days:");
-		while (i.hasNext()) {
-			DateRange dr = i.next();
-			System.out.println(dr.getStartRangeLongStr() + " - " + dr.getEndRangeLongStr());
-			System.out.println(dr.getDisplayStartTimestampStr() + " - " + dr.getDisplayEndTimestampStr());
-		}
-		
-		dates = TimeChunk.intoNumberOfChunks(startDate, finalDate, 6);
-		i = dates.iterator();
-		System.out.println("Into number of chunks:");
-		while (i.hasNext()) {
-			DateRange dr = i.next();
-			System.out.println(dr.getStartRangeLongStr() + " - " + dr.getEndRangeLongStr());
-			System.out.println(dr.getDisplayStartTimestampStr() + " - " + dr.getDisplayEndTimestampStr());
-		}
 	}
 }

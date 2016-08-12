@@ -11,14 +11,11 @@ import org.slf4j.LoggerFactory;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.PipelineResult.State;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
 import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
 import mlab.bocoup.pipelineopts.HistoricPipelineOptions;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.CreateDisposition;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.WriteDisposition;

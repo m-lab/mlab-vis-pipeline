@@ -19,13 +19,9 @@ import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-import mlab.bocoup.dofn.AddLocalTimeFn;
 import mlab.bocoup.dofn.AddLocationNamesFn;
 import mlab.bocoup.dofn.ExtractCountryCodeFn;
 import mlab.bocoup.dofn.ExtractRegionCodeFn;
-import mlab.bocoup.dofn.ExtractZoneKeynameFn;
 import mlab.bocoup.util.Schema;
 
 public class AddLocationPipeline {

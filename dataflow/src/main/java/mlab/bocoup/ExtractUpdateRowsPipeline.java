@@ -21,16 +21,11 @@ import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.options.PipelineOptions;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
 import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
-import mlab.bocoup.pipelineopts.ExtractHistoricRowsPipelineOptions;
 import mlab.bocoup.pipelineopts.ExtractUpdateRowsPipelineOptions;
 import mlab.bocoup.query.BigQueryJob;
 import mlab.bocoup.util.Formatters;

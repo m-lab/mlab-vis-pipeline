@@ -26,24 +26,31 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
 import mlab.bocoup.coder.NavigableMapCoder;
 import mlab.bocoup.transform.CombineAsNavigableMapHex;
 
+/**
+ * Tests the AddISPsFn DoFn for adding ISP information to TableRows
+ * @author pbeshai
+ *
+ */
 public class AddISPsFnTest {
-	private static String IPV4 = "2";
-	private static String IPV6 = "10";
-	
-	
+	// values for the IP family field
+	private static final int IP_FAMILY_IPV4 = 2;
+	private static final int IP_FAMILY_IPV6 = 10;
+
+	// constants for building the ASN side data
+	private static final String[] ASN_TOKEN_KEYS = { "asn_string", "asn_number", "asn_name", "min_ip_hex", "max_ip_hex",
+			"min_ip", "max_ip", "ip_family", "min_ipv6_hex", "max_ipv6_hex" };
+	private static final String[] ASN_INFO = {
+			"AS3215	AS3215	Orange S.A.	5A680000	5A69FFFF	90.104.0.0	90.105.255.255	2	x	x",
+			"AS6327	AS6327	Shaw Communications Inc.	46400000	464FFFFF	70.64.0.0	70.79.182.109	2	x	x",
+			"AS6900	AS6900	Hewlett Packard GmbH	2A0209F8900000000000000000000000	2A0209F8900FFFFFFFFFFFFFFFFFFFFF	2a02:9f8:9000::	2a02:9f8:900f:ffff:ffff:ffff:ffff:ffff	10	2A0209F8900000000000000000000000	2A0209F8900FFFFFFFFFFFFFFFFFFFFF",
+			"AS9052	AS9052	Unidad Editorial S.A.	2001067C229400000000000000000000	2001067C2294FFFFFFFFFFFFFFFFFFFF	2001:67c:2294::	2001:67c:2294:ffff:ffff:ffff:ffff:ffff	10	2001067C229400000000000000000000	2001067C2294FFFFFFFFFFFFFFFFFFFF",
+			"AS12782	AS12782	Uppsala Lans Landsting	x	x	2a01:58:20::	2a01:58:21:ffff:ffff:ffff:ffff:ffff	10	2A010058002000000000000000000000	2A0100580021FFFFFFFFFFFFFFFFFFFF",
+	};
+
 	// For side loading ASNs
 	PCollectionView<NavigableMap<String, TableRow>> asnsView;
 	List<NavigableMap<String, TableRow>> asnMapIterable;
 	
-	private static final String[] ASN_TOKEN_KEYS = { "asn_string", "asn_number", "asn_name", "min_ip_hex", "max_ip_hex",
-			"min_ip", "max_ip", "ip_family" };
-	private static final String[] ASN_INFO = {
-			"AS3215	AS3215	Orange S.A.	5A680000	5A69FFFF	90.104.0.0	90.105.255.255	2",
-			"AS6327	AS6327	Shaw Communications Inc.	46400000	464FFFFF	70.64.0.0	70.79.182.109	2",
-			"AS6900	AS6900	Hewlett Packard GmbH	2A0209F8900000000000000000000000	2A0209F8900FFFFFFFFFFFFFFFFFFFFF	2a02:9f8:9000::	2a02:9f8:900f:ffff:ffff:ffff:ffff:ffff	10",
-			"AS9052	AS9052	Unidad Editorial S.A.	2001067C229400000000000000000000	2001067C2294FFFFFFFFFFFFFFFFFFFF	2001:67c:2294::	2001:67c:2294:ffff:ffff:ffff:ffff:ffff	10"
-	};
-
 	
 	/**
 	 * Get a base64 string of an IP address
@@ -71,9 +78,9 @@ public class AddISPsFnTest {
 	 * @param ipFamily
 	 * @return
 	 */
-	private static TableRow makeTestData(String ip, String ipFamily) {
+	private static TableRow makeTestData(String ip, int ipFamily) {
 		TableRow row = new TableRow();
-		row.set("client_ip_family", ipFamily);
+		row.set("client_ip_family", String.valueOf(ipFamily));
 		row.set("client_ip_base64", ipToBase64(ip));
 		
 		return row;
@@ -154,22 +161,80 @@ public class AddISPsFnTest {
 		
 		// prepare the test data
 		List<TableRow> inputData = new ArrayList<TableRow>();
-		inputData.add(makeTestData("70.74.182.109", IPV4)); // IPv4 match
-		inputData.add(makeTestData("70.54.182.109", IPV4)); // IPv4 not in range
-		inputData.add(makeTestData("2a02:9f8:9000::1", IPV6)); // IPv6 match
-		inputData.add(makeTestData("2a02:9f8:8000::1", IPV6)); // IPv6 not in range
+		inputData.add(makeTestData("70.74.182.109", IP_FAMILY_IPV4)); // IPv4 match
+		inputData.add(makeTestData("70.54.182.109", IP_FAMILY_IPV4)); // IPv4 not in range
+		inputData.add(makeTestData("2a02:9f8:9000::1", IP_FAMILY_IPV6)); // IPv6 match
+		inputData.add(makeTestData("2a02:9f8:8000::1", IP_FAMILY_IPV6)); // IPv6 not in range
 		
 		
 		// run the tester
 		List<TableRow> output = fnTester.processBatch(inputData);
 		
 		// verify the output is what is expected
-		assertEquals((String) output.get(0).get("client_asn_name"), "Shaw Communications Inc.");
-		assertEquals((String) output.get(0).get("client_asn_number"), "AS6327");
+		assertEquals("Shaw Communications Inc.", (String) output.get(0).get("client_asn_name"));
+		assertEquals("AS6327", (String) output.get(0).get("client_asn_number"));
 		assertNull((String) output.get(1).get("client_asn_name"));
 		assertNull((String) output.get(1).get("client_asn_number"));
-		assertEquals((String) output.get(2).get("client_asn_name"), "Hewlett Packard GmbH");
-		assertEquals((String) output.get(2).get("client_asn_number"), "AS6900");
+		assertEquals("Hewlett Packard GmbH", (String) output.get(2).get("client_asn_name"));
+		assertEquals("AS6900", (String) output.get(2).get("client_asn_number"));
+		assertNull((String) output.get(3).get("client_asn_name"));
+		assertNull((String) output.get(3).get("client_asn_number"));
+	}
+	
+	@Test
+	public void testNoAsnNumber() {
+		// create the DoFn to test
+		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "client_asn_name",
+				"client_asn_number", "min_ip_hex", "max_ip_hex", "min_ip_hex", "max_ip_hex", "asn_name", null);
+		
+		// create the tester
+		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(addIspsFn);
+		
+		// set side inputs 
+		fnTester.setSideInputInGlobalWindow(asnsView, asnMapIterable);
+		
+		// prepare the test data
+		List<TableRow> inputData = new ArrayList<TableRow>();
+		inputData.add(makeTestData("70.74.182.109", IP_FAMILY_IPV4)); // IPv4 match
+		inputData.add(makeTestData("70.54.182.109", IP_FAMILY_IPV4)); // IPv4 not in range
+		
+		// run the tester
+		List<TableRow> output = fnTester.processBatch(inputData);
+		
+		// verify the output is what is expected
+		assertEquals("Shaw Communications Inc.", (String) output.get(0).get("client_asn_name"));
+		assertNull((String) output.get(0).get("client_asn_number"));
+	}
+	
+	@Test
+	public void testDifferentIPv6Columns() {
+		// create the DoFn to test
+		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "client_asn_name",
+				"client_asn_number", "min_ip_hex", "max_ip_hex", "min_ipv6_hex", "max_ipv6_hex", "asn_name", "asn_number");
+		
+		// create the tester
+		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(addIspsFn);
+		
+		// set side inputs 
+		fnTester.setSideInputInGlobalWindow(asnsView, asnMapIterable);
+		
+		// prepare the test data
+		List<TableRow> inputData = new ArrayList<TableRow>();
+		inputData.add(makeTestData("2a01:58:20::1", IP_FAMILY_IPV6)); // IPv6 match in min/max_ipv6_hex columns
+		inputData.add(makeTestData("2a01:58:10::1", IP_FAMILY_IPV6)); // IPv6 not in range in min/max_ipv6 columns
+		inputData.add(makeTestData("2a02:9f8:9000::1", IP_FAMILY_IPV6)); // IPv6 match both min_ip_hex and min_ipv6_hex
+		inputData.add(makeTestData("2a02:9f8:8000::1", IP_FAMILY_IPV6)); // IPv6 not in range
+		
+		// run the tester
+		List<TableRow> output = fnTester.processBatch(inputData);
+		
+		// verify the output is what is expected
+		assertEquals("Uppsala Lans Landsting", (String) output.get(0).get("client_asn_name"));
+		assertEquals("AS12782", (String) output.get(0).get("client_asn_number"));
+		assertNull((String) output.get(1).get("client_asn_name"));
+		assertNull((String) output.get(1).get("client_asn_number"));
+		assertEquals("Hewlett Packard GmbH", (String) output.get(2).get("client_asn_name"));
+		assertEquals("AS6900", (String) output.get(2).get("client_asn_number"));
 		assertNull((String) output.get(3).get("client_asn_name"));
 		assertNull((String) output.get(3).get("client_asn_number"));
 	}

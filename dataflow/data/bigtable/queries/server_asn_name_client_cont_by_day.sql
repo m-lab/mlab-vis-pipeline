@@ -19,17 +19,15 @@ SELECT
 client_continent_code,
 server_asn_name,
 client_continent,
-DATE(test_date) AS date,
-HOUR(test_date) AS hour
+DATE(test_date) AS date
 
 FROM
   {0}
-
+WHERE LENGTH(client_continent_code) > 0
 
 GROUP BY
 client_continent_code,
 server_asn_name,
 date,
-hour,
 client_continent
 

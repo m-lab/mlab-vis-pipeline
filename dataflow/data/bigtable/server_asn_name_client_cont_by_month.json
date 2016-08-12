@@ -17,19 +17,13 @@
       "type": "string", 
       "name": "date", 
       "family": "meta"
-    }, 
-    {
-      "length": 10, 
-      "type": "string", 
-      "name": "hour", 
-      "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./data/bigtable/queries/server_asn_name_client_continent_by_month_hour.sql", 
-  "bigtable_table_name": "server_asn_name_client_continent_by_month_hour", 
-  "frequency": "month_hour", 
-  "key": "server_asn_name_client_continent", 
-  "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_hour]", 
+  "bigquery_queryfile": "./data/bigtable/queries/server_asn_name_client_cont_by_month.sql", 
+  "bigtable_table_name": "server_asn_name_client_cont_by_month", 
+  "frequency": "month", 
+  "key": "server_asn_name_client_cont", 
+  "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]", 
   "columns": [
     {
       "type": "double", 
@@ -107,12 +101,6 @@
       "length": 10, 
       "type": "string", 
       "name": "date", 
-      "family": "meta"
-    }, 
-    {
-      "length": 10, 
-      "type": "string", 
-      "name": "hour", 
       "family": "meta"
     }
   ]

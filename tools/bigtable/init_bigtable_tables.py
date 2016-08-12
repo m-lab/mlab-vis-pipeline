@@ -84,7 +84,7 @@ if __name__ == '__main__':
         action='store_false',
         dest='remove')
 
-    parser.set_defaults(remove=True)
+    parser.set_defaults(remove=False)
 
     args = parser.parse_args()
     if(not args.configs):

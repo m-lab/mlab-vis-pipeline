@@ -1,9 +1,9 @@
 AGGREGATIONS = {
 
-    "location_client_asn_number_list" : {
-        "table_name" : "location_client_asn_number_list",
-        "query_file": "location_client_asn_number_list",
-        "json_file" : "location_client_asn_number_list",
+    "client_location_client_asn_list" : {
+        "table_name" : "client_location_client_asn_list",
+        "query_file": "client_location_client_asn_list",
+        "json_file" : "client_location_client_asn_list",
 
         "key_length" : 30,
         "key_name" : "location_id",
@@ -56,11 +56,11 @@ AGGREGATIONS = {
         ]
     },
 
-    "location_search" : {
+    "client_location_search" : {
 
-        "table_name" : "location_search",
-        "query_file": "location_search",
-        "json_file" : "location_search",
+        "table_name" : "client_location_search",
+        "query_file": "client_location_search",
+        "json_file" : "client_location_search",
 
         "key_length" : 60,
         "key_name": "location_key",
@@ -84,10 +84,10 @@ AGGREGATIONS = {
         ]
     },
 
-    "location_list": {
-        "table_name": "location_list",
-        "query_file" : "location_list",
-        "json_file" : "location_list",
+    "client_location_list": {
+        "table_name": "client_location_list",
+        "query_file" : "client_location_list",
+        "json_file" : "client_location_list",
 
         "key_name": "parent_location_id",
 

@@ -9,6 +9,10 @@ import com.google.cloud.dataflow.sdk.transforms.Combine.CombineFn;
 /**
  * Combines IPv4 and IPv6 address ranges in a single map based on their hex encoding
  * Maps the IP range to AS table row (e.g. from mlab_sites or maxmind_asn)
+ * 
+ * Note - for this to work correctly, the hex values must have the same length.
+ * See https://github.com/bocoup/mlab-vis-pipeline/issues/1
+ * 
  * @author pbeshai
  *
  */

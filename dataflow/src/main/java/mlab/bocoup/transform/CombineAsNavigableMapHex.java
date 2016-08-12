@@ -39,6 +39,7 @@ public class CombineAsNavigableMapHex extends CombineFn<TableRow, NavigableMap<S
 
 	@Override
 	public NavigableMap<String, TableRow> mergeAccumulators(Iterable<NavigableMap<String, TableRow>> accumulators) {
+		// combine everything into a single map
 		NavigableMap<String, TableRow> finalMap = this.createAccumulator();
 		
 		for (NavigableMap<String, TableRow> accumulator : accumulators) {

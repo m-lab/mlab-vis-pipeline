@@ -11,12 +11,15 @@ import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
+import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
 import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import mlab.bocoup.pipelineopts.HistoricPipelineOptions;
+import mlab.bocoup.pipelineopts.UpdatePipelineOptions;
 import mlab.bocoup.util.PipelineOptionsSetup;
 import mlab.bocoup.util.Schema;
 
@@ -29,21 +32,19 @@ public class UpdatePipeline {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		// parse out whether we are doing a day or hour update?
-		OptionParser parser = PipelineOptionsSetup.setupOptionParser();
-		parser.accepts( "timePeriod" ).withRequiredArg();
-	    
-		OptionSet cmdOpts = PipelineOptionsSetup.getOptions(parser, args);
-	    String timePeriod = (String) cmdOpts.valueOf("timePeriod");
-	    String projectId = (String) cmdOpts.valueOf("project");
-	    
-	    // set up big query IO options
-	    BigQueryOptions optionsExtractUpdate = PipelineOptionsSetup.setupBQOptions(cmdOpts);
-	    optionsExtractUpdate.setAppName("UpdatePipeline-ExtractRows");
+		PipelineOptionsFactory.register(UpdatePipelineOptions.class);
+		UpdatePipelineOptions options = PipelineOptionsFactory.fromArgs(args)
+					.withValidation()
+					.as(UpdatePipelineOptions.class);
+		
+	    String timePeriod = options.getTimePeriod();
+	    String projectId = options.getProject();
 	    
 	    // Pipeline 1:
 	    // ====  make daily update tables
-	    Pipeline pipe = Pipeline.create(optionsExtractUpdate);
+	    UpdatePipelineOptions extractNewRowsOptions = options.cloneAs(UpdatePipelineOptions.class);
+	    extractNewRowsOptions.setAppName("UpdatePipeline-ExtractRows");
+	    Pipeline pipe = Pipeline.create(extractNewRowsOptions);
 	    ExtractUpdateRowsPipeline dup = new ExtractUpdateRowsPipeline(pipe);
 	    dup.setProjectId(projectId)
 	    	.setTimePeriod(timePeriod)
@@ -63,8 +64,8 @@ public class UpdatePipeline {
 		JSONObject downloadsConfig = dup.getDownloadsConfig();
 		JSONObject uploadsConfig = dup.getUploadsConfig();
 		
-	    BigQueryOptions optionsMergeAndISP = PipelineOptionsSetup.setupBQOptions(cmdOpts);
-	    optionsExtractUpdate.setAppName("UpdatePipeline-MergeAndISP");
+		UpdatePipelineOptions optionsMergeAndISP = options.cloneAs(UpdatePipelineOptions.class);
+	    optionsMergeAndISP.setAppName("UpdatePipeline-MergeAndISP");
 		Pipeline pipe2 = Pipeline.create(optionsMergeAndISP);
 		
 		MergeUploadDownloadPipeline mudP = new MergeUploadDownloadPipeline(pipe2);

@@ -12,12 +12,14 @@ import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.PipelineResult.State;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
+import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
 import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import mlab.bocoup.pipelineopts.HistoricPipelineOptions;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.CreateDisposition;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.WriteDisposition;
 import mlab.bocoup.util.PipelineOptionsSetup;
@@ -80,19 +82,13 @@ public class HistoricPipeline {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		// parse out whether we are doing a day or hour update?
-		OptionParser parser = PipelineOptionsSetup.setupOptionParser();
-		parser.accepts( "timePeriod" ).withRequiredArg();
-		parser.accepts( "skipNDTRead" ).withRequiredArg();
-	    
-		OptionSet cmdOpts = PipelineOptionsSetup.getOptions(parser, args);
-		String timePeriod = (String) cmdOpts.valueOf("timePeriod");
+	    PipelineOptionsFactory.register(HistoricPipelineOptions.class);
+		HistoricPipelineOptions options = PipelineOptionsFactory.fromArgs(args)
+				.withValidation()
+				.as(HistoricPipelineOptions.class);
 		
-		int skipNDTRead = Integer.valueOf((String) cmdOpts.valueOf("skipNDTRead")); 
-	    
-	    // set up big query IO options
-	    BigQueryOptions optionsDl = PipelineOptionsSetup.setupBQOptions(cmdOpts);
-	    optionsDl.setAppName("HistoricPipeline-Download");
+		String timePeriod = options.getTimePeriod();
+		int skipNDTRead = options.getSkipNDTRead();
 	    
 	    // the downloads and uploads pipelines are blocking, so in order to make them
 	    // only blocking within their own run routines, we are extracting them
@@ -102,7 +98,8 @@ public class HistoricPipeline {
 	    boolean next = true;
 	    if (skipNDTRead != 1) {
 	    	
-	    	ExtractHistoricRowsPipeline ehrPDL = new ExtractHistoricRowsPipeline(optionsDl);
+	    	options.setAppName("HistoricPipeline-Download");
+	    	ExtractHistoricRowsPipeline ehrPDL = new ExtractHistoricRowsPipeline(options);
 	    	Thread dlPipeThread = new Thread(ehrPDL);
 	    	String downloadsConfigFile = getRunnerConfigFilename(timePeriod, "downloads");
 	    	LOG.info("Downloads configuration: " + downloadsConfigFile);
@@ -120,7 +117,7 @@ public class HistoricPipeline {
 	    
 	    	//=== get downloads for timePeriod (many pipelines)
 	    	// set up big query IO options
-	    	BigQueryOptions optionsUl = PipelineOptionsSetup.setupBQOptions(cmdOpts);
+	    	HistoricPipelineOptions optionsUl = options.cloneAs(HistoricPipelineOptions.class);
 	    	optionsUl.setAppName("HistoricPipeline-Upload");
 	    
 	    	ExtractHistoricRowsPipeline ehrPUL = new ExtractHistoricRowsPipeline(optionsUl);
@@ -145,7 +142,7 @@ public class HistoricPipeline {
 			JSONObject uploadsConfig = getRunnerConfig(timePeriod, "uploads");
 
 			// set up big query IO options
-			BigQueryOptions optionsMergeAndISP = PipelineOptionsSetup.setupBQOptions(cmdOpts);
+			HistoricPipelineOptions optionsMergeAndISP = options.cloneAs(HistoricPipelineOptions.class);
 			optionsMergeAndISP.setAppName("HistoricPipeline-MergeAndISP");
 			Pipeline pipe = Pipeline.create(optionsMergeAndISP);
 			MergeUploadDownloadPipeline mudP = new MergeUploadDownloadPipeline(pipe);

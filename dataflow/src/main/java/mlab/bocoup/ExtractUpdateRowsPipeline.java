@@ -22,12 +22,16 @@ import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
+import com.google.cloud.dataflow.sdk.options.PipelineOptions;
+import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
 import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import mlab.bocoup.pipelineopts.ExtractHistoricRowsPipelineOptions;
+import mlab.bocoup.pipelineopts.ExtractUpdateRowsPipelineOptions;
 import mlab.bocoup.query.BigQueryJob;
 import mlab.bocoup.util.Formatters;
 import mlab.bocoup.util.PipelineOptionsSetup;
@@ -288,15 +292,14 @@ public class ExtractUpdateRowsPipeline {
 	 */
 	public static void main(String[] args) throws Exception {
 	
-		OptionParser parser = PipelineOptionsSetup.setupOptionParser();
-		parser.accepts( "timePeriod" ).withRequiredArg();
-			    
-		OptionSet cmdOpts = PipelineOptionsSetup.getOptions(parser, args);
-		String timePeriod = (String) cmdOpts.valueOf("timePeriod");
-		String projectId = (String) cmdOpts.valueOf("project");
+		PipelineOptionsFactory.register(ExtractUpdateRowsPipelineOptions.class);
+		ExtractUpdateRowsPipelineOptions options = PipelineOptionsFactory.fromArgs(args)
+				.withValidation()
+				.as(ExtractUpdateRowsPipelineOptions.class);
 		
-		 // set up big query IO options
-	    BigQueryOptions options = PipelineOptionsSetup.setupBQOptions(cmdOpts);
+		String timePeriod = options.getTimePeriod();
+		String projectId = options.getProject();
+	
 	    options.setAppName("ExtractUpdateRowsPipeline");
 	    
 	    // ====  make daily update tables

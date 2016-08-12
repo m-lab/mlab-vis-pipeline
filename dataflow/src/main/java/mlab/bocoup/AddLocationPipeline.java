@@ -12,6 +12,7 @@ import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
+import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.transforms.View;
 import com.google.cloud.dataflow.sdk.values.KV;
@@ -174,16 +175,12 @@ public class AddLocationPipeline {
 		String outputTable = "mlab-oti:bocoup.zz4_all_ip_by_day_with_locations";
 		String inputTable = "mlab-oti:bocoup.zz4_all_isp_by_day";
 		
-		// parse out whether we are doing a day or hour update?
-		OptionParser parser = PipelineOptionsSetup.setupOptionParser();
-		OptionSet cmdOpts = PipelineOptionsSetup.getOptions(parser, args);
-	    
-	    // set up big query IO options
-	    BigQueryOptions pipelineOpts = PipelineOptionsSetup.setupBQOptions(cmdOpts);
-	    pipelineOpts.setAppName("AddLocations");
+		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
+				.as(BigQueryOptions.class);
+		options.setAppName("AddLocations");
 		
 		// pipeline object
-		Pipeline p = Pipeline.create(pipelineOpts);
+		Pipeline p = Pipeline.create(options);
 		
 		AddLocationPipeline addLocations = new AddLocationPipeline(p);
 		addLocations

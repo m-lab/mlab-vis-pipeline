@@ -26,7 +26,6 @@ import mlab.bocoup.dofn.AddLocationNamesFn;
 import mlab.bocoup.dofn.ExtractCountryCodeFn;
 import mlab.bocoup.dofn.ExtractRegionCodeFn;
 import mlab.bocoup.dofn.ExtractZoneKeynameFn;
-import mlab.bocoup.util.PipelineOptionsSetup;
 import mlab.bocoup.util.Schema;
 
 public class AddLocationPipeline {

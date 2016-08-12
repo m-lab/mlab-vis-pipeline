@@ -27,7 +27,6 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import mlab.bocoup.dofn.AddLocalTimeFn;
-import mlab.bocoup.util.PipelineOptionsSetup;
 import mlab.bocoup.util.Schema;
 import mlab.bocoup.dofn.ExtractZoneKeynameFn;
 import mlab.bocoup.transform.CombineAsNavigableMapHex;

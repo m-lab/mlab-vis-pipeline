@@ -34,7 +34,6 @@ import mlab.bocoup.pipelineopts.ExtractHistoricRowsPipelineOptions;
 import mlab.bocoup.pipelineopts.ExtractUpdateRowsPipelineOptions;
 import mlab.bocoup.query.BigQueryJob;
 import mlab.bocoup.util.Formatters;
-import mlab.bocoup.util.PipelineOptionsSetup;
 import mlab.bocoup.util.QueryPipeIterator;
 import mlab.bocoup.util.Schema;
 

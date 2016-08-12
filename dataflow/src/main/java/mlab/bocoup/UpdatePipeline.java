@@ -20,7 +20,6 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import mlab.bocoup.pipelineopts.HistoricPipelineOptions;
 import mlab.bocoup.pipelineopts.UpdatePipelineOptions;
-import mlab.bocoup.util.PipelineOptionsSetup;
 import mlab.bocoup.util.Schema;
 
 public class UpdatePipeline {

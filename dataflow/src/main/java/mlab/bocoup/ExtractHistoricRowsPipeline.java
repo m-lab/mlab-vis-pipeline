@@ -30,7 +30,6 @@ import mlab.bocoup.pipelineopts.HistoricPipelineOptions;
 import mlab.bocoup.query.BigQueryIONoLargeResults;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.CreateDisposition;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.WriteDisposition;
-import mlab.bocoup.util.PipelineOptionsSetup;
 import mlab.bocoup.util.QueryPipeIterator;
 import mlab.bocoup.util.Schema;
 

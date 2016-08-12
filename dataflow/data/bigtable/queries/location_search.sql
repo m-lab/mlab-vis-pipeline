@@ -164,3 +164,4 @@ from -- Type: city
  client_continent_code,
  threemonths.last_three_month_test_count)
 WHERE location IS NOT NULL;
+

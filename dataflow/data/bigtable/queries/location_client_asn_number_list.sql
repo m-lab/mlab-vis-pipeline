@@ -1,48 +1,48 @@
 
         select
-        location_id,
-client_asn_number,
- client_asn_name,
-type,
-client_city,
-client_region,
-client_region_code,
-client_country,
-client_country_code,
-client_continent,
-client_continent_code,
- last_week_test_count,
-last_week_download_speed_mbps_median,
-last_week_upload_speed_mbps_median,
-last_week_download_speed_mbps_avg,
-last_week_upload_speed_mbps_avg,
-last_week_download_speed_mbps_min,
-last_week_upload_speed_mbps_min,
-last_week_download_speed_mbps_max,
-last_week_upload_speed_mbps_max,
-last_week_download_speed_mbps_stddev,
-last_week_upload_speed_mbps_stddev,
-last_month_test_count,
-last_month_download_speed_mbps_median,
-last_month_upload_speed_mbps_median,
-last_month_download_speed_mbps_avg,
-last_month_upload_speed_mbps_avg,
-last_month_download_speed_mbps_min,
-last_month_upload_speed_mbps_min,
-last_month_download_speed_mbps_max,
-last_month_upload_speed_mbps_max,
-last_month_download_speed_mbps_stddev,
-last_month_upload_speed_mbps_stddev,
-last_year_test_count,
-last_year_download_speed_mbps_median,
-last_year_upload_speed_mbps_median,
-last_year_download_speed_mbps_avg,
-last_year_upload_speed_mbps_avg,
-last_year_download_speed_mbps_min,
-last_year_upload_speed_mbps_min,
-last_year_download_speed_mbps_max,
-last_year_upload_speed_mbps_max,
-last_year_download_speed_mbps_stddev,
+        location_id, 
+client_asn_number, 
+ client_asn_name, 
+type, 
+client_city, 
+client_region, 
+client_region_code, 
+client_country, 
+client_country_code, 
+client_continent, 
+client_continent_code, 
+ last_week_test_count, 
+last_week_download_speed_mbps_median, 
+last_week_upload_speed_mbps_median, 
+last_week_download_speed_mbps_avg, 
+last_week_upload_speed_mbps_avg, 
+last_week_download_speed_mbps_min, 
+last_week_upload_speed_mbps_min, 
+last_week_download_speed_mbps_max, 
+last_week_upload_speed_mbps_max, 
+last_week_download_speed_mbps_stddev, 
+last_week_upload_speed_mbps_stddev, 
+last_month_test_count, 
+last_month_download_speed_mbps_median, 
+last_month_upload_speed_mbps_median, 
+last_month_download_speed_mbps_avg, 
+last_month_upload_speed_mbps_avg, 
+last_month_download_speed_mbps_min, 
+last_month_upload_speed_mbps_min, 
+last_month_download_speed_mbps_max, 
+last_month_upload_speed_mbps_max, 
+last_month_download_speed_mbps_stddev, 
+last_month_upload_speed_mbps_stddev, 
+last_year_test_count, 
+last_year_download_speed_mbps_median, 
+last_year_upload_speed_mbps_median, 
+last_year_download_speed_mbps_avg, 
+last_year_upload_speed_mbps_avg, 
+last_year_download_speed_mbps_min, 
+last_year_upload_speed_mbps_min, 
+last_year_download_speed_mbps_max, 
+last_year_upload_speed_mbps_max, 
+last_year_download_speed_mbps_stddev, 
 last_year_upload_speed_mbps_stddev,
         "0,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100" as speed_mbps_bins,
         last_week_download_speed_mbps_bins,
@@ -110,11 +110,11 @@ last_year.download_speed_mbps_max as last_year_download_speed_mbps_max,
 last_year.upload_speed_mbps_max as last_year_upload_speed_mbps_max,
 last_year.download_speed_mbps_stddev as last_year_download_speed_mbps_stddev,
 last_year.upload_speed_mbps_stddev as last_year_upload_speed_mbps_stddev,
-last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins,
-last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins,
-last_week.download_speed_mbps_bins as last_week_download_speed_mbps_bins,
-last_week.upload_speed_mbps_bins as last_week_upload_speed_mbps_bins,
-last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins,
+last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins, 
+last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins, 
+last_week.download_speed_mbps_bins as last_week_download_speed_mbps_bins, 
+last_week.upload_speed_mbps_bins as last_week_upload_speed_mbps_bins, 
+last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins, 
 last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
 
   FROM {0} all
@@ -126,14 +126,14 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_city,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_city, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code,
 
     -- measurements:
@@ -179,7 +179,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -214,26 +214,26 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_city is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_city,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_city, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code
 
 ) last_month on
   -- join on location fields from the all table.
-  all.client_asn_number = last_month.client_asn_number and
-all.client_asn_name = last_month.client_asn_name and
-all.client_city = last_month.client_city and
-all.client_region = last_month.client_region and
-all.client_country = last_month.client_country and
-all.client_continent = last_month.client_continent and
-all.client_region_code = last_month.client_region_code and
-all.client_country_code = last_month.client_country_code and
+  all.client_asn_number = last_month.client_asn_number and 
+all.client_asn_name = last_month.client_asn_name and 
+all.client_city = last_month.client_city and 
+all.client_region = last_month.client_region and 
+all.client_country = last_month.client_country and 
+all.client_continent = last_month.client_continent and 
+all.client_region_code = last_month.client_region_code and 
+all.client_country_code = last_month.client_country_code and 
 all.client_continent_code = last_month.client_continent_code
 left join
 (
@@ -241,14 +241,14 @@ left join
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_city,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_city, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code,
 
     -- measurements:
@@ -294,7 +294,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -329,26 +329,26 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_city is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_city,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_city, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code
 
 ) last_week on
   -- join on location fields from the all table.
-  all.client_asn_number = last_week.client_asn_number and
-all.client_asn_name = last_week.client_asn_name and
-all.client_city = last_week.client_city and
-all.client_region = last_week.client_region and
-all.client_country = last_week.client_country and
-all.client_continent = last_week.client_continent and
-all.client_region_code = last_week.client_region_code and
-all.client_country_code = last_week.client_country_code and
+  all.client_asn_number = last_week.client_asn_number and 
+all.client_asn_name = last_week.client_asn_name and 
+all.client_city = last_week.client_city and 
+all.client_region = last_week.client_region and 
+all.client_country = last_week.client_country and 
+all.client_continent = last_week.client_continent and 
+all.client_region_code = last_week.client_region_code and 
+all.client_country_code = last_week.client_country_code and 
 all.client_continent_code = last_week.client_continent_code
 left join
 (
@@ -356,14 +356,14 @@ left join
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_city,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_city, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code,
 
     -- measurements:
@@ -409,7 +409,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -444,84 +444,84 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_city is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_city,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_city, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code
 
 ) last_year on
   -- join on location fields from the all table.
-  all.client_asn_number = last_year.client_asn_number and
-all.client_asn_name = last_year.client_asn_name and
-all.client_city = last_year.client_city and
-all.client_region = last_year.client_region and
-all.client_country = last_year.client_country and
-all.client_continent = last_year.client_continent and
-all.client_region_code = last_year.client_region_code and
-all.client_country_code = last_year.client_country_code and
+  all.client_asn_number = last_year.client_asn_number and 
+all.client_asn_name = last_year.client_asn_name and 
+all.client_city = last_year.client_city and 
+all.client_region = last_year.client_region and 
+all.client_country = last_year.client_country and 
+all.client_continent = last_year.client_continent and 
+all.client_region_code = last_year.client_region_code and 
+all.client_country_code = last_year.client_country_code and 
 all.client_continent_code = last_year.client_continent_code
 
 
   GROUP BY
 
-  location_id,
+  location_id, 
 client_asn_number,
-client_asn_number,
-client_asn_name,
-client_city,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+client_asn_number, 
+client_asn_name, 
+client_city, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code,
-last_week_test_count,
-last_week_download_speed_mbps_median,
-last_week_upload_speed_mbps_median,
-last_week_download_speed_mbps_avg,
-last_week_upload_speed_mbps_avg,
-last_week_download_speed_mbps_min,
-last_week_upload_speed_mbps_min,
-last_week_download_speed_mbps_max,
-last_week_upload_speed_mbps_max,
-last_week_download_speed_mbps_stddev,
-last_week_upload_speed_mbps_stddev,
-last_month_test_count,
-last_month_download_speed_mbps_median,
-last_month_upload_speed_mbps_median,
-last_month_download_speed_mbps_avg,
-last_month_upload_speed_mbps_avg,
-last_month_download_speed_mbps_min,
-last_month_upload_speed_mbps_min,
-last_month_download_speed_mbps_max,
-last_month_upload_speed_mbps_max,
-last_month_download_speed_mbps_stddev,
-last_month_upload_speed_mbps_stddev,
-last_year_test_count,
-last_year_download_speed_mbps_median,
-last_year_upload_speed_mbps_median,
-last_year_download_speed_mbps_avg,
-last_year_upload_speed_mbps_avg,
-last_year_download_speed_mbps_min,
-last_year_upload_speed_mbps_min,
-last_year_download_speed_mbps_max,
-last_year_upload_speed_mbps_max,
-last_year_download_speed_mbps_stddev,
-last_year_upload_speed_mbps_stddev,
-last_month_download_speed_mbps_bins,
-last_month_upload_speed_mbps_bins,
-last_week_download_speed_mbps_bins,
-last_week_upload_speed_mbps_bins,
-last_year_download_speed_mbps_bins,
+last_week_test_count, 
+last_week_download_speed_mbps_median, 
+last_week_upload_speed_mbps_median, 
+last_week_download_speed_mbps_avg, 
+last_week_upload_speed_mbps_avg, 
+last_week_download_speed_mbps_min, 
+last_week_upload_speed_mbps_min, 
+last_week_download_speed_mbps_max, 
+last_week_upload_speed_mbps_max, 
+last_week_download_speed_mbps_stddev, 
+last_week_upload_speed_mbps_stddev, 
+last_month_test_count, 
+last_month_download_speed_mbps_median, 
+last_month_upload_speed_mbps_median, 
+last_month_download_speed_mbps_avg, 
+last_month_upload_speed_mbps_avg, 
+last_month_download_speed_mbps_min, 
+last_month_upload_speed_mbps_min, 
+last_month_download_speed_mbps_max, 
+last_month_upload_speed_mbps_max, 
+last_month_download_speed_mbps_stddev, 
+last_month_upload_speed_mbps_stddev, 
+last_year_test_count, 
+last_year_download_speed_mbps_median, 
+last_year_upload_speed_mbps_median, 
+last_year_download_speed_mbps_avg, 
+last_year_upload_speed_mbps_avg, 
+last_year_download_speed_mbps_min, 
+last_year_upload_speed_mbps_min, 
+last_year_download_speed_mbps_max, 
+last_year_upload_speed_mbps_max, 
+last_year_download_speed_mbps_stddev, 
+last_year_upload_speed_mbps_stddev, 
+last_month_download_speed_mbps_bins, 
+last_month_upload_speed_mbps_bins, 
+last_week_download_speed_mbps_bins, 
+last_week_upload_speed_mbps_bins, 
+last_year_download_speed_mbps_bins, 
 last_year_upload_speed_mbps_bins
 
 )
-,
+, 
 -- ============
 -- Type: region
 -- ============
@@ -578,11 +578,11 @@ last_year.download_speed_mbps_max as last_year_download_speed_mbps_max,
 last_year.upload_speed_mbps_max as last_year_upload_speed_mbps_max,
 last_year.download_speed_mbps_stddev as last_year_download_speed_mbps_stddev,
 last_year.upload_speed_mbps_stddev as last_year_upload_speed_mbps_stddev,
-last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins,
-last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins,
-last_week.download_speed_mbps_bins as last_week_download_speed_mbps_bins,
-last_week.upload_speed_mbps_bins as last_week_upload_speed_mbps_bins,
-last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins,
+last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins, 
+last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins, 
+last_week.download_speed_mbps_bins as last_week_download_speed_mbps_bins, 
+last_week.upload_speed_mbps_bins as last_week_upload_speed_mbps_bins, 
+last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins, 
 last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
 
   FROM {0} all
@@ -594,13 +594,13 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code,
 
     -- measurements:
@@ -646,7 +646,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -681,24 +681,24 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_region is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code
 
 ) last_month on
   -- join on location fields from the all table.
-  all.client_asn_number = last_month.client_asn_number and
-all.client_asn_name = last_month.client_asn_name and
-all.client_region = last_month.client_region and
-all.client_country = last_month.client_country and
-all.client_continent = last_month.client_continent and
-all.client_region_code = last_month.client_region_code and
-all.client_country_code = last_month.client_country_code and
+  all.client_asn_number = last_month.client_asn_number and 
+all.client_asn_name = last_month.client_asn_name and 
+all.client_region = last_month.client_region and 
+all.client_country = last_month.client_country and 
+all.client_continent = last_month.client_continent and 
+all.client_region_code = last_month.client_region_code and 
+all.client_country_code = last_month.client_country_code and 
 all.client_continent_code = last_month.client_continent_code
 left join
 (
@@ -706,13 +706,13 @@ left join
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code,
 
     -- measurements:
@@ -758,7 +758,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -793,24 +793,24 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_region is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code
 
 ) last_week on
   -- join on location fields from the all table.
-  all.client_asn_number = last_week.client_asn_number and
-all.client_asn_name = last_week.client_asn_name and
-all.client_region = last_week.client_region and
-all.client_country = last_week.client_country and
-all.client_continent = last_week.client_continent and
-all.client_region_code = last_week.client_region_code and
-all.client_country_code = last_week.client_country_code and
+  all.client_asn_number = last_week.client_asn_number and 
+all.client_asn_name = last_week.client_asn_name and 
+all.client_region = last_week.client_region and 
+all.client_country = last_week.client_country and 
+all.client_continent = last_week.client_continent and 
+all.client_region_code = last_week.client_region_code and 
+all.client_country_code = last_week.client_country_code and 
 all.client_continent_code = last_week.client_continent_code
 left join
 (
@@ -818,13 +818,13 @@ left join
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code,
 
     -- measurements:
@@ -870,7 +870,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -905,81 +905,81 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_region is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code
 
 ) last_year on
   -- join on location fields from the all table.
-  all.client_asn_number = last_year.client_asn_number and
-all.client_asn_name = last_year.client_asn_name and
-all.client_region = last_year.client_region and
-all.client_country = last_year.client_country and
-all.client_continent = last_year.client_continent and
-all.client_region_code = last_year.client_region_code and
-all.client_country_code = last_year.client_country_code and
+  all.client_asn_number = last_year.client_asn_number and 
+all.client_asn_name = last_year.client_asn_name and 
+all.client_region = last_year.client_region and 
+all.client_country = last_year.client_country and 
+all.client_continent = last_year.client_continent and 
+all.client_region_code = last_year.client_region_code and 
+all.client_country_code = last_year.client_country_code and 
 all.client_continent_code = last_year.client_continent_code
 
 
   GROUP BY
 
-  location_id,
+  location_id, 
 client_asn_number,
-client_asn_number,
-client_asn_name,
-client_region,
-client_country,
-client_continent,
-client_region_code,
-client_country_code,
+client_asn_number, 
+client_asn_name, 
+client_region, 
+client_country, 
+client_continent, 
+client_region_code, 
+client_country_code, 
 client_continent_code,
-last_week_test_count,
-last_week_download_speed_mbps_median,
-last_week_upload_speed_mbps_median,
-last_week_download_speed_mbps_avg,
-last_week_upload_speed_mbps_avg,
-last_week_download_speed_mbps_min,
-last_week_upload_speed_mbps_min,
-last_week_download_speed_mbps_max,
-last_week_upload_speed_mbps_max,
-last_week_download_speed_mbps_stddev,
-last_week_upload_speed_mbps_stddev,
-last_month_test_count,
-last_month_download_speed_mbps_median,
-last_month_upload_speed_mbps_median,
-last_month_download_speed_mbps_avg,
-last_month_upload_speed_mbps_avg,
-last_month_download_speed_mbps_min,
-last_month_upload_speed_mbps_min,
-last_month_download_speed_mbps_max,
-last_month_upload_speed_mbps_max,
-last_month_download_speed_mbps_stddev,
-last_month_upload_speed_mbps_stddev,
-last_year_test_count,
-last_year_download_speed_mbps_median,
-last_year_upload_speed_mbps_median,
-last_year_download_speed_mbps_avg,
-last_year_upload_speed_mbps_avg,
-last_year_download_speed_mbps_min,
-last_year_upload_speed_mbps_min,
-last_year_download_speed_mbps_max,
-last_year_upload_speed_mbps_max,
-last_year_download_speed_mbps_stddev,
-last_year_upload_speed_mbps_stddev,
-last_month_download_speed_mbps_bins,
-last_month_upload_speed_mbps_bins,
-last_week_download_speed_mbps_bins,
-last_week_upload_speed_mbps_bins,
-last_year_download_speed_mbps_bins,
+last_week_test_count, 
+last_week_download_speed_mbps_median, 
+last_week_upload_speed_mbps_median, 
+last_week_download_speed_mbps_avg, 
+last_week_upload_speed_mbps_avg, 
+last_week_download_speed_mbps_min, 
+last_week_upload_speed_mbps_min, 
+last_week_download_speed_mbps_max, 
+last_week_upload_speed_mbps_max, 
+last_week_download_speed_mbps_stddev, 
+last_week_upload_speed_mbps_stddev, 
+last_month_test_count, 
+last_month_download_speed_mbps_median, 
+last_month_upload_speed_mbps_median, 
+last_month_download_speed_mbps_avg, 
+last_month_upload_speed_mbps_avg, 
+last_month_download_speed_mbps_min, 
+last_month_upload_speed_mbps_min, 
+last_month_download_speed_mbps_max, 
+last_month_upload_speed_mbps_max, 
+last_month_download_speed_mbps_stddev, 
+last_month_upload_speed_mbps_stddev, 
+last_year_test_count, 
+last_year_download_speed_mbps_median, 
+last_year_upload_speed_mbps_median, 
+last_year_download_speed_mbps_avg, 
+last_year_upload_speed_mbps_avg, 
+last_year_download_speed_mbps_min, 
+last_year_upload_speed_mbps_min, 
+last_year_download_speed_mbps_max, 
+last_year_upload_speed_mbps_max, 
+last_year_download_speed_mbps_stddev, 
+last_year_upload_speed_mbps_stddev, 
+last_month_download_speed_mbps_bins, 
+last_month_upload_speed_mbps_bins, 
+last_week_download_speed_mbps_bins, 
+last_week_upload_speed_mbps_bins, 
+last_year_download_speed_mbps_bins, 
 last_year_upload_speed_mbps_bins
 
 )
-,
+, 
 -- ============
 -- Type: country
 -- ============
@@ -1033,11 +1033,11 @@ last_year.download_speed_mbps_max as last_year_download_speed_mbps_max,
 last_year.upload_speed_mbps_max as last_year_upload_speed_mbps_max,
 last_year.download_speed_mbps_stddev as last_year_download_speed_mbps_stddev,
 last_year.upload_speed_mbps_stddev as last_year_upload_speed_mbps_stddev,
-last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins,
-last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins,
-last_week.download_speed_mbps_bins as last_week_download_speed_mbps_bins,
-last_week.upload_speed_mbps_bins as last_week_upload_speed_mbps_bins,
-last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins,
+last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins, 
+last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins, 
+last_week.download_speed_mbps_bins as last_week_download_speed_mbps_bins, 
+last_week.upload_speed_mbps_bins as last_week_upload_speed_mbps_bins, 
+last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins, 
 last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
 
   FROM {0} all
@@ -1049,11 +1049,11 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_country,
-client_continent,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_country, 
+client_continent, 
+client_country_code, 
 client_continent_code,
 
     -- measurements:
@@ -1099,7 +1099,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -1134,20 +1134,20 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_country is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_country,
-client_continent,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_country, 
+client_continent, 
+client_country_code, 
 client_continent_code
 
 ) last_month on
   -- join on location fields from the all table.
-  all.client_asn_number = last_month.client_asn_number and
-all.client_asn_name = last_month.client_asn_name and
-all.client_country = last_month.client_country and
-all.client_continent = last_month.client_continent and
-all.client_country_code = last_month.client_country_code and
+  all.client_asn_number = last_month.client_asn_number and 
+all.client_asn_name = last_month.client_asn_name and 
+all.client_country = last_month.client_country and 
+all.client_continent = last_month.client_continent and 
+all.client_country_code = last_month.client_country_code and 
 all.client_continent_code = last_month.client_continent_code
 left join
 (
@@ -1155,11 +1155,11 @@ left join
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_country,
-client_continent,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_country, 
+client_continent, 
+client_country_code, 
 client_continent_code,
 
     -- measurements:
@@ -1205,7 +1205,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -1240,20 +1240,20 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_country is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_country,
-client_continent,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_country, 
+client_continent, 
+client_country_code, 
 client_continent_code
 
 ) last_week on
   -- join on location fields from the all table.
-  all.client_asn_number = last_week.client_asn_number and
-all.client_asn_name = last_week.client_asn_name and
-all.client_country = last_week.client_country and
-all.client_continent = last_week.client_continent and
-all.client_country_code = last_week.client_country_code and
+  all.client_asn_number = last_week.client_asn_number and 
+all.client_asn_name = last_week.client_asn_name and 
+all.client_country = last_week.client_country and 
+all.client_continent = last_week.client_continent and 
+all.client_country_code = last_week.client_country_code and 
 all.client_continent_code = last_week.client_continent_code
 left join
 (
@@ -1261,11 +1261,11 @@ left join
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_country,
-client_continent,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_country, 
+client_continent, 
+client_country_code, 
 client_continent_code,
 
     -- measurements:
@@ -1311,7 +1311,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -1346,75 +1346,75 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_country is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_country,
-client_continent,
-client_country_code,
+    client_asn_number, 
+client_asn_name, 
+client_country, 
+client_continent, 
+client_country_code, 
 client_continent_code
 
 ) last_year on
   -- join on location fields from the all table.
-  all.client_asn_number = last_year.client_asn_number and
-all.client_asn_name = last_year.client_asn_name and
-all.client_country = last_year.client_country and
-all.client_continent = last_year.client_continent and
-all.client_country_code = last_year.client_country_code and
+  all.client_asn_number = last_year.client_asn_number and 
+all.client_asn_name = last_year.client_asn_name and 
+all.client_country = last_year.client_country and 
+all.client_continent = last_year.client_continent and 
+all.client_country_code = last_year.client_country_code and 
 all.client_continent_code = last_year.client_continent_code
 
 
   GROUP BY
 
-  location_id,
+  location_id, 
 client_asn_number,
-client_asn_number,
-client_asn_name,
-client_country,
-client_continent,
-client_country_code,
+client_asn_number, 
+client_asn_name, 
+client_country, 
+client_continent, 
+client_country_code, 
 client_continent_code,
-last_week_test_count,
-last_week_download_speed_mbps_median,
-last_week_upload_speed_mbps_median,
-last_week_download_speed_mbps_avg,
-last_week_upload_speed_mbps_avg,
-last_week_download_speed_mbps_min,
-last_week_upload_speed_mbps_min,
-last_week_download_speed_mbps_max,
-last_week_upload_speed_mbps_max,
-last_week_download_speed_mbps_stddev,
-last_week_upload_speed_mbps_stddev,
-last_month_test_count,
-last_month_download_speed_mbps_median,
-last_month_upload_speed_mbps_median,
-last_month_download_speed_mbps_avg,
-last_month_upload_speed_mbps_avg,
-last_month_download_speed_mbps_min,
-last_month_upload_speed_mbps_min,
-last_month_download_speed_mbps_max,
-last_month_upload_speed_mbps_max,
-last_month_download_speed_mbps_stddev,
-last_month_upload_speed_mbps_stddev,
-last_year_test_count,
-last_year_download_speed_mbps_median,
-last_year_upload_speed_mbps_median,
-last_year_download_speed_mbps_avg,
-last_year_upload_speed_mbps_avg,
-last_year_download_speed_mbps_min,
-last_year_upload_speed_mbps_min,
-last_year_download_speed_mbps_max,
-last_year_upload_speed_mbps_max,
-last_year_download_speed_mbps_stddev,
-last_year_upload_speed_mbps_stddev,
-last_month_download_speed_mbps_bins,
-last_month_upload_speed_mbps_bins,
-last_week_download_speed_mbps_bins,
-last_week_upload_speed_mbps_bins,
-last_year_download_speed_mbps_bins,
+last_week_test_count, 
+last_week_download_speed_mbps_median, 
+last_week_upload_speed_mbps_median, 
+last_week_download_speed_mbps_avg, 
+last_week_upload_speed_mbps_avg, 
+last_week_download_speed_mbps_min, 
+last_week_upload_speed_mbps_min, 
+last_week_download_speed_mbps_max, 
+last_week_upload_speed_mbps_max, 
+last_week_download_speed_mbps_stddev, 
+last_week_upload_speed_mbps_stddev, 
+last_month_test_count, 
+last_month_download_speed_mbps_median, 
+last_month_upload_speed_mbps_median, 
+last_month_download_speed_mbps_avg, 
+last_month_upload_speed_mbps_avg, 
+last_month_download_speed_mbps_min, 
+last_month_upload_speed_mbps_min, 
+last_month_download_speed_mbps_max, 
+last_month_upload_speed_mbps_max, 
+last_month_download_speed_mbps_stddev, 
+last_month_upload_speed_mbps_stddev, 
+last_year_test_count, 
+last_year_download_speed_mbps_median, 
+last_year_upload_speed_mbps_median, 
+last_year_download_speed_mbps_avg, 
+last_year_upload_speed_mbps_avg, 
+last_year_download_speed_mbps_min, 
+last_year_upload_speed_mbps_min, 
+last_year_download_speed_mbps_max, 
+last_year_upload_speed_mbps_max, 
+last_year_download_speed_mbps_stddev, 
+last_year_upload_speed_mbps_stddev, 
+last_month_download_speed_mbps_bins, 
+last_month_upload_speed_mbps_bins, 
+last_week_download_speed_mbps_bins, 
+last_week_upload_speed_mbps_bins, 
+last_year_download_speed_mbps_bins, 
 last_year_upload_speed_mbps_bins
 
 )
-,
+, 
 -- ============
 -- Type: continent
 -- ============
@@ -1464,11 +1464,11 @@ last_year.download_speed_mbps_max as last_year_download_speed_mbps_max,
 last_year.upload_speed_mbps_max as last_year_upload_speed_mbps_max,
 last_year.download_speed_mbps_stddev as last_year_download_speed_mbps_stddev,
 last_year.upload_speed_mbps_stddev as last_year_upload_speed_mbps_stddev,
-last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins,
-last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins,
-last_week.download_speed_mbps_bins as last_week_download_speed_mbps_bins,
-last_week.upload_speed_mbps_bins as last_week_upload_speed_mbps_bins,
-last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins,
+last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins, 
+last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins, 
+last_week.download_speed_mbps_bins as last_week_download_speed_mbps_bins, 
+last_week.upload_speed_mbps_bins as last_week_upload_speed_mbps_bins, 
+last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins, 
 last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
 
   FROM {0} all
@@ -1480,9 +1480,9 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_continent,
+    client_asn_number, 
+client_asn_name, 
+client_continent, 
 client_continent_code,
 
     -- measurements:
@@ -1528,7 +1528,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -1563,16 +1563,16 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_continent is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_continent,
+    client_asn_number, 
+client_asn_name, 
+client_continent, 
 client_continent_code
 
 ) last_month on
   -- join on location fields from the all table.
-  all.client_asn_number = last_month.client_asn_number and
-all.client_asn_name = last_month.client_asn_name and
-all.client_continent = last_month.client_continent and
+  all.client_asn_number = last_month.client_asn_number and 
+all.client_asn_name = last_month.client_asn_name and 
+all.client_continent = last_month.client_continent and 
 all.client_continent_code = last_month.client_continent_code
 left join
 (
@@ -1580,9 +1580,9 @@ left join
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_continent,
+    client_asn_number, 
+client_asn_name, 
+client_continent, 
 client_continent_code,
 
     -- measurements:
@@ -1628,7 +1628,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -1663,16 +1663,16 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_continent is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_continent,
+    client_asn_number, 
+client_asn_name, 
+client_continent, 
 client_continent_code
 
 ) last_week on
   -- join on location fields from the all table.
-  all.client_asn_number = last_week.client_asn_number and
-all.client_asn_name = last_week.client_asn_name and
-all.client_continent = last_week.client_continent and
+  all.client_asn_number = last_week.client_asn_number and 
+all.client_asn_name = last_week.client_asn_name and 
+all.client_continent = last_week.client_continent and 
 all.client_continent_code = last_week.client_continent_code
 left join
 (
@@ -1680,9 +1680,9 @@ left join
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number,
-client_asn_name,
-client_continent,
+    client_asn_number, 
+client_asn_name, 
+client_continent, 
 client_continent_code,
 
     -- measurements:
@@ -1728,7 +1728,7 @@ STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 88 AND IFNULL(download_speed_mbp
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 92 AND IFNULL(download_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 96 AND IFNULL(download_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(download_speed_mbps, 0) >= 100, 1,0)))
-) as download_speed_mbps_bins,
+) as download_speed_mbps_bins, 
 concat(STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 0 AND IFNULL(upload_speed_mbps, 0) < 4, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 4 AND IFNULL(upload_speed_mbps, 0) < 8, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 8 AND IFNULL(upload_speed_mbps, 0) < 12, 1,0))), ",",
@@ -1763,65 +1763,65 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_continent is not null
   group by
     -- group by location fields
-    client_asn_number,
-client_asn_name,
-client_continent,
+    client_asn_number, 
+client_asn_name, 
+client_continent, 
 client_continent_code
 
 ) last_year on
   -- join on location fields from the all table.
-  all.client_asn_number = last_year.client_asn_number and
-all.client_asn_name = last_year.client_asn_name and
-all.client_continent = last_year.client_continent and
+  all.client_asn_number = last_year.client_asn_number and 
+all.client_asn_name = last_year.client_asn_name and 
+all.client_continent = last_year.client_continent and 
 all.client_continent_code = last_year.client_continent_code
 
 
   GROUP BY
 
-  location_id,
+  location_id, 
 client_asn_number,
-client_asn_number,
-client_asn_name,
-client_continent,
+client_asn_number, 
+client_asn_name, 
+client_continent, 
 client_continent_code,
-last_week_test_count,
-last_week_download_speed_mbps_median,
-last_week_upload_speed_mbps_median,
-last_week_download_speed_mbps_avg,
-last_week_upload_speed_mbps_avg,
-last_week_download_speed_mbps_min,
-last_week_upload_speed_mbps_min,
-last_week_download_speed_mbps_max,
-last_week_upload_speed_mbps_max,
-last_week_download_speed_mbps_stddev,
-last_week_upload_speed_mbps_stddev,
-last_month_test_count,
-last_month_download_speed_mbps_median,
-last_month_upload_speed_mbps_median,
-last_month_download_speed_mbps_avg,
-last_month_upload_speed_mbps_avg,
-last_month_download_speed_mbps_min,
-last_month_upload_speed_mbps_min,
-last_month_download_speed_mbps_max,
-last_month_upload_speed_mbps_max,
-last_month_download_speed_mbps_stddev,
-last_month_upload_speed_mbps_stddev,
-last_year_test_count,
-last_year_download_speed_mbps_median,
-last_year_upload_speed_mbps_median,
-last_year_download_speed_mbps_avg,
-last_year_upload_speed_mbps_avg,
-last_year_download_speed_mbps_min,
-last_year_upload_speed_mbps_min,
-last_year_download_speed_mbps_max,
-last_year_upload_speed_mbps_max,
-last_year_download_speed_mbps_stddev,
-last_year_upload_speed_mbps_stddev,
-last_month_download_speed_mbps_bins,
-last_month_upload_speed_mbps_bins,
-last_week_download_speed_mbps_bins,
-last_week_upload_speed_mbps_bins,
-last_year_download_speed_mbps_bins,
+last_week_test_count, 
+last_week_download_speed_mbps_median, 
+last_week_upload_speed_mbps_median, 
+last_week_download_speed_mbps_avg, 
+last_week_upload_speed_mbps_avg, 
+last_week_download_speed_mbps_min, 
+last_week_upload_speed_mbps_min, 
+last_week_download_speed_mbps_max, 
+last_week_upload_speed_mbps_max, 
+last_week_download_speed_mbps_stddev, 
+last_week_upload_speed_mbps_stddev, 
+last_month_test_count, 
+last_month_download_speed_mbps_median, 
+last_month_upload_speed_mbps_median, 
+last_month_download_speed_mbps_avg, 
+last_month_upload_speed_mbps_avg, 
+last_month_download_speed_mbps_min, 
+last_month_upload_speed_mbps_min, 
+last_month_download_speed_mbps_max, 
+last_month_upload_speed_mbps_max, 
+last_month_download_speed_mbps_stddev, 
+last_month_upload_speed_mbps_stddev, 
+last_year_test_count, 
+last_year_download_speed_mbps_median, 
+last_year_upload_speed_mbps_median, 
+last_year_download_speed_mbps_avg, 
+last_year_upload_speed_mbps_avg, 
+last_year_download_speed_mbps_min, 
+last_year_upload_speed_mbps_min, 
+last_year_download_speed_mbps_max, 
+last_year_upload_speed_mbps_max, 
+last_year_download_speed_mbps_stddev, 
+last_year_upload_speed_mbps_stddev, 
+last_month_download_speed_mbps_bins, 
+last_month_upload_speed_mbps_bins, 
+last_week_download_speed_mbps_bins, 
+last_week_upload_speed_mbps_bins, 
+last_year_download_speed_mbps_bins, 
 last_year_upload_speed_mbps_bins
 
 )

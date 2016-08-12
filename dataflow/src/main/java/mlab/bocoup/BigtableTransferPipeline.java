@@ -30,7 +30,7 @@ public class BigtableTransferPipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(BigtableTransferPipeline.class);
 	
 	// This file is used when the class is run as a program (in the main method)
-	private static final String DEFAULT_BIGTABLE_CONFIG_FILE = "./data/bigtable/location_search.json";
+	private static final String DEFAULT_BIGTABLE_CONFIG_FILE = "./data/bigtable/location_list.json";
 	private static final String BIGTABLE_CONFIG_DIR = "./data/bigtable/";
 	
 	private static final String DEFAULT_PROJECT_ID = "mlab-oti";
@@ -109,7 +109,7 @@ public class BigtableTransferPipeline {
 		// convert from TableRow objects to hbase compatible mutations (Put)
 		PCollection<Mutation> hbasePuts = bigQueryCollection
 			.apply(ParDo
-					.named("Convert to Bigtable")
+					.named(btConfig.getBigtableTable() + " BT Transform")
 					.of(new TableRowToHBase(btConfig)));
 
 		// write the mutations to Bigtable
@@ -167,7 +167,7 @@ public class BigtableTransferPipeline {
 		LOG.info("Reading data from BigQuery query");
 		PCollection<TableRow> bigQueryCollection = this.pipeline.apply(
 				BigQueryIO.Read
-				.named("Read from BigQuery")
+				.named(btConfig.getBigtableTable() + " BQ Read")
 				.fromQuery(queryString));
 		
 		return this.apply(bigQueryCollection, btConfig);
@@ -323,9 +323,9 @@ public class BigtableTransferPipeline {
 	 */
 	public static void main(String[] args) {
 		
-		BigtableTransferPipeline.runAll(args);
+		//BigtableTransferPipeline.runAll(args);
 		
-		//BigtableTransferPipeline.runOne(args, DEFAULT_BIGTABLE_CONFIG_FILE);
+		BigtableTransferPipeline.runOne(args, DEFAULT_BIGTABLE_CONFIG_FILE);
 		
 	}
 }

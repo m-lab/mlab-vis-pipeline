@@ -83,7 +83,8 @@ def hex_encode_ip(ip_addr):
     """
     Encodes IP packed bytes as hex. We want to encode the packed bytes as hex
     instead of base64 since hex preserves sort order as a string and base64
-    does not.
+    does not. Ensures the string is 32 characters long, padding with 0s if
+    it is shorter.
 
     Args:
         ip_addr (IPAddress): the IP address
@@ -94,7 +95,7 @@ def hex_encode_ip(ip_addr):
     if not ip_addr:
         return None
 
-    return base64.b16encode(ip_addr.packed)
+    return base64.b16encode(ip_addr.packed).rjust(32, '0')
 
 def process_ipv4_csv(filename, asn_name_map):
     """

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "a_string",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "a_number",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "a_float",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  }
+]

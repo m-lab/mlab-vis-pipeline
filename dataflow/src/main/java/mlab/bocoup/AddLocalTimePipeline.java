@@ -1,8 +1,6 @@
 package mlab.bocoup;
 
-import java.io.Serializable;
 import java.util.Map;
-import java.util.NavigableMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +13,6 @@ import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.Combine;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
 import com.google.cloud.dataflow.sdk.transforms.GroupByKey;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.transforms.View;
@@ -24,13 +20,9 @@ import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
 import mlab.bocoup.dofn.AddLocalTimeFn;
-import mlab.bocoup.util.PipelineOptionsSetup;
-import mlab.bocoup.util.Schema;
 import mlab.bocoup.dofn.ExtractZoneKeynameFn;
-import mlab.bocoup.transform.CombineAsNavigableMapHex;
+import mlab.bocoup.util.Schema;
 public class AddLocalTimePipeline {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddLocalTimePipeline.class);

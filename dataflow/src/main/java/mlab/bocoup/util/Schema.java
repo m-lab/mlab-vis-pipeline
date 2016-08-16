@@ -15,11 +15,15 @@ import org.slf4j.LoggerFactory;
 import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableSchema;
 
-import mlab.bocoup.ExtractUpdateRowsPipeline;
-
 public class Schema {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(Schema.class);
+	
+	private static JSONArray getJSONStruct(String filepath) throws IOException, ParseException {
+		FileReader reader = new FileReader(filepath);
+		JSONParser jsonParser = new JSONParser();
+		return (JSONArray) jsonParser.parse(reader);
+	}
 	
 	/**
 	 * Returns a TableSchame from a json file. The file must be an array
@@ -29,28 +33,27 @@ public class Schema {
 	 * @return TableSchema.
 	 */
 	public static TableSchema fromJSONFile(String filepath) {
-		FileReader reader;
 		JSONArray schemaArray;
-		JSONParser jsonParser;
-		
 		TableSchema schema = null;
 		  
 		try {
 			schema = new TableSchema();
 			
-			reader = new FileReader(filepath);
-			jsonParser = new JSONParser();
-			schemaArray = (JSONArray) jsonParser.parse(reader);
+			schemaArray = getJSONStruct(filepath);
 			
 			Iterator<JSONObject> i = schemaArray.iterator();
 			
 			List<TableFieldSchema> fields = new ArrayList<>();
 			
 			while (i.hasNext()) {
-				JSONObject schemaItem = (JSONObject) i.next();
+				JSONObject schemaItem = i.next();
 				String fieldName = (String) schemaItem.get("name");
 				String fieldType = (String) schemaItem.get("type");
-				fields.add(new TableFieldSchema().setName(fieldName).setType(fieldType));
+				String fieldMode = (String) schemaItem.get("mode");
+				fields.add(new TableFieldSchema()
+						.setName(fieldName)
+						.setType(fieldType)
+						.setMode(fieldMode));
 			}
 			
 			schema.setFields(fields);

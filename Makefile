@@ -19,3 +19,6 @@ timezones:
 bigtable-configs:
 	./tools/bigtable/create_bigtable_configs.py && \
 	./tools/bigtable/create_bigtable_search_configs.py
+
+clean_temp_datasets:
+	./tools/bigquery/cleanup/remove_temp_bigquery_tables.py

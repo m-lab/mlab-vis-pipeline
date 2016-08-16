@@ -30,7 +30,7 @@ public class BigtableTransferPipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(BigtableTransferPipeline.class);
 	
 	// This file is used when the class is run as a program (in the main method)
-	private static final String DEFAULT_BIGTABLE_CONFIG_FILE = "./data/bigtable/location_list.json";
+	private static final String DEFAULT_BIGTABLE_CONFIG_FILE = "./data/bigtable/client_location_list.json";
 	private static final String BIGTABLE_CONFIG_DIR = "./data/bigtable/";
 	
 	private static final String DEFAULT_PROJECT_ID = "mlab-oti";
@@ -173,26 +173,33 @@ public class BigtableTransferPipeline {
 		return this.apply(bigQueryCollection, btConfig);
 	}
 	
-	public void applyAll(String btConfigDir) throws IOException {
+	public void applyAll(String btConfigDir, String configPrefix, String configSuffix) throws IOException {
 		this.preparePipeline();
 		File folder = new File(btConfigDir);
 		File[] listOfFiles = folder.listFiles();
+		
+		if(configSuffix.length() == 0) {
+			configSuffix = ".json";
+		}
 
 		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile() && listOfFiles[i].getName().endsWith(".json")) {
-				String configFilename = btConfigDir + listOfFiles[i].getName();
-				LOG.debug("Setup - config file: " + configFilename);
-				System.out.println("config file" +  configFilename);
-				BigtableConfig btConfig = BigtableConfig.fromJSONFile(configFilename);
+			if (listOfFiles[i].isFile() && listOfFiles[i].getName().endsWith(configSuffix)) {
+				if(configPrefix.length() == 0 || listOfFiles[i].getName().startsWith(configPrefix)) {
+					String configFilename = btConfigDir + listOfFiles[i].getName();
+					LOG.debug("Setup - config file: " + configFilename);
+					System.out.println("config file" +  configFilename);
+					BigtableConfig btConfig = BigtableConfig.fromJSONFile(configFilename);
 				
 				
 				
-				try {
-					PCollection out = this.apply(btConfig);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					try {
+						PCollection out = this.apply(btConfig);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				} // end prefix check
 				
 				
 			}
@@ -275,7 +282,7 @@ public class BigtableTransferPipeline {
 	 * 
 	 * @param args
 	 */
-	public static void runAll(String[] args) {
+	public static void runAll(String[] args, String configPrefix, String configSuffix) {
 		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
 				.as(BigQueryOptions.class);
 		
@@ -283,7 +290,7 @@ public class BigtableTransferPipeline {
 		BigtableTransferPipeline transferPipeline = new BigtableTransferPipeline(pipe);
 		
 		try {
-			transferPipeline.applyAll(BIGTABLE_CONFIG_DIR);
+			transferPipeline.applyAll(BIGTABLE_CONFIG_DIR, configPrefix, configSuffix);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -323,9 +330,9 @@ public class BigtableTransferPipeline {
 	 */
 	public static void main(String[] args) {
 		
-		//BigtableTransferPipeline.runAll(args);
+		BigtableTransferPipeline.runAll(args, "", "_hour.json");
 		
-		BigtableTransferPipeline.runOne(args, DEFAULT_BIGTABLE_CONFIG_FILE);
+		//BigtableTransferPipeline.runOne(args, DEFAULT_BIGTABLE_CONFIG_FILE);
 		
 	}
 }

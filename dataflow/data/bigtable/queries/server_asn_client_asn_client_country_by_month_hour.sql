@@ -24,7 +24,7 @@ client_continent,
 client_country,
 client_asn_name,
 STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), "%Y-%m") as date,
-HOUR(test_date) AS hour
+STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), "%H") as hour
 
 FROM
   {0}

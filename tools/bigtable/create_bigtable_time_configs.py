@@ -351,6 +351,10 @@ DATE_AGGEGATIONS = {
     "month_hour": [
         {"name": "date", "length": 10, "type": "string", "family": "meta"},
         {"name": "hour", "length": 10, "type": "string", "family": "meta"}
+    ],
+    "year_hour": [
+        {"name": "date", "length": 10, "type": "string", "family": "meta"},
+        {"name": "hour", "length": 10, "type": "string", "family": "meta"}
     ]
 }
 
@@ -360,11 +364,15 @@ DATE_QUERIES = {
     "year": ["STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), \"%Y\") as date"],
     "day_hour": [
         "DATE(test_date) AS date",
-        "HOUR(test_date) AS hour"
+        "STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), \"%H\") as hour"
     ],
     "month_hour": [
         "STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), \"%Y-%m\") as date",
-        "HOUR(test_date) AS hour"
+        "STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), \"%H\") as hour"
+    ],
+    "year_hour": [
+        "STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), \"%Y\") as date",
+        "STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), \"%H\") as hour"
     ]
 }
 

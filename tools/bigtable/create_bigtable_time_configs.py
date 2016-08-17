@@ -130,11 +130,6 @@ AGGREGATION_FILTERS = {
         "LENGTH(client_asn_name) > 0"
     ],
 
-    # SERVER ASN NAME x CLIENT LOCATION
-    "server_asn_client_loc": [
-        # "LENGTH(client_location_key) > 0",
-    ],
-
     # CLIENT ASN NUMBER x CLIENT LOCATION
     "client_asn_client_loc": [
         # "LENGTH(client_location_key) > 0",

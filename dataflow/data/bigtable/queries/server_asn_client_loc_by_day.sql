@@ -33,7 +33,7 @@ DATE(test_date) AS date
 
 FROM
   {0}
-WHERE 
+
 
 GROUP BY
 client_location_key,

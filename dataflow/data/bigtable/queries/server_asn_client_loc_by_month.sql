@@ -33,7 +33,7 @@ STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), "%Y-%m") as date
 
 FROM
   {0}
-WHERE 
+
 
 GROUP BY
 client_location_key,

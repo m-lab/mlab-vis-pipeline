@@ -34,7 +34,7 @@ STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([test_date]), "%H") as hour
 
 FROM
   {0}
-WHERE 
+
 
 GROUP BY
 client_location_key,

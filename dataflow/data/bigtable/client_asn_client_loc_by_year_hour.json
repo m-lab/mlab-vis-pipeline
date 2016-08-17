@@ -1,21 +1,15 @@
 {
   "row_keys": [
     {
-      "length": 2, 
+      "length": 50, 
       "type": "string", 
-      "name": "client_continent_code", 
+      "name": "client_location_key", 
       "family": "meta"
     }, 
     {
-      "length": 2, 
+      "length": 10, 
       "type": "string", 
-      "name": "client_country_code", 
-      "family": "meta"
-    }, 
-    {
-      "length": 2, 
-      "type": "string", 
-      "name": "client_region_code", 
+      "name": "client_asn_number", 
       "family": "meta"
     }, 
     {
@@ -31,10 +25,10 @@
       "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./data/bigtable/queries/client_region_by_month_hour.sql", 
-  "bigtable_table_name": "client_region_by_month_hour", 
-  "frequency": "month_hour", 
-  "key": "client_region", 
+  "bigquery_queryfile": "./data/bigtable/queries/client_asn_client_loc_by_year_hour.sql", 
+  "bigtable_table_name": "client_asn_client_loc_by_year_hour", 
+  "frequency": "year_hour", 
+  "key": "client_asn_client_loc", 
   "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_hour]", 
   "columns": [
     {
@@ -93,6 +87,18 @@
       "family": "data"
     }, 
     {
+      "length": 50, 
+      "type": "string", 
+      "name": "client_location_key", 
+      "family": "meta"
+    }, 
+    {
+      "length": 10, 
+      "type": "string", 
+      "name": "client_asn_number", 
+      "family": "meta"
+    }, 
+    {
       "length": 2, 
       "type": "string", 
       "name": "client_continent_code", 
@@ -111,6 +117,12 @@
       "family": "meta"
     }, 
     {
+      "length": 40, 
+      "type": "string", 
+      "name": "client_city", 
+      "family": "meta"
+    }, 
+    {
       "type": "string", 
       "name": "client_continent", 
       "family": "meta"
@@ -123,6 +135,11 @@
     {
       "type": "string", 
       "name": "client_region", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_asn_name", 
       "family": "meta"
     }, 
     {

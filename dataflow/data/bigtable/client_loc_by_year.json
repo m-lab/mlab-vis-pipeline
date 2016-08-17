@@ -9,20 +9,14 @@
     {
       "length": 10, 
       "type": "string", 
-      "name": "client_asn_number", 
-      "family": "meta"
-    }, 
-    {
-      "length": 10, 
-      "type": "string", 
       "name": "date", 
       "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./data/bigtable/queries/client_asn_client_location_by_year.sql", 
-  "bigtable_table_name": "client_asn_client_location_by_year", 
+  "bigquery_queryfile": "./data/bigtable/queries/client_loc_by_year.sql", 
+  "bigtable_table_name": "client_loc_by_year", 
   "frequency": "year", 
-  "key": "client_asn_client_location", 
+  "key": "client_loc", 
   "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]", 
   "columns": [
     {
@@ -87,12 +81,6 @@
       "family": "meta"
     }, 
     {
-      "length": 10, 
-      "type": "string", 
-      "name": "client_asn_number", 
-      "family": "meta"
-    }, 
-    {
       "length": 2, 
       "type": "string", 
       "name": "client_continent_code", 
@@ -129,11 +117,6 @@
     {
       "type": "string", 
       "name": "client_region", 
-      "family": "meta"
-    }, 
-    {
-      "type": "string", 
-      "name": "client_asn_name", 
       "family": "meta"
     }, 
     {

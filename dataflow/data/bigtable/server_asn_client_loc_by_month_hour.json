@@ -7,6 +7,12 @@
       "family": "meta"
     }, 
     {
+      "length": 40, 
+      "type": "string", 
+      "name": "server_asn_name", 
+      "family": "meta"
+    }, 
+    {
       "length": 10, 
       "type": "string", 
       "name": "date", 
@@ -19,10 +25,10 @@
       "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./data/bigtable/queries/client_location_by_day_hour.sql", 
-  "bigtable_table_name": "client_location_by_day_hour", 
-  "frequency": "day_hour", 
-  "key": "client_location", 
+  "bigquery_queryfile": "./data/bigtable/queries/server_asn_client_loc_by_month_hour.sql", 
+  "bigtable_table_name": "server_asn_client_loc_by_month_hour", 
+  "frequency": "month_hour", 
+  "key": "server_asn_client_loc", 
   "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_hour]", 
   "columns": [
     {
@@ -84,6 +90,12 @@
       "length": 50, 
       "type": "string", 
       "name": "client_location_key", 
+      "family": "meta"
+    }, 
+    {
+      "length": 40, 
+      "type": "string", 
+      "name": "server_asn_name", 
       "family": "meta"
     }, 
     {

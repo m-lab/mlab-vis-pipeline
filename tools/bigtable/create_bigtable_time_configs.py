@@ -28,26 +28,26 @@ CALCULATED_FIELDS = {
 AGGREGATIONS = {
     # SERVER ASN NAME x CLIENT ASN NUMBER x CLIENT LOCATION
     # Naming needs to stay under 50 characters
-    "server_asn_client_asn_client_location": [
+    "server_asn_client_asn_client_loc": [
         {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
         {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
         {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
     ],
 
     # SERVER ASN NAME x CLIENT LOCATION
-    "server_asn_client_location": [
+    "server_asn_client_loc": [
         {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
         {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
     ],
 
     # CLIENT ASN NUMBER x CLIENT LOCATION
-    "client_asn_client_location": [
+    "client_asn_client_loc": [
         {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
         {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
     ],
 
     # CLIENT LOCATION
-    "client_location": [
+    "client_loc": [
         {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
     ],
 
@@ -67,7 +67,7 @@ AGGREGATIONS = {
 
 ADDITIONAL_FIELDS = {
     # SERVER ASN NAME x CLIENT ASN NUMBER x CLIENT LOCATION
-    "server_asn_client_asn_client_location": [
+    "server_asn_client_asn_client_loc": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
@@ -79,7 +79,7 @@ ADDITIONAL_FIELDS = {
     ],
 
     # SERVER ASN NAME x  CLIENT LOCATION
-    "server_asn_client_location": [
+    "server_asn_client_loc": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
@@ -90,7 +90,7 @@ ADDITIONAL_FIELDS = {
     ],
 
     # CLIENT ASN NUMBER x CLIENT LOCATION
-    "client_asn_client_location": [
+    "client_asn_client_loc": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
@@ -102,7 +102,7 @@ ADDITIONAL_FIELDS = {
     ],
 
     # CLIENT LOCATION
-    "client_location": [
+    "client_loc": [
         {"name": "client_continent_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_country_code", "length": 2, "type": "string", "family": "meta"},
         {"name": "client_region_code", "length": 2, "type": "string", "family": "meta"},
@@ -124,19 +124,19 @@ ADDITIONAL_FIELDS = {
 
 AGGREGATION_FILTERS = {
     # SERVER ASN NAME x CLIENT ASN NUMBER x CLIENT LOCATION
-    "server_asn_client_asn_client_location": [
+    "server_asn_client_asn_client_loc": [
         # "LENGTH(client_location_key) > 0",
         "LENGTH(client_asn_number) > 0",
         "LENGTH(client_asn_name) > 0"
     ],
 
     # SERVER ASN NAME x CLIENT LOCATION
-    "server_asn_client_location": [
+    "server_asn_client_loc": [
         # "LENGTH(client_location_key) > 0",
     ],
 
     # CLIENT ASN NUMBER x CLIENT LOCATION
-    "client_asn_client_location": [
+    "client_asn_client_loc": [
         # "LENGTH(client_location_key) > 0",
         "LENGTH(client_asn_number) > 0",
         "LENGTH(client_asn_name) > 0"

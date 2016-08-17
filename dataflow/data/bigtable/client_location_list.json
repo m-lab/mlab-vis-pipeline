@@ -1,13 +1,13 @@
 {
   "row_keys": [
     {
-      "length": 20, 
+      "length": 10, 
       "type": "string", 
       "name": "parent_location_key", 
       "family": "meta"
     }, 
     {
-      "length": 45, 
+      "length": 50, 
       "type": "string", 
       "name": "child_location_name", 
       "family": "meta"
@@ -19,13 +19,13 @@
   "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]", 
   "columns": [
     {
-      "length": 20, 
+      "length": 10, 
       "type": "string", 
       "name": "parent_location_key", 
       "family": "meta"
     }, 
     {
-      "length": 45, 
+      "length": 50, 
       "type": "string", 
       "name": "child_location_name", 
       "family": "meta"

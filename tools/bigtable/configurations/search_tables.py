@@ -13,7 +13,7 @@ AGGREGATIONS = {
         ],
 
         "key_fields" : [
-            {"length": 20, "type": "string", "name": "location_key", "family": "meta"},
+            {"length": 50, "type": "string", "name": "location_key", "family": "meta"},
             {"length": 10, "type": "string", "name": "client_asn_number", "family": "meta"}
         ],
 
@@ -92,8 +92,8 @@ AGGREGATIONS = {
         "key_name": "parent_location_key",
 
         "key_fields" : [
-            {"length": 20, "type": "string", "name": "parent_location_key", "family": "meta"},
-            {"length": 45, "type": "string", "name": "child_location_name", "family": "meta"}
+            {"length": 10, "type": "string", "name": "parent_location_key", "family": "meta"},
+            {"length": 50, "type": "string", "name": "child_location_name", "family": "meta"}
         ],
 
         "region_key_fields": {

@@ -3,7 +3,7 @@
     {
       "length": 20, 
       "type": "string", 
-      "name": "parent_location_id", 
+      "name": "parent_location_key", 
       "family": "meta"
     }, 
     {
@@ -21,7 +21,7 @@
     {
       "length": 20, 
       "type": "string", 
-      "name": "parent_location_id", 
+      "name": "parent_location_key", 
       "family": "meta"
     }, 
     {

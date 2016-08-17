@@ -1,6 +1,6 @@
 
         select
-        location_id, 
+        location_key, 
 client_asn_number, 
  client_asn_name, 
 type, 
@@ -60,7 +60,7 @@ last_year_upload_speed_mbps_bins
 ,IFNULL(all.client_country_code, ""), ""
 ,IFNULL(all.client_region_code, ""), ""
 ,IFNULL(all.client_city, ""), ""
-)), " ", "") as location_id,
+)), " ", "") as location_key,
 
   -- what is its type?
   "city" AS type,
@@ -469,7 +469,7 @@ all.client_continent_code = last_year.client_continent_code
 
   GROUP BY
 
-  location_id, 
+  location_key, 
 client_asn_number,
 client_asn_number, 
 client_asn_name, 
@@ -529,7 +529,7 @@ last_year_upload_speed_mbps_bins
   REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), ""
 ,IFNULL(all.client_country_code, ""), ""
 ,IFNULL(all.client_region_code, ""), ""
-)), " ", "") as location_id,
+)), " ", "") as location_key,
 
   -- what is its type?
   "region" AS type,
@@ -928,7 +928,7 @@ all.client_continent_code = last_year.client_continent_code
 
   GROUP BY
 
-  location_id, 
+  location_key, 
 client_asn_number,
 client_asn_number, 
 client_asn_name, 
@@ -986,7 +986,7 @@ last_year_upload_speed_mbps_bins
 (SELECT
   REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), ""
 ,IFNULL(all.client_country_code, ""), ""
-)), " ", "") as location_id,
+)), " ", "") as location_key,
 
   -- what is its type?
   "country" AS type,
@@ -1365,7 +1365,7 @@ all.client_continent_code = last_year.client_continent_code
 
   GROUP BY
 
-  location_id, 
+  location_key, 
 client_asn_number,
 client_asn_number, 
 client_asn_name, 
@@ -1419,7 +1419,7 @@ last_year_upload_speed_mbps_bins
 -- Type: continent
 -- ============
 (SELECT
-  LOWER(IFNULL(all.client_continent_code, "")) as location_id,
+  LOWER(IFNULL(all.client_continent_code, "")) as location_key,
 
   -- what is its type?
   "continent" AS type,
@@ -1778,7 +1778,7 @@ all.client_continent_code = last_year.client_continent_code
 
   GROUP BY
 
-  location_id, 
+  location_key, 
 client_asn_number,
 client_asn_number, 
 client_asn_name, 

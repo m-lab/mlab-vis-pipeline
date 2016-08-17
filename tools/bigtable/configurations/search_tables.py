@@ -6,14 +6,14 @@ AGGREGATIONS = {
         "json_file" : "client_location_client_asn_list",
 
         "key_length" : 30,
-        "key_name" : "location_id",
+        "key_name" : "location_key",
         "key_columns" : [
-            "location_id",
+            "location_key",
             "client_asn_number"
         ],
 
         "key_fields" : [
-            {"length": 20, "type": "string", "name": "location_id", "family": "meta"},
+            {"length": 20, "type": "string", "name": "location_key", "family": "meta"},
             {"length": 10, "type": "string", "name": "client_asn_number", "family": "meta"}
         ],
 
@@ -63,7 +63,7 @@ AGGREGATIONS = {
         "json_file" : "client_location_search",
 
         "key_length" : 60,
-        "key_name": "location_key",
+        "key_name": "reverse_location_key",
         "key_columns" : [
             "location",
             "client_region_code",
@@ -71,7 +71,7 @@ AGGREGATIONS = {
             "client_continent_code"
         ],
         "key_fields" : [
-            {"name" : "location_key", "family" : "meta", "type": "string", "length" : 60}
+            {"name" : "reverse_location_key", "family" : "meta", "type": "string", "length" : 60}
         ],
         "fields": [
             {"name": "test_count", "family" : "data", "type" : "integer"},
@@ -89,10 +89,10 @@ AGGREGATIONS = {
         "query_file" : "client_location_list",
         "json_file" : "client_location_list",
 
-        "key_name": "parent_location_id",
+        "key_name": "parent_location_key",
 
         "key_fields" : [
-            {"length": 20, "type": "string", "name": "parent_location_id", "family": "meta"},
+            {"length": 20, "type": "string", "name": "parent_location_key", "family": "meta"},
             {"length": 45, "type": "string", "name": "child_location_name", "family": "meta"}
         ],
 

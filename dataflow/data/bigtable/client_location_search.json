@@ -3,7 +3,7 @@
     {
       "length": 60, 
       "type": "string", 
-      "name": "location_key", 
+      "name": "reverse_location_key", 
       "family": "meta"
     }
   ], 
@@ -15,7 +15,7 @@
     {
       "length": 60, 
       "type": "string", 
-      "name": "location_key", 
+      "name": "reverse_location_key", 
       "family": "meta"
     }, 
     {

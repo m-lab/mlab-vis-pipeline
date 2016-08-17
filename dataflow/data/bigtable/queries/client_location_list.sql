@@ -1,5 +1,5 @@
 
-select parent_location_id,
+select parent_location_key,
        child_location_name,
        type,
        client_city,
@@ -46,7 +46,7 @@ from -- ============
 -- Type: city
 -- ============
 
-  (SELECT REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region_code, ""), "")), " ", "") as parent_location_id, -- which field is the child location?
+  (SELECT REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region_code, ""), "")), " ", "") as parent_location_key, -- which field is the child location?
  all.client_city AS child_location_name, -- what is its type?
  "city" AS type, -- meta fields we are selecting
  all.client_city as client_city,
@@ -202,7 +202,7 @@ from -- ============
    and all.client_region_code = last_year.client_region_code
    and all.client_country_code = last_year.client_country_code
    and all.client_continent_code = last_year.client_continent_code
-   GROUP BY parent_location_id,
+   GROUP BY parent_location_key,
             child_location_name,
             client_city,
             client_region,
@@ -247,7 +247,7 @@ from -- ============
 -- Type: region
 -- ============
 
-  (SELECT REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "")), " ", "") as parent_location_id, -- which field is the child location?
+  (SELECT REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "")), " ", "") as parent_location_key, -- which field is the child location?
  all.client_region AS child_location_name, -- what is its type?
  "region" AS type, -- meta fields we are selecting
  all.client_region as client_region,
@@ -393,7 +393,7 @@ from -- ============
    and all.client_region_code = last_year.client_region_code
    and all.client_country_code = last_year.client_country_code
    and all.client_continent_code = last_year.client_continent_code
-   GROUP BY parent_location_id,
+   GROUP BY parent_location_key,
             child_location_name,
             client_region,
             client_country,
@@ -437,7 +437,7 @@ from -- ============
 -- Type: country
 -- ============
 
-  (SELECT LOWER(IFNULL(all.client_continent_code, "")) as parent_location_id, -- which field is the child location?
+  (SELECT LOWER(IFNULL(all.client_continent_code, "")) as parent_location_key, -- which field is the child location?
  all.client_country AS child_location_name, -- what is its type?
  "country" AS type, -- meta fields we are selecting
  all.client_country as client_country,
@@ -563,7 +563,7 @@ from -- ============
    and all.client_continent = last_year.client_continent
    and all.client_country_code = last_year.client_country_code
    and all.client_continent_code = last_year.client_continent_code
-   GROUP BY parent_location_id,
+   GROUP BY parent_location_key,
             child_location_name,
             client_country,
             client_continent,
@@ -605,7 +605,7 @@ from -- ============
 -- Type: continent
 -- ============
 
-  (SELECT "" as parent_location_id, -- which field is the child location?
+  (SELECT "" as parent_location_key, -- which field is the child location?
  all.client_continent AS child_location_name, -- what is its type?
  "continent" AS type, -- meta fields we are selecting
  all.client_continent as client_continent,
@@ -711,7 +711,7 @@ from -- ============
  client_continent_code ) last_year on -- join on location fields from the all table.
  all.client_continent = last_year.client_continent
    and all.client_continent_code = last_year.client_continent_code
-   GROUP BY parent_location_id,
+   GROUP BY parent_location_key,
             child_location_name,
             client_continent,
             client_continent_code,

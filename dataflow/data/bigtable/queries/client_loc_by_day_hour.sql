@@ -14,6 +14,9 @@ SELECT
   -- STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
   -- STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
 
+  SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
+  AVG(packet_retransmit_rate) AS retransmit_avg,
+
   COUNT(*) AS count,
 
 client_continent_code,

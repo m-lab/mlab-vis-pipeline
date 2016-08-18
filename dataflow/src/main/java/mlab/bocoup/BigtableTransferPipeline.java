@@ -30,7 +30,7 @@ public class BigtableTransferPipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(BigtableTransferPipeline.class);
 	
 	// This file is used when the class is run as a program (in the main method)
-	private static final String DEFAULT_BIGTABLE_CONFIG_FILE = "./data/bigtable/client_location_list.json";
+	private static final String DEFAULT_BIGTABLE_CONFIG_FILE = "./data/bigtable/client_location_by_month.json";
 	private static final String BIGTABLE_CONFIG_DIR = "./data/bigtable/";
 	
 	private static final String DEFAULT_PROJECT_ID = "mlab-oti";
@@ -330,7 +330,7 @@ public class BigtableTransferPipeline {
 	 */
 	public static void main(String[] args) {
 		
-		BigtableTransferPipeline.runAll(args, "", "_hour.json");
+		BigtableTransferPipeline.runAll(args, "", ".json");
 		
 		//BigtableTransferPipeline.runOne(args, DEFAULT_BIGTABLE_CONFIG_FILE);
 		

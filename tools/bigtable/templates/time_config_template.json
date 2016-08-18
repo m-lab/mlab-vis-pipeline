@@ -21,6 +21,9 @@
     {"name": "download_speed_mbps_stddev", "type": "double", "family": "data"},
     {"name": "upload_speed_mbps_stddev", "type": "double", "family": "data"},
 
+    {"name": "rtt_avg", "type": "double", "family": "data"},
+    {"name": "retransmit_avg", "type": "double", "family": "data"},
+
     {"name": "count", "type": "integer", "family": "data"}
   ]
 }

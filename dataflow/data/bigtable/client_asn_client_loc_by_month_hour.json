@@ -82,6 +82,16 @@
       "family": "data"
     }, 
     {
+      "type": "double", 
+      "name": "rtt_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "retransmit_avg", 
+      "family": "data"
+    }, 
+    {
       "type": "integer", 
       "name": "count", 
       "family": "data"

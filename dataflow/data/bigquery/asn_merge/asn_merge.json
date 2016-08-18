@@ -1,0 +1,199 @@
+  [
+    {
+      "asns": [
+        "AS7018",
+        "AS5728",
+        "AS16966",
+        "AS17225",
+        "AS16967",
+        "AS17226",
+        "AS17231",
+        "AS17232",
+        "AS17229",
+        "AS19496",
+        "AS4473",
+        "AS17227",
+        "AS7287",
+        "AS10774",
+        "AS17228",
+        "AS3423",
+        "AS19497",
+        "AS4185",
+        "AS17233",
+        "AS797",
+        "AS7132",
+        "AS1698",
+        "AS14654",
+        "AS4186"
+      ],
+      "name": "AT&T",
+      "contains": [
+        "AT&T Services",
+        "AT&T Enhanced Network",
+        "Wayport",
+        "AT&T Mobility"
+      ]
+    },
+    {
+      "asns": [
+        "AS3910",
+        "AS209",
+        "AS4015",
+        "AS3908",
+        "AS7359",
+        "AS6640",
+        "AS3909",
+        "AS4911",
+
+        "AS32855",
+        "AS16718",
+        "AS4212",
+        "AS14921",
+        "AS14910",
+        "AS3447",
+        "AS11530",
+        "AS18494",
+        "AS2379",
+        "AS6367",
+        "AS11398",
+        "AS5778",
+        "AS22186",
+        "AS17402",
+        "AS14905",
+        "AS13787",
+        "AS6222"
+
+      ],
+      "name":"CenturyLink",
+      "contains": [
+        "Qwest",
+        "Embarq",
+        "Centurylink",
+        "Centurytel"
+      ]
+    },
+    {
+      "asns": [
+        "AS33667",
+        "AS33660",
+        "AS33657",
+        "AS33650",
+        "AS33491",
+        "AS33287",
+        "AS33662",
+        "AS7015",
+        "AS13385",
+        "AS7922",
+        "AS33651",
+        "AS7725",
+        "AS22909",
+        "AS13367",
+        "AS33652",
+        "AS33668",
+        "AS21508",
+        "AS33659",
+        "AS33490",
+        "AS7016",
+        "AS20214",
+        "AS33661",
+        "AS22258"
+      ],
+      "name": "Comcast",
+      "contains": [
+        "Comcast"
+      ]
+    },
+    {
+      "asns": [
+        "AS7011",
+        "AS26127",
+        "AS5650",
+        "AS3593",
+        "AS30064",
+        "AS32587"
+      ],
+      "name": "Frontier",
+      "contains": [
+        "Frontier Communications of America"
+      ]
+    },
+    {
+      "asns": [
+        "AS63062",
+        "AS6621",
+        "AS1358"
+      ],
+      "name": "Hughes",
+      "contains": [
+        "Hughes Network"
+      ]
+    },
+    {
+      "asns": [
+        "AS10753",
+        "AS3549",
+        "AS3356",
+        "AS30686"
+      ],
+      "name": "Level 3",
+      "contains": [
+        "Level 3 Communications",
+        "GBLX"
+      ]
+    },
+    {
+      "asns": [
+        "AS702",
+        "AS701",
+        "AS6541",
+        "AS3707",
+        "AS19973",
+        "AS813",
+        "AS13667",
+        "AS705",
+        "AS14551",
+        "AS703",
+        "AS11486",
+        "AS7046",
+        "AS6167",
+        "AS22394"
+      ],
+      "name": "Verizon",
+      "contains": [
+        "d/b/a Verizon Business",
+        "Cellco Partnership DBA Verizon"
+      ]
+    },
+    {
+      "asns": [
+        "AS8052",
+        "AS11351",
+        "AS12271",
+        "AS20001",
+        "AS11427",
+        "AS7843",
+        "AS11955",
+        "AS11426",
+        "AS7756",
+        "AS7017",
+        "AS10796",
+        "AS3456"
+      ],
+      "name": "Time Warner Cable",
+      "contains": [
+        "Time Warner Cable"
+      ]
+    },
+    {
+      "asns": [
+        "AS54858",
+        "AS32107",
+        "AS22759"
+      ],
+      "name": "Wave",
+      "contains": [
+        "Wave Broadband",
+        "Condointernet"
+      ]
+    }
+  ]

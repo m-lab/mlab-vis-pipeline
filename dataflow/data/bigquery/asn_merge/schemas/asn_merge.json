@@ -1,0 +1,17 @@
+[
+    {
+        "name": "asn_number",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "new_asn_number",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "new_asn_name",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    }
+]

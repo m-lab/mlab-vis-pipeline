@@ -44,7 +44,7 @@ LOCATION_CLIENT_ASN_SUBSELECT_TEMPLATE= os.path.join(
 ##########################
 
 def build_location_client_asn_number_list():
-    print("client_location_client_asn_list")
+    print("client_loc_client_asn_list")
     build_location_client_asn_number_list_sql()
     build_location_client_asn_number_list_json()
 
@@ -56,7 +56,7 @@ def build_location_client_asn_number_list_sql():
     subselect_template = read_text(LOCATION_CLIENT_ASN_SUBSELECT_TEMPLATE)
     leftjoin_template = read_text(LOCATION_CLIENT_ASN_LEFTJOIN_TEMPLATE)
 
-    config = AGGREGATIONS["client_location_client_asn_list"]
+    config = AGGREGATIONS["client_loc_client_asn_list"]
 
     query_str = """
         select
@@ -252,11 +252,11 @@ def add_binned_columns(json_struct, config):
 
 def build_location_client_asn_number_list_json():
     '''
-    Builds the client_location_client_asn_list table json structure
+    Builds the client_loc_client_asn_list table json structure
     for big table
     '''
-    config = AGGREGATIONS["client_location_client_asn_list"]
-    json_struct = setup_base_json("client_location_client_asn_list", config)
+    config = AGGREGATIONS["client_loc_client_asn_list"]
+    json_struct = setup_base_json("client_loc_client_asn_list", config)
 
     # add timed columns
     json_struct = add_timed_columns_json(json_struct, config)
@@ -271,7 +271,7 @@ def build_location_client_asn_number_list_json():
 # Location List
 # ###############
 def build_location_list():
-    print("client_location_list")
+    print("client_loc_list")
     build_location_list_sql()
     build_location_list_json()
 
@@ -280,8 +280,8 @@ def build_location_list_json():
         Builds the location_list table json structure
         for big table
     '''
-    config = AGGREGATIONS["client_location_list"]
-    json_struct = setup_base_json("client_location_list", config)
+    config = AGGREGATIONS["client_loc_list"]
+    json_struct = setup_base_json("client_loc_list", config)
 
     # add timed columns
     json_struct = add_timed_columns_json(json_struct, config)
@@ -291,13 +291,13 @@ def build_location_list_json():
 
 def build_location_list_sql():
     '''
-        Builds the client_location_list table sql query file
+        Builds the client_loc_list table sql query file
         for big table
     '''
     subselect_template = read_text(LOCATION_LIST_SUBSELECT_TEMPLATE)
     leftjoin_template = read_text(LOCATION_LIST_LEFTJOIN_TEMPLATE)
 
-    config = AGGREGATIONS["client_location_list"]
+    config = AGGREGATIONS["client_loc_list"]
     query_str = """
         select
         {0}
@@ -408,8 +408,8 @@ def build_location_search():
 
 def build_location_search_json():
 
-    config = AGGREGATIONS["client_location_search"]
-    json_struct = setup_base_json("client_location_search", config)
+    config = AGGREGATIONS["client_loc_search"]
+    json_struct = setup_base_json("client_loc_search", config)
 
     config_filepath = os.path.join(CONFIG_DIR, config["table_name"] + ".json")
     save_json(config_filepath, json_struct)
@@ -417,7 +417,7 @@ def build_location_search_json():
 def build_location_search_sql():
     # read template
     join_template = read_text(LOCATION_SEARCH_JOIN_TEMPLATE)
-    config = AGGREGATIONS["client_location_search"]
+    config = AGGREGATIONS["client_loc_search"]
 
     # build initial sql
     key_str = replace(

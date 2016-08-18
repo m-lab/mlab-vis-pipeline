@@ -1,73 +1,76 @@
 {
   "row_keys": [
     {
-      "length": 10, 
+      "length": 50, 
       "type": "string", 
-      "name": "parent_location_key", 
+      "name": "location_key", 
       "family": "meta"
     }, 
     {
-      "length": 50, 
+      "length": 10, 
       "type": "string", 
-      "name": "child_location_name", 
+      "name": "client_asn_number", 
       "family": "meta"
     }
   ], 
-  "bigquery_queryfile": "./data/bigtable/queries/client_location_list.sql", 
-  "bigtable_table_name": "client_location_list", 
-  "key": "client_location_list", 
+  "bigquery_queryfile": "./data/bigtable/queries/client_loc_client_asn_list.sql", 
+  "bigtable_table_name": "client_loc_client_asn_list", 
+  "key": "client_loc_client_asn_list", 
   "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]", 
   "columns": [
     {
-      "length": 10, 
-      "type": "string", 
-      "name": "parent_location_key", 
-      "family": "meta"
-    }, 
-    {
       "length": 50, 
       "type": "string", 
-      "name": "child_location_name", 
+      "name": "location_key", 
       "family": "meta"
     }, 
     {
       "length": 10, 
+      "type": "string", 
+      "name": "client_asn_number", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_asn_name", 
+      "family": "meta"
+    }, 
+    {
       "type": "string", 
       "name": "type", 
       "family": "meta"
     }, 
     {
-      "length": 45, 
+      "type": "string", 
+      "name": "client_city", 
+      "family": "meta"
+    }, 
+    {
       "type": "string", 
       "name": "client_region", 
       "family": "meta"
     }, 
     {
-      "length": 2, 
       "type": "string", 
       "name": "client_region_code", 
       "family": "meta"
     }, 
     {
-      "length": 40, 
       "type": "string", 
       "name": "client_country", 
       "family": "meta"
     }, 
     {
-      "length": 2, 
       "type": "string", 
       "name": "client_country_code", 
       "family": "meta"
     }, 
     {
-      "length": 13, 
       "type": "string", 
       "name": "client_continent", 
       "family": "meta"
     }, 
     {
-      "length": 2, 
       "type": "string", 
       "name": "client_continent_code", 
       "family": "meta"
@@ -75,7 +78,7 @@
     {
       "type": "integer", 
       "name": "last_month_test_count", 
-      "family": "data"
+      "family": "meta"
     }, 
     {
       "type": "double", 
@@ -130,7 +133,7 @@
     {
       "type": "integer", 
       "name": "last_week_test_count", 
-      "family": "data"
+      "family": "meta"
     }, 
     {
       "type": "double", 
@@ -185,7 +188,7 @@
     {
       "type": "integer", 
       "name": "last_year_test_count", 
-      "family": "data"
+      "family": "meta"
     }, 
     {
       "type": "double", 
@@ -235,6 +238,36 @@
     {
       "type": "double", 
       "name": "last_year_upload_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "string", 
+      "name": "last_month_download_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "string", 
+      "name": "last_month_upload_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "string", 
+      "name": "last_week_download_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "string", 
+      "name": "last_week_upload_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "string", 
+      "name": "last_year_download_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "string", 
+      "name": "last_year_upload_speed_mbps_bins", 
       "family": "data"
     }
   ]

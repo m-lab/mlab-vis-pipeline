@@ -46,6 +46,7 @@ def main(project_id, instance_id, config_dir, remove_tables):
             if remove_tables:
                 print 'Removing: ' + table
                 connection.delete_table(table)
+                time.sleep(2)
             else:
                 print 'Unused table: ' + table
 

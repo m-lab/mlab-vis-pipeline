@@ -84,6 +84,19 @@ public class UpdatePipeline {
 		
 		PCollection<TableRow> ispdRows = addISPs.apply(mergedRows);
 		
+		// ==== merge ASNs
+		MergeASNsPipeline mergeASNs = new MergeASNsPipeline(pipe2);
+		mergeASNs.setWriteData(false)
+			.setOutputTable((String) downloadsConfig.get("withISPTable"))
+			.setInputTable((String) downloadsConfig.get("withISPTable"))
+			.setOutputSchema(Schema.fromJSONFile(
+					(String) downloadsConfig.get("withISPTableSchema")))
+			.setWriteDisposition(WriteDisposition.WRITE_APPEND)
+			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
+		
+		PCollection<TableRow> mergedIspdRows = mergeASNs.apply(ispdRows);
+	
+		
 		// ==== add local time
 		AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(pipe2);
 		addLocalTime.setWriteData(true)
@@ -92,7 +105,7 @@ public class UpdatePipeline {
 				.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 				.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
 
-		PCollection<TableRow> timedRows = addLocalTime.apply(ispdRows);
+		PCollection<TableRow> timedRows = addLocalTime.apply(mergedIspdRows);
 		
 		
 		// ==== add location names

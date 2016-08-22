@@ -47,7 +47,7 @@ from -- ============
 -- ============
 
   (SELECT REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region_code, ""), "")), " ", "") as parent_location_key, -- which field is the child location?
- all.client_city AS child_location_name, -- what is its type?
+ REPLACE(LOWER(all.client_city), " ", "") AS child_location_name, -- what is its type?
  "city" AS type, -- meta fields we are selecting
  all.client_city as client_city,
  all.client_region as client_region,
@@ -248,7 +248,7 @@ from -- ============
 -- ============
 
   (SELECT REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "")), " ", "") as parent_location_key, -- which field is the child location?
- all.client_region AS child_location_name, -- what is its type?
+ REPLACE(LOWER(all.client_region), " ", "") AS child_location_name, -- what is its type?
  "region" AS type, -- meta fields we are selecting
  all.client_region as client_region,
  all.client_country as client_country,
@@ -438,7 +438,7 @@ from -- ============
 -- ============
 
   (SELECT LOWER(IFNULL(all.client_continent_code, "")) as parent_location_key, -- which field is the child location?
- all.client_country AS child_location_name, -- what is its type?
+ REPLACE(LOWER(all.client_country), " ", "") AS child_location_name, -- what is its type?
  "country" AS type, -- meta fields we are selecting
  all.client_country as client_country,
  all.client_continent as client_continent,
@@ -606,7 +606,7 @@ from -- ============
 -- ============
 
   (SELECT "" as parent_location_key, -- which field is the child location?
- all.client_continent AS child_location_name, -- what is its type?
+ REPLACE(LOWER(all.client_continent), " ", "") AS child_location_name, -- what is its type?
  "continent" AS type, -- meta fields we are selecting
  all.client_continent as client_continent,
  all.client_continent_code as client_continent_code, -- timed fields

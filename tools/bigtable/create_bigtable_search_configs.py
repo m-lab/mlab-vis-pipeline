@@ -184,6 +184,8 @@ def build_location_client_asn_number_list_sql():
 
     query_str += ", \n".join(subqueries)
 
+    query_str += "\nWHERE last_year_test_count > 60"
+
     save_text(get_query_full_filename(config["table_name"]), query_str)
 
 def setup_base_json(config_name, config):

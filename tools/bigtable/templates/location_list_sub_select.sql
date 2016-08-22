@@ -5,7 +5,7 @@
   {0},
 
   -- which field is the child location?
-  all.{1} AS child_location_name,
+  REPLACE(LOWER(all.{1}), " ", "") AS child_location_name,
 
   -- what is its type?
   "{2}" AS type,

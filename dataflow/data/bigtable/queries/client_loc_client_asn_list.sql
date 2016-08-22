@@ -1825,3 +1825,5 @@ last_year_download_speed_mbps_bins,
 last_year_upload_speed_mbps_bins
 
 )
+
+WHERE last_year_test_count > 60

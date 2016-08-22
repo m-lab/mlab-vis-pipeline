@@ -80,6 +80,10 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 			case "integer":
 				addIntegerColumn(put, colSchema.getFamily(), row, colSchema.getName());
 				break;
+			case "integer_list":
+				// encode as a string
+				addStringColumn(put, colSchema.getFamily(), row, colSchema.getName());
+				break;
 			}
 		}
 	}

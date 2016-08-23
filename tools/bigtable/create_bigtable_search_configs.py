@@ -398,13 +398,9 @@ def build_location_list_sql():
     for location_level in LOCATION_LEVELS:
 
         location_type = location_level["type"]
-        print('type: ' + location_type)
         child_field = location_level['location_field']
         child_fields = config["region_key_fields"][location_type][:]
-        print(child_fields)
-        print(type(child_fields))
         child_fields.append(child_field)
-        print('CHILD: ' + child_field)
         child_str = replace(
             lower(
                 concat(child_fields, "all"))

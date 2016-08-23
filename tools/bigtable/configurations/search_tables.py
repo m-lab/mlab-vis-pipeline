@@ -113,6 +113,7 @@ AGGREGATIONS = {
 
         "fields" : [
             {"length": 10, "type": "string", "name": "type", "family": "meta"},
+            {"length": 45, "type": "string", "name": "client_city", "family": "meta"},
             {"length": 45, "type": "string", "name": "client_region", "family": "meta"},
             {"length": 2, "type": "string", "name": "client_region_code", "family": "meta"},
             {"length": 40, "type": "string", "name": "client_country", "family": "meta"},

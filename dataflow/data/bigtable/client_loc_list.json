@@ -39,6 +39,12 @@
     {
       "length": 45, 
       "type": "string", 
+      "name": "client_city", 
+      "family": "meta"
+    }, 
+    {
+      "length": 45, 
+      "type": "string", 
       "name": "client_region", 
       "family": "meta"
     }, 

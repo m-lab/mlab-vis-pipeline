@@ -8,6 +8,8 @@ def concat(fields, prefix="", separator="\"\""):
         IFNULL(client_continent_code, "")
     )
     '''
+    if len(fields) == 0:
+        return ""
     output = "CONCAT("
     rows = []
     for field in fields:
@@ -15,7 +17,8 @@ def concat(fields, prefix="", separator="\"\""):
             rows.append("IFNULL({0}, {1}), \"\"\n".format(field, separator))
         else:
             rows.append("IFNULL({0}.{1}, {2}), \"\"\n".format(prefix, field, separator))
-    output += ",".join(rows) + ")"
+    output += ",".join(rows)
+    output += ")"
     return output
 
 def lower(query):
@@ -23,14 +26,20 @@ def lower(query):
     Produces output like the following for a string:
     LOWER(<content>)
     '''
-    return "LOWER({0})".format(query)
+    if len(query) > 0:
+        return "LOWER({0})".format(query)
+    else:
+        return ""
 
 def replace(query, what_str, with_str):
     '''
     Produces output like the following:
     REPLACE(<query>, "what", "with")
     '''
-    return "REPLACE({0}, \"{1}\", \"{2}\")".format(query, what_str, with_str)
+    if len(query) > 0:
+        return "REPLACE({0}, \"{1}\", \"{2}\")".format(query, what_str, with_str)
+    else:
+        return ""
 
 
 def list_fields(fields, prefixes=[""]):

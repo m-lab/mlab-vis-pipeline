@@ -7,9 +7,9 @@
       "family": "meta"
     }, 
     {
-      "length": 50, 
+      "length": 60, 
       "type": "string", 
-      "name": "child_location_name", 
+      "name": "child_location_key", 
       "family": "meta"
     }
   ], 
@@ -25,9 +25,9 @@
       "family": "meta"
     }, 
     {
-      "length": 50, 
+      "length": 60, 
       "type": "string", 
-      "name": "child_location_name", 
+      "name": "child_location_key", 
       "family": "meta"
     }, 
     {

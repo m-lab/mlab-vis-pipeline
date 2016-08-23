@@ -89,18 +89,26 @@ AGGREGATIONS = {
         "query_file" : "client_loc_list",
         "json_file" : "client_loc_list",
 
-        "key_name": "parent_location_key",
+        "parent_key_name": "parent_location_key",
+        "child_key_name": "child_location_key",
 
         "key_fields" : [
             {"length": 10, "type": "string", "name": "parent_location_key", "family": "meta"},
-            {"length": 50, "type": "string", "name": "child_location_name", "family": "meta"}
+            {"length": 60, "type": "string", "name": "child_location_key", "family": "meta"}
         ],
 
         "region_key_fields": {
             "city" : ["client_continent_code", "client_country_code", "client_region_code"],
             "region" : ["client_continent_code", "client_country_code"],
             "country" : ["client_continent_code"],
-            "continent": ""
+            "continent": []
+        },
+
+        "child_key_fields": {
+            "city" : ["client_city"],
+            "region" : ["client_region_code"],
+            "country" : ["client_country_code"],
+            "continent": ["client_continent_code"]
         },
 
         "fields" : [
@@ -181,20 +189,20 @@ LOCATION_LEVELS = [
     },
     {
         "type": "region",
-        "location_field": "client_region",
+        "location_field": "client_region_code",
         "fields" : ["client_region", "client_country",
             "client_continent", "client_region_code", "client_country_code",
             "client_continent_code"]
     },
     {
         "type": "country",
-        "location_field": "client_country",
+        "location_field": "client_country_code",
         "fields" : ["client_country", "client_continent",
             "client_country_code", "client_continent_code"]
     },
     {
         "type": "continent",
-        "location_field": "client_continent",
+        "location_field": "client_continent_code",
         "fields" : ["client_continent", "client_continent_code"]
     }
 ]

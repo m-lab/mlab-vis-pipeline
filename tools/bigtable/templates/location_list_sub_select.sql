@@ -2,27 +2,24 @@
 -- Type: {2}
 -- ============
 (SELECT
-  {0},
+  {0}, -- parent key
+  {1}, -- child key
 
-  -- which field is the child location?
-  REPLACE(LOWER(all.{1}), " ", "") AS child_location_name,
+  "{2}" AS type, -- type
 
-  -- what is its type?
-  "{2}" AS type,
+  {3}, -- meta fields we are selecting
 
-  -- meta fields we are selecting
-  {3},
-
-  -- timed fields
-  {4}
+  {4} -- static fields
 
   FROM {{0}} all
 
   -- left join madness here!
   {5}
 
+  {6}
+
   GROUP BY
 
-  {6}
+  {7}
 
 )

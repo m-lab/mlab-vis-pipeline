@@ -291,6 +291,7 @@ def build_location_list_json():
     config_filepath = os.path.join(CONFIG_DIR, config["table_name"] + ".json")
     save_json(config_filepath, json_struct)
 
+
 def build_location_list_sql():
     '''
         Builds the client_loc_list table sql query file
@@ -320,29 +321,23 @@ def build_location_list_sql():
     for location_level in LOCATION_LEVELS:
 
         location_type = location_level["type"]
+        key_str = replace(
+            lower(
+                concat(config["region_key_fields"][location_type], "all"))
+            , " ", "")
 
-        # build internal key
-        # If large list, concat.
-        if (isinstance(config["region_key_fields"][location_type], list) and
-                len(config["region_key_fields"][location_type]) > 1):
+        child_str = replace(
+            lower(
+                concat(config["child_key_fields"][location_type], "all"))
+            , " ", "")
 
-            key_str = replace(
-                lower(
-                    concat(config["region_key_fields"][location_type], "all"))
-                , " ", "")
 
-        # If single item, just ifnull and lower single string
-        elif (isinstance(config["region_key_fields"][location_type], list) and
-              len(config["region_key_fields"][location_type]) == 1):
-
-            key_str = "LOWER(IFNULL(all.{0}, \"\"))".format(
-                config["region_key_fields"][location_type][0])
-
-        # If no key, use emptry string.
-        else:
+        if len(key_str) == 0:
             key_str = "\"\""
 
-        key_str += " as {0}".format(config["key_name"])
+        key_str += " as {0}".format(config["key_fields"][0]["name"])
+
+        child_str += " as {0}".format(config["key_fields"][1]["name"])
 
         left_joins = ""
 
@@ -373,7 +368,7 @@ def build_location_list_sql():
                 key_str,
 
                 # 1 - child location name
-                location_level["location_field"],
+                child_str,
 
                 # 2 - type of location
                 location_level["type"],
@@ -387,10 +382,99 @@ def build_location_list_sql():
                 # 5 - left joins
                 left_joins,
 
-                # 6 - group by
+                # 6 - where
+                "",
+
+                # 7 - group by
                 list_fields(config["key_fields"]) + ",\n" +
                     list_fields(location_level["fields"]) + ",\n" +
                     list_fields(config["timed_fields"], TIME_RANGES)
+            )
+        )
+
+    # ---
+    # ---- HACK
+    # ----
+    for location_level in LOCATION_LEVELS:
+
+        location_type = location_level["type"]
+        print('type: ' + location_type)
+        child_field = location_level['location_field']
+        child_fields = config["region_key_fields"][location_type][:]
+        print(child_fields)
+        print(type(child_fields))
+        child_fields.append(child_field)
+        print('CHILD: ' + child_field)
+        child_str = replace(
+            lower(
+                concat(child_fields, "all"))
+            , " ", "")
+
+        key_str = "\"info\""
+
+
+        if len(key_str) == 0:
+            key_str = "\"\""
+
+        key_str += " as {0}".format(config["key_fields"][0]["name"])
+
+        child_str += " as {0}".format(config["key_fields"][1]["name"])
+
+
+        where_field = " AND ".join(["LENGTH(all.{0}) > 0".format(field) for field in location_level["fields"]])
+
+        where_field = "WHERE " + where_field
+
+        left_joins = ""
+
+        # for each time granularity, add a left join
+        for time_comparison in TEST_DATE_COMPARISONS:
+            left_joins += leftjoin_template.format(
+
+                # 0 - selected fields
+                list_fields(location_level["fields"]),
+
+                # 1 - time comparison
+                TEST_DATE_COMPARISONS[time_comparison],
+
+                # 2 - location field not null
+                location_level["location_field"],
+
+                # 3 - all fields
+                join_on_fields(location_level["fields"], time_comparison),
+
+                # 4 - name of sub table
+                time_comparison
+            )
+
+        # add sub select
+        subqueries.append(
+            subselect_template.format(
+                # 0 - new key string
+                key_str,
+
+                # 1 - child location name
+                child_str,
+
+                # 2 - type of location
+                location_level["type"],
+
+                # 3 - all.field as fields
+                all_table_fields(location_level["fields"]),
+
+                # 4 - timed data fields
+                all_table_fields(config["timed_fields"], TIME_RANGES, True),
+
+                # 5 - left joins
+                left_joins,
+
+                # 6 - where
+                where_field,
+
+                # 7 - group by
+                list_fields(config["key_fields"]) + ",\n" +
+                    list_fields(location_level["fields"]) + ",\n" +
+                        list_fields(config["timed_fields"], TIME_RANGES)
             )
         )
 

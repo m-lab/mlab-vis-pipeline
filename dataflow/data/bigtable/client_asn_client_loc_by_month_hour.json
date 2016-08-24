@@ -1,15 +1,15 @@
 {
   "row_keys": [
     {
-      "length": 50, 
-      "type": "string", 
-      "name": "client_location_key", 
-      "family": "meta"
-    }, 
-    {
       "length": 10, 
       "type": "string", 
       "name": "client_asn_number", 
+      "family": "meta"
+    }, 
+    {
+      "length": 50, 
+      "type": "string", 
+      "name": "client_location_key", 
       "family": "meta"
     }, 
     {
@@ -97,39 +97,30 @@
       "family": "data"
     }, 
     {
-      "length": 50, 
-      "type": "string", 
-      "name": "client_location_key", 
-      "family": "meta"
-    }, 
-    {
       "length": 10, 
       "type": "string", 
       "name": "client_asn_number", 
       "family": "meta"
     }, 
     {
-      "length": 2, 
+      "length": 50, 
       "type": "string", 
-      "name": "client_continent_code", 
+      "name": "client_location_key", 
       "family": "meta"
     }, 
     {
-      "length": 2, 
       "type": "string", 
-      "name": "client_country_code", 
+      "name": "client_asn_name", 
       "family": "meta"
     }, 
     {
-      "length": 2, 
       "type": "string", 
-      "name": "client_region_code", 
+      "name": "local_time_zone", 
       "family": "meta"
     }, 
     {
-      "length": 40, 
       "type": "string", 
-      "name": "client_city", 
+      "name": "local_zone_name", 
       "family": "meta"
     }, 
     {
@@ -139,7 +130,17 @@
     }, 
     {
       "type": "string", 
+      "name": "client_continent_code", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
       "name": "client_country", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_country_code", 
       "family": "meta"
     }, 
     {
@@ -149,7 +150,12 @@
     }, 
     {
       "type": "string", 
-      "name": "client_asn_name", 
+      "name": "client_region_code", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_city", 
       "family": "meta"
     }, 
     {

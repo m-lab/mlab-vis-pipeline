@@ -121,27 +121,18 @@
       "family": "meta"
     }, 
     {
-      "length": 2, 
       "type": "string", 
-      "name": "client_continent_code", 
+      "name": "client_asn_name", 
       "family": "meta"
     }, 
     {
-      "length": 2, 
       "type": "string", 
-      "name": "client_country_code", 
+      "name": "local_time_zone", 
       "family": "meta"
     }, 
     {
-      "length": 2, 
       "type": "string", 
-      "name": "client_region_code", 
-      "family": "meta"
-    }, 
-    {
-      "length": 40, 
-      "type": "string", 
-      "name": "client_city", 
+      "name": "local_zone_name", 
       "family": "meta"
     }, 
     {
@@ -151,7 +142,17 @@
     }, 
     {
       "type": "string", 
+      "name": "client_continent_code", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
       "name": "client_country", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_country_code", 
       "family": "meta"
     }, 
     {
@@ -161,7 +162,12 @@
     }, 
     {
       "type": "string", 
-      "name": "client_asn_name", 
+      "name": "client_region_code", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "client_city", 
       "family": "meta"
     }, 
     {

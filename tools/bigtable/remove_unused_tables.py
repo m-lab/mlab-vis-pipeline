@@ -42,7 +42,7 @@ def main(project_id, instance_id, config_dir, remove_tables):
     all_tables = connection.tables()
 
     for table in all_tables:
-        if '_hour' in table:
+        if True:
             if remove_tables:
                 print 'Removing: ' + table
                 connection.delete_table(table)

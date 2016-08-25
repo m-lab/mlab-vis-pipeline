@@ -49,13 +49,31 @@
     {
       "length": 40, 
       "type": "string", 
+      "name": "client_region_code", 
+      "family": "meta"
+    }, 
+    {
+      "length": 40, 
+      "type": "string", 
       "name": "client_country", 
       "family": "meta"
     }, 
     {
       "length": 40, 
       "type": "string", 
+      "name": "client_country_code", 
+      "family": "meta"
+    }, 
+    {
+      "length": 40, 
+      "type": "string", 
       "name": "client_continent", 
+      "family": "meta"
+    }, 
+    {
+      "length": 40, 
+      "type": "string", 
+      "name": "client_continent_code", 
       "family": "meta"
     }, 
     {

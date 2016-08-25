@@ -80,8 +80,11 @@ AGGREGATIONS = {
             {"name": "location", "family" : "meta", "type" : "string", "length" : 40},
             {"name": "type", "family" : "meta", "type" : "string", "length" : 40},
             {"name": "client_region", "family" : "meta", "type" : "string", "length" : 40},
+            {"name": "client_region_code", "family" : "meta", "type" : "string", "length" : 40},
             {"name": "client_country", "family" : "meta", "type" : "string", "length" : 40},
+            {"name": "client_country_code", "family" : "meta", "type" : "string", "length" : 40},
             {"name": "client_continent", "family" : "meta", "type" : "string", "length" : 40},
+            {"name": "client_continent_code", "family" : "meta", "type" : "string", "length" : 40},
             {"name": "client_city", "family" : "meta", "type" : "string", "length" : 50},
             {"name": "location_key", "family" : "meta", "type" : "string", "length" : 60}
         ]

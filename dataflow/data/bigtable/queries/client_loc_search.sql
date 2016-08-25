@@ -5,8 +5,11 @@ SELECT REPLACE(LOWER(CONCAT(IFNULL(location, ""), "",IFNULL(client_region_code, 
        location,
        type,
        client_region,
+       client_region_code,
        client_country,
+       client_country_code,
        client_continent,
+       client_continent_code,
        client_city,
        location_key
 from -- Type: city

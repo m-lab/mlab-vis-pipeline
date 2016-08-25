@@ -6,7 +6,9 @@ SELECT REPLACE(LOWER(CONCAT(IFNULL(location, ""), "",IFNULL(client_region_code, 
        type,
        client_region,
        client_country,
-       client_continent
+       client_continent,
+       client_city,
+       location_key
 from -- Type: city
 
   (select -- city/region/country/continent
@@ -21,7 +23,8 @@ from -- Type: city
  all.client_continent as client_continent,
  all.client_region_code as client_region_code,
  all.client_country_code as client_country_code,
- all.client_continent_code as client_continent_code
+ all.client_continent_code as client_continent_code,
+ REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region_code, ""), "",IFNULL(all.client_city, ""), "")), " ", "") as location_key
    FROM {0} all
    left join
      (SELECT count(*) as last_three_month_test_count, -- which location fields? list
@@ -49,7 +52,8 @@ from -- Type: city
    and all.client_region_code = threemonths.client_region_code
    and all.client_country_code = threemonths.client_country_code
    and all.client_continent_code = threemonths.client_continent_code
-   GROUP BY location, -- group by location fields
+   GROUP BY location,
+            location_key, -- group by location fields
  client_city,
  client_region,
  client_country,
@@ -70,7 +74,8 @@ from -- Type: city
  all.client_continent as client_continent,
  all.client_region_code as client_region_code,
  all.client_country_code as client_country_code,
- all.client_continent_code as client_continent_code
+ all.client_continent_code as client_continent_code,
+ REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region_code, ""), "")), " ", "") as location_key
    FROM {0} all
    left join
      (SELECT count(*) as last_three_month_test_count, -- which location fields? list
@@ -95,7 +100,8 @@ from -- Type: city
    and all.client_region_code = threemonths.client_region_code
    and all.client_country_code = threemonths.client_country_code
    and all.client_continent_code = threemonths.client_continent_code
-   GROUP BY location, -- group by location fields
+   GROUP BY location,
+            location_key, -- group by location fields
  client_region,
  client_country,
  client_continent,
@@ -113,7 +119,8 @@ from -- Type: city
  all.client_country as client_country,
  all.client_continent as client_continent,
  all.client_country_code as client_country_code,
- all.client_continent_code as client_continent_code
+ all.client_continent_code as client_continent_code,
+ REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "")), " ", "") as location_key
    FROM {0} all
    left join
      (SELECT count(*) as last_three_month_test_count, -- which location fields? list
@@ -132,7 +139,8 @@ from -- Type: city
    and all.client_continent = threemonths.client_continent
    and all.client_country_code = threemonths.client_country_code
    and all.client_continent_code = threemonths.client_continent_code
-   GROUP BY location, -- group by location fields
+   GROUP BY location,
+            location_key, -- group by location fields
  client_country,
  client_continent,
  client_country_code,
@@ -146,7 +154,8 @@ from -- Type: city
  all.client_continent_code as location, -- metadata location fields and their names
  -- in the form all.field as field:
  all.client_continent as client_continent,
- all.client_continent_code as client_continent_code
+ all.client_continent_code as client_continent_code,
+ REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "")), " ", "") as location_key
    FROM {0} all
    left join
      (SELECT count(*) as last_three_month_test_count, -- which location fields? list
@@ -159,9 +168,10 @@ from -- Type: city
  client_continent_code ) threemonths on -- grouped on location fields. list
  all.client_continent = threemonths.client_continent
    and all.client_continent_code = threemonths.client_continent_code
-   GROUP BY location, -- group by location fields
+   GROUP BY location,
+            location_key, -- group by location fields
  client_continent,
  client_continent_code,
  threemonths.last_three_month_test_count)
-WHERE location IS NOT NULL;
+WHERE LENGTH(location) > 0;
 

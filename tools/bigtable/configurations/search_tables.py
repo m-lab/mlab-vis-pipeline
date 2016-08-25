@@ -73,6 +73,7 @@ AGGREGATIONS = {
         "key_fields" : [
             {"name" : "reverse_location_key", "family" : "meta", "type": "string", "length" : 60}
         ],
+
         "fields": [
             {"name": "test_count", "family" : "data", "type" : "integer"},
             {"name": "last_three_month_test_count", "family" : "data", "type" : "integer"},
@@ -80,7 +81,9 @@ AGGREGATIONS = {
             {"name": "type", "family" : "meta", "type" : "string", "length" : 40},
             {"name": "client_region", "family" : "meta", "type" : "string", "length" : 40},
             {"name": "client_country", "family" : "meta", "type" : "string", "length" : 40},
-            {"name": "client_continent", "family" : "meta", "type" : "string", "length" : 40}
+            {"name": "client_continent", "family" : "meta", "type" : "string", "length" : 40},
+            {"name": "client_city", "family" : "meta", "type" : "string", "length" : 50},
+            {"name": "location_key", "family" : "meta", "type" : "string", "length" : 60}
         ]
     },
 
@@ -186,24 +189,28 @@ LOCATION_LEVELS = [
         "location_field": "client_city",
         "fields" : ["client_city", "client_region", "client_country",
             "client_continent", "client_region_code", "client_country_code",
-            "client_continent_code"]
+            "client_continent_code"],
+        "keys" : ["client_continent_code", "client_country_code", "client_region_code", "client_city"]
     },
     {
         "type": "region",
         "location_field": "client_region_code",
         "fields" : ["client_region", "client_country",
             "client_continent", "client_region_code", "client_country_code",
-            "client_continent_code"]
+            "client_continent_code"],
+        "keys": ["client_continent_code", "client_country_code", "client_region_code"]
     },
     {
         "type": "country",
         "location_field": "client_country_code",
         "fields" : ["client_country", "client_continent",
-            "client_country_code", "client_continent_code"]
+            "client_country_code", "client_continent_code"],
+        "keys": ["client_continent_code", "client_country_code"]
     },
     {
         "type": "continent",
         "location_field": "client_continent_code",
-        "fields" : ["client_continent", "client_continent_code"]
+        "fields" : ["client_continent", "client_continent_code"],
+        "keys": ["client_continent_code"]
     }
 ]

@@ -13,7 +13,8 @@
   all.{5} as location,
   -- metadata location fields and their names
   -- in the form all.field as field:
-  {2}
+  {2},
+  {6}
 
   FROM {{0}} all
   left join
@@ -34,6 +35,7 @@
         {3}
   GROUP BY
     location,
+    location_key,
 
     -- group by location fields
     {1},

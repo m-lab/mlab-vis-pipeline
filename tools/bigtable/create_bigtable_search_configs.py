@@ -496,6 +496,14 @@ def build_location_search_json():
     config_filepath = os.path.join(CONFIG_DIR, config["table_name"] + ".json")
     save_json(config_filepath, json_struct)
 
+def build_location_key(field_names, name):
+    # build initial sql
+    key_str = replace(
+        lower(
+            concat(field_names)),
+            " ", "") + " as {0}".format(name)
+    return key_str
+
 def build_location_search_sql():
     # read template
     join_template = read_text(LOCATION_SEARCH_JOIN_TEMPLATE)
@@ -519,6 +527,11 @@ def build_location_search_sql():
 
     segments = []
     for location_level in LOCATION_LEVELS:
+        all_loc_keys = ["all.{0}".format(k) for k in location_level['keys']]
+
+        location_key = build_location_key(all_loc_keys, 'location_key')
+        print(location_key)
+
         segments.append(join_template.format(
 
             # 0 - type
@@ -537,12 +550,14 @@ def build_location_search_sql():
             "threemonths",
 
             # 5 - location field
-            location_level["location_field"]
+            location_level["location_field"],
+
+            location_key
         ))
 
     query_str += ", \n".join(segments) + '''
     WHERE
-        location IS NOT NULL;
+        LENGTH(location) > 0;
     '''
 
     save_text(get_query_full_filename(config["table_name"]),

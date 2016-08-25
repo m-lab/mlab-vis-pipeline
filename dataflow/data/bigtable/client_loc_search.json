@@ -57,6 +57,18 @@
       "type": "string", 
       "name": "client_continent", 
       "family": "meta"
+    }, 
+    {
+      "length": 50, 
+      "type": "string", 
+      "name": "client_city", 
+      "family": "meta"
+    }, 
+    {
+      "length": 60, 
+      "type": "string", 
+      "name": "location_key", 
+      "family": "meta"
     }
   ]
 }

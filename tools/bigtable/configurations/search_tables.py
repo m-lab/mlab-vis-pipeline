@@ -197,7 +197,7 @@ LOCATION_LEVELS = [
     },
     {
         "type": "region",
-        "location_field": "client_region_code",
+        "location_field": "client_region",
         "fields" : ["client_region", "client_country",
             "client_continent", "client_region_code", "client_country_code",
             "client_continent_code"],
@@ -205,14 +205,14 @@ LOCATION_LEVELS = [
     },
     {
         "type": "country",
-        "location_field": "client_country_code",
+        "location_field": "client_country",
         "fields" : ["client_country", "client_continent",
             "client_country_code", "client_continent_code"],
         "keys": ["client_continent_code", "client_country_code"]
     },
     {
         "type": "continent",
-        "location_field": "client_continent_code",
+        "location_field": "client_continent",
         "fields" : ["client_continent", "client_continent_code"],
         "keys": ["client_continent_code"]
     }

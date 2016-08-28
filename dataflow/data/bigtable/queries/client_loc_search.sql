@@ -70,7 +70,7 @@ from -- Type: city
  "region" as type, -- data:
  count(*) as test_count,
  threemonths.last_three_month_test_count, -- which field is the location field?
- all.client_region_code as location, -- metadata location fields and their names
+ all.client_region as location, -- metadata location fields and their names
  -- in the form all.field as field:
  all.client_region as client_region,
  all.client_country as client_country,
@@ -117,7 +117,7 @@ from -- Type: city
  "country" as type, -- data:
  count(*) as test_count,
  threemonths.last_three_month_test_count, -- which field is the location field?
- all.client_country_code as location, -- metadata location fields and their names
+ all.client_country as location, -- metadata location fields and their names
  -- in the form all.field as field:
  all.client_country as client_country,
  all.client_continent as client_continent,
@@ -154,7 +154,7 @@ from -- Type: city
  "continent" as type, -- data:
  count(*) as test_count,
  threemonths.last_three_month_test_count, -- which field is the location field?
- all.client_continent_code as location, -- metadata location fields and their names
+ all.client_continent as location, -- metadata location fields and their names
  -- in the form all.field as field:
  all.client_continent as client_continent,
  all.client_continent_code as client_continent_code,

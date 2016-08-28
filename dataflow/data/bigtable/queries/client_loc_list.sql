@@ -313,7 +313,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "MONTH")
-        and client_region_code is not null
+        and client_region is not null
       group by -- group by location fields
  client_region,
  client_country,
@@ -347,7 +347,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
-        and client_region_code is not null
+        and client_region is not null
       group by -- group by location fields
  client_region,
  client_country,
@@ -381,7 +381,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "YEAR")
-        and client_region_code is not null
+        and client_region is not null
       group by -- group by location fields
  client_region,
  client_country,
@@ -500,7 +500,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "MONTH")
-        and client_country_code is not null
+        and client_country is not null
       group by -- group by location fields
  client_country,
  client_continent,
@@ -528,7 +528,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
-        and client_country_code is not null
+        and client_country is not null
       group by -- group by location fields
  client_country,
  client_continent,
@@ -556,7 +556,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "YEAR")
-        and client_country_code is not null
+        and client_country is not null
       group by -- group by location fields
  client_country,
  client_continent,
@@ -665,7 +665,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "MONTH")
-        and client_continent_code is not null
+        and client_continent is not null
       group by -- group by location fields
  client_continent,
  client_continent_code ) last_month on -- join on location fields from the all table.
@@ -687,7 +687,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
-        and client_continent_code is not null
+        and client_continent is not null
       group by -- group by location fields
  client_continent,
  client_continent_code ) last_week on -- join on location fields from the all table.
@@ -709,7 +709,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "YEAR")
-        and client_continent_code is not null
+        and client_continent is not null
       group by -- group by location fields
  client_continent,
  client_continent_code ) last_year on -- join on location fields from the all table.
@@ -965,7 +965,7 @@ from -- ============
 -- ============
 
   (SELECT "info" as parent_location_key, -- parent key
- REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region_code, ""), "")), " ", "") as child_location_key, -- child key
+ REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region, ""), "")), " ", "") as child_location_key, -- child key
  "region" AS type, -- type
  all.client_region as client_region,
  all.client_country as client_country,
@@ -1029,7 +1029,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "MONTH")
-        and client_region_code is not null
+        and client_region is not null
       group by -- group by location fields
  client_region,
  client_country,
@@ -1063,7 +1063,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
-        and client_region_code is not null
+        and client_region is not null
       group by -- group by location fields
  client_region,
  client_country,
@@ -1097,7 +1097,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "YEAR")
-        and client_region_code is not null
+        and client_region is not null
       group by -- group by location fields
  client_region,
  client_country,
@@ -1162,7 +1162,7 @@ from -- ============
 -- ============
 
   (SELECT "info" as parent_location_key, -- parent key
- REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "")), " ", "") as child_location_key, -- child key
+ REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country, ""), "")), " ", "") as child_location_key, -- child key
  "country" AS type, -- type
  all.client_country as client_country,
  all.client_continent as client_continent,
@@ -1222,7 +1222,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "MONTH")
-        and client_country_code is not null
+        and client_country is not null
       group by -- group by location fields
  client_country,
  client_continent,
@@ -1250,7 +1250,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
-        and client_country_code is not null
+        and client_country is not null
       group by -- group by location fields
  client_country,
  client_continent,
@@ -1278,7 +1278,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "YEAR")
-        and client_country_code is not null
+        and client_country is not null
       group by -- group by location fields
  client_country,
  client_continent,
@@ -1335,7 +1335,7 @@ from -- ============
 -- ============
 
   (SELECT "info" as parent_location_key, -- parent key
- REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "")), " ", "") as child_location_key, -- child key
+ REPLACE(LOWER(CONCAT(IFNULL(all.client_continent, ""), "")), " ", "") as child_location_key, -- child key
  "continent" AS type, -- type
  all.client_continent as client_continent,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
@@ -1391,7 +1391,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "MONTH")
-        and client_continent_code is not null
+        and client_continent is not null
       group by -- group by location fields
  client_continent,
  client_continent_code ) last_month on -- join on location fields from the all table.
@@ -1413,7 +1413,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
-        and client_continent_code is not null
+        and client_continent is not null
       group by -- group by location fields
  client_continent,
  client_continent_code ) last_week on -- join on location fields from the all table.
@@ -1435,7 +1435,7 @@ from -- ============
  STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
       from {0}
       where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, "YEAR")
-        and client_continent_code is not null
+        and client_continent is not null
       group by -- group by location fields
  client_continent,
  client_continent_code ) last_year on -- join on location fields from the all table.

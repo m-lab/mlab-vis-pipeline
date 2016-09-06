@@ -1,4 +1,4 @@
-_code-- Finds various metrics grouped by remote_ip (client) based on
+-- Finds various metrics grouped by remote_ip (client) based on
 -- passed in timestamps.
 --
 -- Note this assumes that IPs are masked with 0xffffffc0

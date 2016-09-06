@@ -20,8 +20,8 @@ You can run linting on the python code in `tools/` by calling:
 
 # Running the tools
 
-It is easiest to run the various tools via `make`.
-See the `Makefile` for the available commands
+It is easiest to run the various tools via `make`. See the `Makefile` for the 
+available commands
 
 # Running the pipelines
 

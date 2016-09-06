@@ -134,6 +134,16 @@
       "family": "data"
     }, 
     {
+      "type": "double", 
+      "name": "last_month_rtt_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_month_retransmit_avg", 
+      "family": "data"
+    }, 
+    {
       "type": "integer", 
       "name": "last_week_test_count", 
       "family": "data"
@@ -189,6 +199,16 @@
       "family": "data"
     }, 
     {
+      "type": "double", 
+      "name": "last_week_rtt_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_week_retransmit_avg", 
+      "family": "data"
+    }, 
+    {
       "type": "integer", 
       "name": "last_year_test_count", 
       "family": "data"
@@ -241,6 +261,16 @@
     {
       "type": "double", 
       "name": "last_year_upload_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_rtt_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_year_retransmit_avg", 
       "family": "data"
     }
   ]

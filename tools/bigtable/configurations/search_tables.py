@@ -53,6 +53,8 @@ AGGREGATIONS = {
             {"type": "double", "name": "upload_speed_mbps_max", "family": "data"},
             {"type": "double", "name": "download_speed_mbps_stddev", "family": "data"},
             {"type": "double", "name": "upload_speed_mbps_stddev", "family": "data"},
+            {"type": "double", "name": "rtt_avg", "family": "data"},
+            {"type": "double", "name": "retransmit_avg", "family": "data"},
         ]
     },
 
@@ -139,6 +141,8 @@ AGGREGATIONS = {
             {"type": "double", "name": "upload_speed_mbps_max", "family": "data"},
             {"type": "double", "name": "download_speed_mbps_stddev", "family": "data"},
             {"type": "double", "name": "upload_speed_mbps_stddev", "family": "data"},
+            {"type": "double", "name": "rtt_avg", "family": "data"},
+            {"type": "double", "name": "retransmit_avg", "family": "data"},
         ]
     }
 }

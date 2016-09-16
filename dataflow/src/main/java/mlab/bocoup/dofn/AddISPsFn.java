@@ -99,9 +99,18 @@ public class AddISPsFn extends DoFn<TableRow, TableRow> {
 	 *            The packed base64 string (result of PARSE_PACKED_IP in SQL)
 	 * @return the IP as a base16 string
 	 */
-	private static String hexFromBase64(String base64Ip) {
+	public static String hexFromBase64(String base64Ip) {
 		byte[] decoded = DatatypeConverter.parseBase64Binary(base64Ip);
-		return DatatypeConverter.printHexBinary(decoded);
+		String hex = DatatypeConverter.printHexBinary(decoded);
+		
+		// ensure that the hex is the full 32 characters in length
+		int hexLength = hex.length();
+		if (hexLength < 32) {
+			String zeros = "00000000000000000000000000000000";
+			hex = zeros.substring(0,  32 - hexLength) + hex;
+		}
+		
+		return hex;
 	}
 
 	/**

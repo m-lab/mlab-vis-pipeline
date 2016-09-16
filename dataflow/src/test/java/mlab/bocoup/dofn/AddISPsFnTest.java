@@ -40,8 +40,8 @@ public class AddISPsFnTest {
 	private static final String[] ASN_TOKEN_KEYS = { "asn_string", "asn_number", "asn_name", "min_ip_hex", "max_ip_hex",
 			"min_ip", "max_ip", "ip_family", "min_ipv6_hex", "max_ipv6_hex" };
 	private static final String[] ASN_INFO = {
-			"AS3215	AS3215	Orange S.A.	5A680000	5A69FFFF	90.104.0.0	90.105.255.255	2	x	x",
-			"AS6327	AS6327	Shaw Communications Inc.	46400000	464FFFFF	70.64.0.0	70.79.182.109	2	x	x",
+			"AS3215	AS3215	Orange S.A.	0000000000000000000000005A680000	0000000000000000000000005A69FFFF	90.104.0.0	90.105.255.255	2	x	x",
+			"AS6327	AS6327	Shaw Communications Inc.	00000000000000000000000046400000	000000000000000000000000464FFFFF	70.64.0.0	70.79.182.109	2	x	x",
 			"AS6900	AS6900	Hewlett Packard GmbH	2A0209F8900000000000000000000000	2A0209F8900FFFFFFFFFFFFFFFFFFFFF	2a02:9f8:9000::	2a02:9f8:900f:ffff:ffff:ffff:ffff:ffff	10	2A0209F8900000000000000000000000	2A0209F8900FFFFFFFFFFFFFFFFFFFFF",
 			"AS9052	AS9052	Unidad Editorial S.A.	2001067C229400000000000000000000	2001067C2294FFFFFFFFFFFFFFFFFFFF	2001:67c:2294::	2001:67c:2294:ffff:ffff:ffff:ffff:ffff	10	2001067C229400000000000000000000	2001067C2294FFFFFFFFFFFFFFFFFFFF",
 			"AS12782	AS12782	Uppsala Lans Landsting	x	x	2a01:58:20::	2a01:58:21:ffff:ffff:ffff:ffff:ffff	10	2A010058002000000000000000000000	2A0100580021FFFFFFFFFFFFFFFFFFFF",
@@ -237,5 +237,13 @@ public class AddISPsFnTest {
 		assertEquals("AS6900", (String) output.get(2).get("client_asn_number"));
 		assertNull((String) output.get(3).get("client_asn_name"));
 		assertNull((String) output.get(3).get("client_asn_number"));
+	}
+	
+	@Test
+	public void testHexFromBase64() {
+		// We need the hex to be 32 characters in length so string sorting works.
+		assertEquals("26020306CD9E1490ED3C8B7F85EE70B6", AddISPsFn.hexFromBase64("JgIDBs2eFJDtPIt/he5wtg=="));
+		assertEquals("000000000000000000000000D4A2334B", AddISPsFn.hexFromBase64("1KIzSw=="));
+		
 	}
 }

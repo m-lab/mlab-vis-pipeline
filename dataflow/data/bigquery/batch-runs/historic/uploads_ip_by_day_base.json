@@ -2,7 +2,7 @@
   "queryFile": "./data/bigquery/queries/base_uploads_ip_by_day.sql",
   "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
   "outputTable": "bocoup_prod.base_uploads_ip_by_day",
-  "numberOfDays": 9,
+  "numberOfDays": 4,
   "dates": [
      "2009-01-15T00:00:00Z",
      "2010-01-01T00:00:00Z",
@@ -12,7 +12,7 @@
      "2014-01-01T00:00:00Z",
      "2015-01-01T00:00:00Z",
      "2016-01-01T00:00:00Z",
-     "2016-09-03T00:00:00Z"
+     "2016-09-10T00:00:00Z"
   ],
 
   "mergeTable": "bocoup_prod.base_merged_ip_by_day",

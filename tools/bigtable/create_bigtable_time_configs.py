@@ -18,15 +18,9 @@ TEMPLATE_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__f
                                             "templates"))
 
 DATE_CONFIG_TEMPLATE_FILENAME = os.path.join(TEMPLATE_DIR, "time_config_template.json")
-SQL_TEMPLATE_FILENAME = os.path.join(TEMPLATE_DIR, "time_sql_template.sql")
 
 
 RESERVED_WORDS = ['date', 'hour']
-
-CALCULATED_FIELDS = {
-    'client_location_key': os.path.join(TEMPLATE_DIR, "client_location_key.sql"),
-    'reverse_client_location_key': os.path.join(TEMPLATE_DIR, "reverse_client_location_key.sql")
-    }
 
 METRIC_FIELDS = {
     "download_speed_mbps_median": {

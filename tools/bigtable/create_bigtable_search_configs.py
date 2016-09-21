@@ -12,7 +12,7 @@ from create_bigtable_time_configs import \
     get_query_relative_filename, get_query_full_filename, \
     BIGQUERY_DATE_TABLE, CONFIG_DIR
 from configurations.search_tables import AGGREGATIONS, LOCATION_LEVELS, \
-    TIME_RANGES, TEST_DATE_COMPARISONS, HISTOGRAM_BINS, LOCATION_CLIENT_ASN_LEVELS
+    TIME_RANGES, TEST_DATE_COMPARISONS, HISTOGRAM_BINS
 
 # -- Templates:
 # Location lists:
@@ -30,14 +30,6 @@ LOCATION_SEARCH_JOIN_TEMPLATE = os.path.join(os.path.dirname(os.path.realpath(__
 SEARCH_JSON_TEMPLATE = os.path.join(
                         os.path.dirname(os.path.realpath(__file__)),
                         "templates", "search_template.json")
-# location client asn number list:
-LOCATION_CLIENT_ASN_LEFTJOIN_TEMPLATE = os.path.join(
-                        os.path.dirname(os.path.realpath(__file__)),
-                        "templates", "location_client_asn_number_left_join.sql")
-
-LOCATION_CLIENT_ASN_SUBSELECT_TEMPLATE = os.path.join(
-                        os.path.dirname(os.path.realpath(__file__)),
-                        "templates", "location_client_asn_number_sub_select.sql")
 
 LOCATION_SUBSELECT_TEMPLATE = os.path.join(
                         os.path.dirname(os.path.realpath(__file__)),
@@ -81,17 +73,10 @@ def build_base_query_string(agg_config):
     '''
     produces location sql base
     '''
-    query_str = """
-        select
-        {0},
-        "{1}" as speed_mbps_bins,
-        {2}
-        from
-    """
 
     # add select fields:
     select_fields = "%s, \n %s, \n %s" % (
-        list_fields(agg_config["key_fields"]),
+        list_fields(agg_config["key_fields"], [""], True),
         list_fields(agg_config["fields"]),
         timed_list_fields(agg_config["timed_fields"], TIME_RANGES))
 
@@ -105,37 +90,77 @@ def build_base_query_string(agg_config):
             name = field_name(field)
             bin_fields.append("{0}_{1}_bins".format(timename, name))
 
+    query_str = """
+        SELECT
+        {0},
+        "{1}" as speed_mbps_bins,
+        {2}
+        from
+    """
 
     query_str = query_str.format(select_fields, bins, ",\n".join(bin_fields))
     return query_str
 
+def build_location_key_string(location_level, key_name):
+    # build internal key
+    # Not sure why, but the location type can be of different
+    # type values, so we have to handle that here.
+
+    keys = location_level['keys']
+
+    # If large list, concat.
+    if (isinstance(keys, list) and
+            len(keys) > 1):
+
+        key_str = replace(
+            lower(
+                concat(keys, "all"))
+            , " ", "")
+    # If single item, just ifnull and lower single string
+    elif (isinstance(keys, list) and
+          len(keys) == 1):
+
+        key_str = "LOWER(IFNULL(all.{0}, \"\"))".format(keys[0])
+    # If no key, use emptry string.
+    else:
+        key_str = "\"\""
+    key_str += " AS {0}".format(key_name)
+
+    return key_str
+
+def build_left_join(leftjoin_template, time_comparison, location_level, agg_config, binned_fields):
+    join_fields = location_level["fields"] + agg_config['extra_fields']
+    left_join = leftjoin_template.format(
+
+        # 0 - selected fields
+        list_fields(join_fields),
+
+        # 1 - time comparison
+        TEST_DATE_COMPARISONS[time_comparison],
+
+        # 2 - location field not null
+        location_level["location_field"],
+
+        # 3 - all fields
+        join_on_fields(join_fields, time_comparison),
+
+        # 4 - name of sub table
+        time_comparison,
+
+        # 5 - bins
+        ", \n".join(binned_fields)
+    )
+    return left_join
+
+
 def build_location_sub_queries(agg_config, subselect_template, leftjoin_template):
     # handle sub queries
     subqueries = []
-    for location_level in LOCATION_CLIENT_ASN_LEVELS:
+    for location_level in LOCATION_LEVELS:
 
-        location_type = location_level["type"]
+        location_key_name = agg_config['key_name']
 
-        # build internal key
-        # If large list, concat.
-        if (isinstance(agg_config["region_key_fields"][location_type], list) and
-                len(agg_config["region_key_fields"][location_type]) > 1):
-
-            key_str = replace(
-                lower(
-                    concat(agg_config["region_key_fields"][location_type], "all"))
-                , " ", "")
-        # If single item, just ifnull and lower single string
-        elif (isinstance(agg_config["region_key_fields"][location_type], list) and
-              len(agg_config["region_key_fields"][location_type]) == 1):
-
-            key_str = "LOWER(IFNULL(all.{0}, \"\"))".format(
-                agg_config["region_key_fields"][location_type][0])
-        # If no key, use emptry string.
-        else:
-            key_str = "\"\""
-
-        key_str += " as {0}".format(agg_config["key_name"])
+        location_key_str = build_location_key_string(location_level, location_key_name)
 
         left_joins = ""
 
@@ -147,26 +172,9 @@ def build_location_sub_queries(agg_config, subselect_template, leftjoin_template
             for field in agg_config["binned_fields"]:
                 binned_fields.append(output_bin_string(field, HISTOGRAM_BINS))
 
-            left_joins += leftjoin_template.format(
+            left_join = build_left_join(leftjoin_template, time_comparison, location_level, agg_config, binned_fields)
+            left_joins += left_join
 
-                # 0 - selected fields
-                list_fields(location_level["fields"]),
-
-                # 1 - time comparison
-                TEST_DATE_COMPARISONS[time_comparison],
-
-                # 2 - location field not null
-                location_level["location_field"],
-
-                # 3 - all fields
-                join_on_fields(location_level["fields"], time_comparison),
-
-                # 4 - name of sub table
-                time_comparison,
-
-                # 5 - bins
-                ", \n".join(binned_fields)
-            )
 
         # add binned timed fields
         binned_timed_fields = []
@@ -179,17 +187,24 @@ def build_location_sub_queries(agg_config, subselect_template, leftjoin_template
                 groupby_binned_timed_fields.append("{0}_{1}_bins"
                     .format(time_comparison, name))
 
+        subquery = "(SELECT "
+        subquery += " {0},\n".format(location_key_str)
+        subquery += " {0} AS type,\n".format(location_level['type'])
+
+        # agg_field_names = [ f['name'] for f in agg_config['fields'] if f['name'] != 'type']
+
+        join_fields = location_level["fields"] + agg_config['extra_fields']
         # add sub select
         subqueries.append(
             subselect_template.format(
                 # 0 - new key string
-                key_str,
+                location_key_str,
 
                 # 1 - type of location
                 location_level["type"],
 
                 # 2 - all.field as fields
-                all_table_fields(location_level["fields"]),
+                all_table_fields(join_fields),
 
                 # 3 - timed data fields
                 all_table_fields(agg_config["timed_fields"], TIME_RANGES, True) +
@@ -200,7 +215,7 @@ def build_location_sub_queries(agg_config, subselect_template, leftjoin_template
 
                 # 5 - group by
                 list_fields(agg_config["key_fields"]) + ",\n" +
-                list_fields(location_level["fields"]) + ",\n" +
+                list_fields(join_fields) + ",\n" +
                 list_fields(agg_config["timed_fields"], TIME_RANGES) + ", \n" +
                 list_fields(groupby_binned_timed_fields)
             )
@@ -224,150 +239,6 @@ def build_location_json(agg_key):
     config_filepath = os.path.join(CONFIG_DIR, config["table_name"] + ".json")
     save_json(config_filepath, json_struct)
 
-def build_location_client_asn_number_list():
-    print("client_loc_client_asn_list")
-    build_location_client_asn_number_list_sql()
-    build_location_client_asn_number_list_json()
-
-def build_location_client_asn_number_list_sql():
-    '''
-    Builds the sql query for the location_client_asn_list table
-    '''
-
-    subselect_template = read_text(LOCATION_CLIENT_ASN_SUBSELECT_TEMPLATE)
-    leftjoin_template = read_text(LOCATION_CLIENT_ASN_LEFTJOIN_TEMPLATE)
-
-    config = AGGREGATIONS["client_loc_client_asn_list"]
-
-    query_str = """
-        select
-        {0},
-        "{1}" as speed_mbps_bins,
-        {2}
-        from
-    """
-
-    # add select fields:
-    select_fields = "%s, \n %s, \n %s" % (
-        list_fields(config["key_fields"]),
-        list_fields(config["fields"]),
-        timed_list_fields(config["timed_fields"], TIME_RANGES))
-
-    # add histogram bins for reference
-    bins = ",".join(str(b) for b in HISTOGRAM_BINS)
-
-    # add concatenated histogram bins
-    bin_fields = []
-    for timename in TIME_RANGES:
-        for field in config["binned_fields"]:
-            name = field_name(field)
-            bin_fields.append("{0}_{1}_bins".format(timename, name))
-
-
-    query_str = query_str.format(select_fields, bins, ",\n".join(bin_fields))
-
-    # handle sub queries
-    subqueries = []
-
-    for location_level in LOCATION_CLIENT_ASN_LEVELS:
-
-        location_type = location_level["type"]
-
-        # build internal key
-        # If large list, concat.
-        if (isinstance(config["region_key_fields"][location_type], list) and
-                len(config["region_key_fields"][location_type]) > 1):
-
-            key_str = replace(
-                lower(
-                    concat(config["region_key_fields"][location_type], "all"))
-                , " ", "")
-        # If single item, just ifnull and lower single string
-        elif (isinstance(config["region_key_fields"][location_type], list) and
-              len(config["region_key_fields"][location_type]) == 1):
-
-            key_str = "LOWER(IFNULL(all.{0}, \"\"))".format(
-                config["region_key_fields"][location_type][0])
-        # If no key, use emptry string.
-        else:
-            key_str = "\"\""
-
-        key_str += " as {0}".format(config["key_name"])
-
-        left_joins = ""
-
-        # for each time granularity, add a left join
-        for time_comparison in TEST_DATE_COMPARISONS:
-
-            # compute histogram fields
-            binned_fields = []
-            for field in config["binned_fields"]:
-                binned_fields.append(output_bin_string(field, HISTOGRAM_BINS))
-
-            left_joins += leftjoin_template.format(
-
-                # 0 - selected fields
-                list_fields(location_level["fields"]),
-
-                # 1 - time comparison
-                TEST_DATE_COMPARISONS[time_comparison],
-
-                # 2 - location field not null
-                location_level["location_field"],
-
-                # 3 - all fields
-                join_on_fields(location_level["fields"], time_comparison),
-
-                # 4 - name of sub table
-                time_comparison,
-
-                # 5 - bins
-                ", \n".join(binned_fields)
-            )
-
-        # add binned timed fields
-        binned_timed_fields = []
-        groupby_binned_timed_fields = []
-        for time_comparison in TEST_DATE_COMPARISONS:
-            for field in config["binned_fields"]:
-                name = field_name(field)
-                binned_timed_fields.append("{0}.{1}_bins as {0}_{1}_bins"
-                    .format(time_comparison, name))
-                groupby_binned_timed_fields.append("{0}_{1}_bins"
-                    .format(time_comparison, name))
-
-        # add sub select
-        subqueries.append(
-            subselect_template.format(
-                # 0 - new key string
-                key_str,
-
-                # 1 - type of location
-                location_level["type"],
-
-                # 2 - all.field as fields
-                all_table_fields(location_level["fields"]),
-
-                # 3 - timed data fields
-                all_table_fields(config["timed_fields"], TIME_RANGES, True) +
-                ",\n" + ", \n".join(binned_timed_fields),
-
-                # 4 - left joins
-                left_joins,
-
-                # 5 - group by
-                list_fields(config["key_fields"]) + ",\n" +
-                list_fields(location_level["fields"]) + ",\n" +
-                list_fields(config["timed_fields"], TIME_RANGES) + ", \n" +
-                list_fields(groupby_binned_timed_fields)
-            )
-        )
-
-    query_str += ", \n".join(subqueries)
-
-    query_str += "\nWHERE last_year_test_count > 60"
-
-    save_text(get_query_full_filename(config["table_name"]), query_str)
 
 def setup_base_json(config_name, config):
     '''
@@ -504,7 +375,7 @@ def build_location_list_sql():
         location_type = location_level["type"]
         key_str = replace(
             lower(
-                concat(config["region_key_fields"][location_type], "all"))
+                concat(config["parent_key_fields"][location_type], "all"))
             , " ", "")
 
         child_str = replace(
@@ -580,7 +451,7 @@ def build_location_list_sql():
 
         location_type = location_level["type"]
         child_field = location_level['location_field']
-        child_fields = config["region_key_fields"][location_type][:]
+        child_fields = config["parent_key_fields"][location_type][:]
         child_fields.append(child_field)
         child_str = replace(
             lower(
@@ -747,7 +618,6 @@ def main():
     '''
     Builds available tables
     '''
-    # build_location_client_asn_number_list()
     build_location('client_loc_client_asn_list')
     build_location('client_loc_server_asn_list')
     build_location('client_asn_client_location_list')

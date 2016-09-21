@@ -17,12 +17,7 @@ AGGREGATIONS = {
             {"length": 10, "type": "string", "name": "client_asn_number", "family": "meta"}
         ],
 
-        "region_key_fields": {
-            "city" : ["client_continent_code", "client_country_code", "client_region_code", "client_city"],
-            "region" : ["client_continent_code", "client_country_code", "client_region_code"],
-            "country" : ["client_continent_code", "client_country_code"],
-            "continent": ["client_continent_code"]
-        },
+        "extra_fields" : ['client_asn_name', 'client_asn_number'],
 
         "fields" : [
             {"name" : "client_asn_name", "family" : "meta", "type": "string"},
@@ -67,22 +62,19 @@ AGGREGATIONS = {
         "key_name" : "location_key",
         "key_columns" : [
             "location_key",
-            "server_asn_name"
+            "server_asn_name_lookup"
         ],
 
         "key_fields" : [
             {"length": 50, "type": "string", "name": "location_key", "family": "meta"},
-            {"length": 40, "type": "string", "name": "server_asn_name", "family": "meta"}
+            {"length": 40, "type": "string", "name": "server_asn_name_lookup", "family": "meta",
+             "sql": "lower(REGEXP_REPLACE(server_asn_name, r\"[^\w|_]\", \"\"))"}
         ],
 
-        "region_key_fields": {
-            "city" : ["client_continent_code", "client_country_code", "client_region_code", "client_city"],
-            "region" : ["client_continent_code", "client_country_code", "client_region_code"],
-            "country" : ["client_continent_code", "client_country_code"],
-            "continent": ["client_continent_code"]
-        },
+        "extra_fields" : ['server_asn_name'],
 
         "fields" : [
+            {"name": "server_asn_name", "family": "meta", "type": "string"},
             {"name": "type", "family": "meta", "type": "string"},
             {"name": "client_city", "family": "meta", "type": "string"},
             {"name": "client_region", "family": "meta", "type": "string"},
@@ -133,12 +125,7 @@ AGGREGATIONS = {
             {"length": 50, "type": "string", "name": "location_key", "family": "meta"}
         ],
 
-        "region_key_fields": {
-            "city" : ["client_continent_code", "client_country_code", "client_region_code", "client_city"],
-            "region" : ["client_continent_code", "client_country_code", "client_region_code"],
-            "country" : ["client_continent_code", "client_country_code"],
-            "continent": ["client_continent_code"]
-        },
+        "extra_fields" : ['client_asn_name', 'client_asn_number'],
 
         "fields" : [
             {"name" : "client_asn_name", "family" : "meta", "type": "string"},
@@ -180,7 +167,6 @@ AGGREGATIONS = {
         "query_file": "server_asn_client_loc_list",
         "json_file" : "server_asn_client_loc_list",
 
-        "key_length" : 30,
         "key_name" : "location_key",
         "key_columns" : [
             "server_asn_name"
@@ -192,12 +178,7 @@ AGGREGATIONS = {
             {"length": 50, "type": "string", "name": "location_key", "family": "meta"}
         ],
 
-        "region_key_fields": {
-            "city" : ["client_continent_code", "client_country_code", "client_region_code", "client_city"],
-            "region" : ["client_continent_code", "client_country_code", "client_region_code"],
-            "country" : ["client_continent_code", "client_country_code"],
-            "continent": ["client_continent_code"]
-        },
+        "extra_fields" : ['server_asn_name'],
 
         "fields" : [
             {"name": "type", "family": "meta", "type": "string"},
@@ -238,7 +219,6 @@ AGGREGATIONS = {
         "query_file": "client_loc_search",
         "json_file" : "client_loc_search",
 
-        "key_length" : 60,
         "key_name": "reverse_location_key",
         "key_columns" : [
             "location",
@@ -279,7 +259,7 @@ AGGREGATIONS = {
             {"length": 60, "type": "string", "name": "child_location_key", "family": "meta"}
         ],
 
-        "region_key_fields": {
+        "parent_key_fields": {
             "city" : ["client_continent_code", "client_country_code", "client_region_code"],
             "region" : ["client_continent_code", "client_country_code"],
             "country" : ["client_continent_code"],
@@ -336,33 +316,33 @@ TEST_DATE_COMPARISONS =  {
     "last_year" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, \"YEAR\")"
 }
 
-LOCATION_CLIENT_ASN_LEVELS = [
-    {
-        "type": "city",
-        "location_field": "client_city",
-        "fields" : ["client_asn_number", "client_asn_name", "client_city", "client_region", "client_country",
-            "client_continent", "client_region_code", "client_country_code",
-            "client_continent_code"]
-    },
-    {
-        "type": "region",
-        "location_field": "client_region",
-        "fields" : ["client_asn_number", "client_asn_name", "client_region", "client_country",
-            "client_continent", "client_region_code", "client_country_code",
-            "client_continent_code"]
-    },
-    {
-        "type": "country",
-        "location_field": "client_country",
-        "fields" : ["client_asn_number", "client_asn_name", "client_country", "client_continent",
-            "client_country_code", "client_continent_code"]
-    },
-    {
-        "type": "continent",
-        "location_field": "client_continent",
-        "fields" : ["client_asn_number", "client_asn_name", "client_continent", "client_continent_code"]
-    }
-]
+# LOCATION_CLIENT_ASN_LEVELS = [
+#     {
+#         "type": "city",
+#         "location_field": "client_city",
+#         "fields" : ["client_asn_number", "client_asn_name", "client_city", "client_region", "client_country",
+#             "client_continent", "client_region_code", "client_country_code",
+#             "client_continent_code"]
+#     },
+#     {
+#         "type": "region",
+#         "location_field": "client_region",
+#         "fields" : ["client_asn_number", "client_asn_name", "client_region", "client_country",
+#             "client_continent", "client_region_code", "client_country_code",
+#             "client_continent_code"]
+#     },
+#     {
+#         "type": "country",
+#         "location_field": "client_country",
+#         "fields" : ["client_asn_number", "client_asn_name", "client_country", "client_continent",
+#             "client_country_code", "client_continent_code"]
+#     },
+#     {
+#         "type": "continent",
+#         "location_field": "client_continent",
+#         "fields" : ["client_asn_number", "client_asn_name", "client_continent", "client_continent_code"]
+#     }
+# ]
 
 LOCATION_LEVELS = [
     {

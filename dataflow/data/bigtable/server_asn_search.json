@@ -1,0 +1,38 @@
+{
+  "row_keys": [
+    {
+      "length": 100,
+      "type": "string",
+      "name": "server_asn_name_lookup",
+      "family": "meta"
+    }
+  ],
+  "bigquery_queryfile": "./data/bigtable/queries/server_asn_search.sql",
+  "bigtable_table_name": "server_asn_search",
+  "key": "server_asn_search",
+  "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]",
+  "columns": [
+    {
+      "length": 100,
+      "type": "string",
+      "name": "server_asn_name_lookup",
+      "family": "meta"
+    },
+    {
+      "length": 100,
+      "type": "string",
+      "name": "server_asn_name",
+      "family": "meta"
+    },
+    {
+      "type": "integer",
+      "name": "test_count",
+      "family": "data"
+    },
+    {
+      "type": "integer",
+      "name": "last_three_month_test_count",
+      "family": "data"
+    }
+  ]
+}

@@ -1,9 +1,8 @@
 
         select
-        location_key, 
-client_asn_number, 
- client_asn_name, 
-type, 
+        server_asn_name, 
+location_key, 
+ type, 
 client_city, 
 client_region, 
 client_region_code, 
@@ -490,8 +489,8 @@ all.client_continent_code = last_year.client_continent_code
 
   GROUP BY
 
-  location_key, 
-client_asn_number,
+  server_asn_name, 
+location_key,
 client_asn_number, 
 client_asn_name, 
 client_city, 
@@ -970,8 +969,8 @@ all.client_continent_code = last_year.client_continent_code
 
   GROUP BY
 
-  location_key, 
-client_asn_number,
+  server_asn_name, 
+location_key,
 client_asn_number, 
 client_asn_name, 
 client_region, 
@@ -1428,8 +1427,8 @@ all.client_continent_code = last_year.client_continent_code
 
   GROUP BY
 
-  location_key, 
-client_asn_number,
+  server_asn_name, 
+location_key,
 client_asn_number, 
 client_asn_name, 
 client_country, 
@@ -1862,8 +1861,8 @@ all.client_continent_code = last_year.client_continent_code
 
   GROUP BY
 
-  location_key, 
-client_asn_number,
+  server_asn_name, 
+location_key,
 client_asn_number, 
 client_asn_name, 
 client_continent, 

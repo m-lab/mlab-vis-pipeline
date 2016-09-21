@@ -13,7 +13,7 @@
       "family": "meta"
     }
   ],
-  "bigquery_queryfile": "./data/bigtable/queries/client_asn_server_asn.sql",
+  "bigquery_queryfile": "./data/bigtable/queries/client_asn_server_asn_list.sql",
   "bigtable_table_name": "client_asn_server_asn_list",
   "key": "client_asn_server_asn_list",
   "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]",

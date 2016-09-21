@@ -259,7 +259,7 @@ DATE_QUERIES = {
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../", "dataflow"))
 
 CONFIG_DIR = os.path.join(BASE_DIR, "data", "bigtable")
-QUERY_FOLDER = os.path.abspath(os.path.join(CONFIG_DIR, "queries"))
+QUERY_DIR = os.path.abspath(os.path.join(CONFIG_DIR, "queries"))
 
 
 def read_json(filename):
@@ -602,4 +602,5 @@ def main():
                    date_config_fields)
 
 # RUN
-main()
+if __name__ == "__main__":
+    main()

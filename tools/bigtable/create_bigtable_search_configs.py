@@ -35,13 +35,194 @@ LOCATION_CLIENT_ASN_LEFTJOIN_TEMPLATE = os.path.join(
                         os.path.dirname(os.path.realpath(__file__)),
                         "templates", "location_client_asn_number_left_join.sql")
 
-LOCATION_CLIENT_ASN_SUBSELECT_TEMPLATE= os.path.join(
+LOCATION_CLIENT_ASN_SUBSELECT_TEMPLATE = os.path.join(
                         os.path.dirname(os.path.realpath(__file__)),
                         "templates", "location_client_asn_number_sub_select.sql")
+
+LOCATION_SUBSELECT_TEMPLATE = os.path.join(
+                        os.path.dirname(os.path.realpath(__file__)),
+                        "templates", "location_sub_select.sql")
+
+LOCATION_LEFTJOIN_TEMPLATE = os.path.join(
+                        os.path.dirname(os.path.realpath(__file__)),
+                        "templates", "location_left_join.sql")
 
 ##########################
 # Location client asn list
 ##########################
+
+
+def build_location(agg_key):
+    print(agg_key)
+    build_location_sql(agg_key)
+    build_location_json(agg_key)
+
+def build_location_sql(agg_key):
+    '''
+    Builds sql query for a location based list
+    '''
+
+    subset_template = read_text(LOCATION_SUBSELECT_TEMPLATE)
+    leftjoin_template = read_text(LOCATION_LEFTJOIN_TEMPLATE)
+
+    agg_config = AGGREGATIONS[agg_key]
+
+    query_str = build_base_query_string(agg_config)
+    subqueries = build_location_sub_queries(agg_config, subset_template, leftjoin_template)
+
+    query_str += ", \n".join(subqueries)
+    query_str += "\nWHERE last_year_test_count > 60"
+
+    save_text(get_query_full_filename(agg_config["table_name"]), query_str)
+
+
+
+def build_base_query_string(agg_config):
+    '''
+    produces location sql base
+    '''
+    query_str = """
+        select
+        {0},
+        "{1}" as speed_mbps_bins,
+        {2}
+        from
+    """
+
+    # add select fields:
+    select_fields = "%s, \n %s, \n %s" % (
+        list_fields(agg_config["key_fields"]),
+        list_fields(agg_config["fields"]),
+        timed_list_fields(agg_config["timed_fields"], TIME_RANGES))
+
+    # add histogram bins for reference
+    bins = ",".join(str(b) for b in HISTOGRAM_BINS)
+
+    # add concatenated histogram bins
+    bin_fields = []
+    for timename in TIME_RANGES:
+        for field in agg_config["binned_fields"]:
+            name = field_name(field)
+            bin_fields.append("{0}_{1}_bins".format(timename, name))
+
+
+    query_str = query_str.format(select_fields, bins, ",\n".join(bin_fields))
+    return query_str
+
+def build_location_sub_queries(agg_config, subselect_template, leftjoin_template):
+    # handle sub queries
+    subqueries = []
+    for location_level in LOCATION_CLIENT_ASN_LEVELS:
+
+        location_type = location_level["type"]
+
+        # build internal key
+        # If large list, concat.
+        if (isinstance(agg_config["region_key_fields"][location_type], list) and
+                len(agg_config["region_key_fields"][location_type]) > 1):
+
+            key_str = replace(
+                lower(
+                    concat(agg_config["region_key_fields"][location_type], "all"))
+                , " ", "")
+        # If single item, just ifnull and lower single string
+        elif (isinstance(agg_config["region_key_fields"][location_type], list) and
+              len(agg_config["region_key_fields"][location_type]) == 1):
+
+            key_str = "LOWER(IFNULL(all.{0}, \"\"))".format(
+                agg_config["region_key_fields"][location_type][0])
+        # If no key, use emptry string.
+        else:
+            key_str = "\"\""
+
+        key_str += " as {0}".format(agg_config["key_name"])
+
+        left_joins = ""
+
+        # for each time granularity, add a left join
+        for time_comparison in TEST_DATE_COMPARISONS:
+
+            # compute histogram fields
+            binned_fields = []
+            for field in agg_config["binned_fields"]:
+                binned_fields.append(output_bin_string(field, HISTOGRAM_BINS))
+
+            left_joins += leftjoin_template.format(
+
+                # 0 - selected fields
+                list_fields(location_level["fields"]),
+
+                # 1 - time comparison
+                TEST_DATE_COMPARISONS[time_comparison],
+
+                # 2 - location field not null
+                location_level["location_field"],
+
+                # 3 - all fields
+                join_on_fields(location_level["fields"], time_comparison),
+
+                # 4 - name of sub table
+                time_comparison,
+
+                # 5 - bins
+                ", \n".join(binned_fields)
+            )
+
+        # add binned timed fields
+        binned_timed_fields = []
+        groupby_binned_timed_fields = []
+        for time_comparison in TEST_DATE_COMPARISONS:
+            for field in agg_config["binned_fields"]:
+                name = field_name(field)
+                binned_timed_fields.append("{0}.{1}_bins as {0}_{1}_bins"
+                    .format(time_comparison, name))
+                groupby_binned_timed_fields.append("{0}_{1}_bins"
+                    .format(time_comparison, name))
+
+        # add sub select
+        subqueries.append(
+            subselect_template.format(
+                # 0 - new key string
+                key_str,
+
+                # 1 - type of location
+                location_level["type"],
+
+                # 2 - all.field as fields
+                all_table_fields(location_level["fields"]),
+
+                # 3 - timed data fields
+                all_table_fields(agg_config["timed_fields"], TIME_RANGES, True) +
+                ",\n" + ", \n".join(binned_timed_fields),
+
+                # 4 - left joins
+                left_joins,
+
+                # 5 - group by
+                list_fields(agg_config["key_fields"]) + ",\n" +
+                list_fields(location_level["fields"]) + ",\n" +
+                list_fields(agg_config["timed_fields"], TIME_RANGES) + ", \n" +
+                list_fields(groupby_binned_timed_fields)
+            )
+        )
+    return subqueries
+
+def build_location_json(agg_key):
+    '''
+    Builds the client_loc_client_asn_list table json structure
+    for big table
+    '''
+    config = AGGREGATIONS[agg_key]
+    json_struct = setup_base_json(agg_key, config)
+
+    # add timed columns
+    json_struct = add_timed_columns_json(json_struct, config)
+
+    # add binned columns
+    json_struct = add_binned_columns(json_struct, config)
+
+    config_filepath = os.path.join(CONFIG_DIR, config["table_name"] + ".json")
+    save_json(config_filepath, json_struct)
 
 def build_location_client_asn_number_list():
     print("client_loc_client_asn_list")
@@ -530,7 +711,6 @@ def build_location_search_sql():
         all_loc_keys = ["all.{0}".format(k) for k in location_level['keys']]
 
         location_key = build_location_key(all_loc_keys, 'location_key')
-        print(location_key)
 
         segments.append(join_template.format(
 
@@ -567,8 +747,13 @@ def main():
     '''
     Builds available tables
     '''
-    build_location_client_asn_number_list()
+    # build_location_client_asn_number_list()
+    build_location('client_loc_client_asn_list')
+    build_location('client_loc_server_asn_list')
+    build_location('client_asn_client_location_list')
+    build_location('server_asn_client_location_list')
     build_location_search()
     build_location_list()
 
-main()
+if __name__ == "__main__":
+    main()

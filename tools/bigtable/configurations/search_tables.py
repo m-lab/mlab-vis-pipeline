@@ -58,6 +58,180 @@ AGGREGATIONS = {
         ]
     },
 
+    "client_loc_server_asn_list" : {
+        "table_name" : "client_loc_server_asn_list",
+        "query_file": "client_loc_server_asn_list",
+        "json_file" : "client_loc_server_asn_list",
+
+        "key_length" : 30,
+        "key_name" : "location_key",
+        "key_columns" : [
+            "location_key",
+            "server_asn_name"
+        ],
+
+        "key_fields" : [
+            {"length": 50, "type": "string", "name": "location_key", "family": "meta"},
+            {"length": 40, "type": "string", "name": "server_asn_name", "family": "meta"}
+        ],
+
+        "region_key_fields": {
+            "city" : ["client_continent_code", "client_country_code", "client_region_code", "client_city"],
+            "region" : ["client_continent_code", "client_country_code", "client_region_code"],
+            "country" : ["client_continent_code", "client_country_code"],
+            "continent": ["client_continent_code"]
+        },
+
+        "fields" : [
+            {"name": "type", "family": "meta", "type": "string"},
+            {"name": "client_city", "family": "meta", "type": "string"},
+            {"name": "client_region", "family": "meta", "type": "string"},
+            {"name": "client_region_code", "family": "meta", "type": "string"},
+            {"name": "client_country", "family": "meta", "type": "string"},
+            {"name": "client_country_code", "family": "meta", "type": "string"},
+            {"name": "client_continent", "family": "meta", "type": "string"},
+            {"name": "client_continent_code", "family": "meta", "type": "string"},
+        ],
+
+        "binned_fields" : [
+            {"type": "integer_list", "name": "download_speed_mbps", "family": "data"},
+            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data"},
+        ],
+
+        "timed_fields" : [
+            {"type": "integer", "name": "test_count", "family": "meta"},
+            {"type": "double", "name": "download_speed_mbps_median", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_median", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_avg", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_avg", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_min", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_min", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_max", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_max", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_stddev", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_stddev", "family": "data"},
+            {"type": "double", "name": "rtt_avg", "family": "data"},
+            {"type": "double", "name": "retransmit_avg", "family": "data"},
+        ]
+    },
+
+
+    "client_asn_client_location_list" : {
+        "table_name" : "client_asn_client_loc_list",
+        "query_file": "client_asn_client_loc_list",
+        "json_file" : "client_asn_client_loc_list",
+
+        "key_length" : 30,
+        "key_name" : "location_key",
+        "key_columns" : [
+            "client_asn_number"
+            "location_key",
+        ],
+
+        "key_fields" : [
+            {"length": 15, "type": "string", "name": "client_asn_number", "family": "meta"},
+            {"length": 50, "type": "string", "name": "location_key", "family": "meta"}
+        ],
+
+        "region_key_fields": {
+            "city" : ["client_continent_code", "client_country_code", "client_region_code", "client_city"],
+            "region" : ["client_continent_code", "client_country_code", "client_region_code"],
+            "country" : ["client_continent_code", "client_country_code"],
+            "continent": ["client_continent_code"]
+        },
+
+        "fields" : [
+            {"name" : "client_asn_name", "family" : "meta", "type": "string"},
+            {"name": "type", "family": "meta", "type": "string"},
+            {"name": "client_city", "family": "meta", "type": "string"},
+            {"name": "client_region", "family": "meta", "type": "string"},
+            {"name": "client_region_code", "family": "meta", "type": "string"},
+            {"name": "client_country", "family": "meta", "type": "string"},
+            {"name": "client_country_code", "family": "meta", "type": "string"},
+            {"name": "client_continent", "family": "meta", "type": "string"},
+            {"name": "client_continent_code", "family": "meta", "type": "string"},
+        ],
+
+        "binned_fields" : [
+            {"type": "integer_list", "name": "download_speed_mbps", "family": "data"},
+            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data"},
+        ],
+
+        "timed_fields" : [
+            {"type": "integer", "name": "test_count", "family": "meta"},
+            {"type": "double", "name": "download_speed_mbps_median", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_median", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_avg", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_avg", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_min", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_min", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_max", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_max", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_stddev", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_stddev", "family": "data"},
+            {"type": "double", "name": "rtt_avg", "family": "data"},
+            {"type": "double", "name": "retransmit_avg", "family": "data"},
+        ]
+    },
+
+
+    "server_asn_client_location_list" : {
+        "table_name" : "server_asn_client_loc_list",
+        "query_file": "server_asn_client_loc_list",
+        "json_file" : "server_asn_client_loc_list",
+
+        "key_length" : 30,
+        "key_name" : "location_key",
+        "key_columns" : [
+            "server_asn_name"
+            "location_key",
+        ],
+
+        "key_fields" : [
+            {"length": 40, "type": "string", "name": "server_asn_name", "family": "meta"},
+            {"length": 50, "type": "string", "name": "location_key", "family": "meta"}
+        ],
+
+        "region_key_fields": {
+            "city" : ["client_continent_code", "client_country_code", "client_region_code", "client_city"],
+            "region" : ["client_continent_code", "client_country_code", "client_region_code"],
+            "country" : ["client_continent_code", "client_country_code"],
+            "continent": ["client_continent_code"]
+        },
+
+        "fields" : [
+            {"name": "type", "family": "meta", "type": "string"},
+            {"name": "client_city", "family": "meta", "type": "string"},
+            {"name": "client_region", "family": "meta", "type": "string"},
+            {"name": "client_region_code", "family": "meta", "type": "string"},
+            {"name": "client_country", "family": "meta", "type": "string"},
+            {"name": "client_country_code", "family": "meta", "type": "string"},
+            {"name": "client_continent", "family": "meta", "type": "string"},
+            {"name": "client_continent_code", "family": "meta", "type": "string"},
+        ],
+
+        "binned_fields" : [
+            {"type": "integer_list", "name": "download_speed_mbps", "family": "data"},
+            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data"},
+        ],
+
+        "timed_fields" : [
+            {"type": "integer", "name": "test_count", "family": "meta"},
+            {"type": "double", "name": "download_speed_mbps_median", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_median", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_avg", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_avg", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_min", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_min", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_max", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_max", "family": "data"},
+            {"type": "double", "name": "download_speed_mbps_stddev", "family": "data"},
+            {"type": "double", "name": "upload_speed_mbps_stddev", "family": "data"},
+            {"type": "double", "name": "rtt_avg", "family": "data"},
+            {"type": "double", "name": "retransmit_avg", "family": "data"},
+        ]
+    },
+
     "client_loc_search" : {
 
         "table_name" : "client_loc_search",

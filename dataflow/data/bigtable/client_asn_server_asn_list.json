@@ -25,6 +25,12 @@
       "family": "meta"
     },
     {
+      "length": 10,
+      "type": "string",
+      "name": "server_asn_number",
+      "family": "meta"
+    },
+    {
       "length": 100,
       "type": "string",
       "name": "server_asn_name",

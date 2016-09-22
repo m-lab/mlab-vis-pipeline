@@ -25,6 +25,12 @@
       "family": "meta"
     },
     {
+      "length": 10,
+      "type": "string",
+      "name": "server_asn_number",
+      "family": "meta"
+    },
+    {
       "type": "integer",
       "name": "test_count",
       "family": "data"

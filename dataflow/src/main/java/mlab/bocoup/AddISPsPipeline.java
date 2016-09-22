@@ -35,19 +35,18 @@ import mlab.bocoup.util.Schema;
 public class AddISPsPipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddISPsPipeline.class);
 
-	private static final String INPUT_TABLE = "mlab-oti:bocoup.tmp_peter_hex_input";
-	private static final String OUTPUT_TABLE = "mlab-oti:bocoup.tmp_peter_output";
+	private static final String INPUT_TABLE = "mlab-oti:bocoup.jim_test";
+	private static final String OUTPUT_TABLE = "mlab-oti:bocoup.jim_test_out";
 
-	private static final String CLIENT_ISPS_TABLE = "mlab-oti:bocoup.maxmind_asn";
-	private static final String SERVER_ISPS_TABLE = "mlab-oti:bocoup.mlab_sites";
+	private static final String MAXMIND_ISPS_TABLE = "mlab-oti:bocoup.maxmind_asn";
+	//private static final String SERVER_ISPS_TABLE = "mlab-oti:bocoup.mlab_sites";
 
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	private Pipeline pipeline;
 	private String inputTable = INPUT_TABLE;
 	private String outputTable = OUTPUT_TABLE;
-	private String clientIspsTable = CLIENT_ISPS_TABLE;
-	private String serverIspsTable = SERVER_ISPS_TABLE;
+	private String maxmindIspsTable = MAXMIND_ISPS_TABLE;
 	private boolean writeData = false;
 	private TableSchema outputSchema;
 	private BigQueryIO.Write.WriteDisposition writeDisposition = BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE;
@@ -76,41 +75,7 @@ public class AddISPsPipeline {
 
 		return byIpData;
 	}
-
-	/**
-	 * Adds in ISP information for the server.
-	 *
-	 * @param p The Dataflow Pipeline
-	 * @param byIpData The PCollection representing the rows to have ISP information added to them
-	 * @return A PCollection of rows with ISP information added to them
-	 */
-	public PCollection<TableRow> addServerISPs(PCollection<TableRow> byIpData) {
-		// Read in the MaxMind ISP data
-		PCollection<TableRow> mlabSites = this.pipeline.apply(
-				BigQueryIO.Read
-				.named("Read " + this.serverIspsTable)
-				.from(this.serverIspsTable));
-
-		// Make the MaxMind ISP data ready for side input
-		PCollectionView<NavigableMap<String, TableRow>> mlabSitesView =
-				mlabSites
-				.apply(Combine.globally(new CombineAsNavigableMapHex())
-						.named("Combine MLab Sites as NavMap")
-						// make a view so it can be used as side input
-						.asSingletonView());
-
-		// Use the side-loaded MaxMind ISP data to get client ISPs
-		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
-				ParDo
-				.named("Add Server ISPs (side input)")
-				.withSideInputs(mlabSitesView)
-				.of(new AddISPsFn(mlabSitesView, "server_ip_family", "server_ip_base64", "server_asn_name",
-						"server_asn_number", "min_ip_hex", "max_ip_hex", "min_ipv6_hex", "max_ipv6_hex",
-						"transit_provider", null)));
-
-		return byIpDataWithISPs;
-	}
-
+	
 	/**
 	 * Adds in ISP information for the client.
 	 *
@@ -118,22 +83,28 @@ public class AddISPsPipeline {
 	 * @param byIpData The PCollection representing the rows to have ISP information added to them
 	 * @return A PCollection of rows with ISP information added to them
 	 */
-	public PCollection<TableRow> addClientISPs(PCollection<TableRow> byIpData) {
-		// Read in the MaxMind ISP data
-		PCollection<TableRow> maxMindAsn = this.pipeline.apply(
-				BigQueryIO.Read
-				.named("Read " + this.clientIspsTable)
-				.from(this.clientIspsTable));
+	public PCollection<TableRow> addServerISPs(PCollection<TableRow> byIpData, PCollectionView<NavigableMap<String, TableRow>> maxMindAsnView) {
 
-		// Make the MaxMind ISP data ready for side input
-		PCollectionView<NavigableMap<String, TableRow>> maxMindAsnView =
-				maxMindAsn
-				.apply(Combine.globally(new CombineAsNavigableMapHex())
-						.named("Combine ISPs as NavMap")
-						// make a view so it can be used as side input
-						.asSingletonView());
-
-
+		// Use the side-loaded MaxMind ISP data to get server ISPs
+		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
+				ParDo
+				.named("Add Server ISPs (side input)")
+				.withSideInputs(maxMindAsnView)
+				.of(new AddISPsFn(maxMindAsnView, "server_ip_family", "server_ip_base64", "server_asn_name",
+						"server_asn_number", "min_ip_hex", "max_ip_hex", "min_ip_hex", 
+						"max_ip_hex", "asn_name", "asn_number")));
+		return byIpDataWithISPs;
+	}
+	
+	/**
+	 * Adds in ISP information for the client.
+	 *
+	 * @param p The Dataflow Pipeline
+	 * @param byIpData The PCollection representing the rows to have ISP information added to them
+	 * @return A PCollection of rows with ISP information added to them
+	 */
+	public PCollection<TableRow> addClientISPs(PCollection<TableRow> byIpData, PCollectionView<NavigableMap<String, TableRow>> maxMindAsnView) {
+		
 		// Use the side-loaded MaxMind ISP data to get client ISPs
 		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
 				ParDo
@@ -197,10 +168,25 @@ public class AddISPsPipeline {
 		} else {
 			data = this.loadByIpData();
 		}
+		
+		// Read in the MaxMind ISP data
+		PCollection<TableRow> maxMindAsn = this.pipeline.apply(
+				BigQueryIO.Read
+				.named("Read " + this.maxmindIspsTable)
+				.from(this.maxmindIspsTable));
+
+		//Make the MaxMind ISP data ready for side input
+		PCollectionView<NavigableMap<String, TableRow>> maxMindAsnView =
+				maxMindAsn
+				.apply(Combine.globally(new CombineAsNavigableMapHex())
+						.named("Combine ISPs as NavMap")
+						// make a view so it can be used as side input
+						.asSingletonView());
+
 
 		// add in ISPs
-		data = this.addServerISPs(data);
-		data = this.addClientISPs(data);
+		data = this.addServerISPs(data, maxMindAsnView);
+		data = this.addClientISPs(data, maxMindAsnView);
 
 		if (this.writeData) {
 			// write the processed data to a table
@@ -254,27 +240,16 @@ public class AddISPsPipeline {
 	}
 
 
-	public String getClientIspsTable() {
-		return clientIspsTable;
+	public String getMaxmindIspsTable() {
+		return maxmindIspsTable;
 	}
 
 
-	public AddISPsPipeline setClientIspsTable(String clientIspsTable) {
-		this.clientIspsTable = clientIspsTable;
+	public AddISPsPipeline setMaxmindIspsTable(String clientIspsTable) {
+		this.maxmindIspsTable = clientIspsTable;
 		return this;
 	}
-
-
-	public String getServerIspsTable() {
-		return serverIspsTable;
-	}
-
-
-	public AddISPsPipeline setServerIspsTable(String serverIspsTable) {
-		this.serverIspsTable = serverIspsTable;
-		return this;
-	}
-
+	
 
 	public TableSchema getOutputSchema() {
 		return outputSchema;

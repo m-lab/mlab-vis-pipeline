@@ -3,7 +3,7 @@
     {
       "length": 50,
       "type": "string",
-      "name": "server_asn_name_lookup",
+      "name": "server_asn_number",
       "family": "meta"
     },
     {
@@ -22,6 +22,12 @@
       "length": 10,
       "type": "string",
       "name": "client_asn_number",
+      "family": "meta"
+    },
+    {
+      "length": 10,
+      "type": "string",
+      "name": "server_asn_number",
       "family": "meta"
     },
     {

@@ -42,7 +42,7 @@ def replace(query, what_str, with_str):
         return ""
 
 
-def list_fields(fields, prefixes=[""]):
+def list_fields(fields, prefixes=[""], convert_to_sql=False):
     '''
     Produces a comma + newline separated list of field names like so:
     client_city,
@@ -53,16 +53,48 @@ def list_fields(fields, prefixes=[""]):
     for prefix in prefixes:
         for field in fields:
             name = field_name(field)
-            if len(prefix) > 0:
-                output.append("{0}_{1}".format(prefix, name))
-            else:
-                output.append("{0}".format(name))
+            sql = name
+            if(convert_to_sql):
+                sql = field_sql(field)
+            output.append(create_field_query(name, sql, prefix))
+
 
     return ", \n".join(output)
 
+def create_field_query(name, sql, prefix = ""):
+    '''
+    outputs prefixed name if prefix is given and length > 0
+    if sql is present and not equal to name, provide "sql AS prefix_name"
+    '''
+    out = ""
+    if len(prefix) > 0:
+        out = "{0}_{1}".format(prefix, name)
+    else:
+        out = "{0}".format(name)
+    if (name == sql):
+        return out
+    else:
+        return "{0} AS {1}".format(sql, name)
+
+
+def field_sql(field):
+    '''
+    Pull out sql attribute of field
+    '''
+    if isinstance(field, dict):
+        if "sql" in field:
+            return field["sql"]
+        else:
+            return field["name"]
+    return field
 
 def field_name(field):
-    return field["name"] if isinstance(field, dict) else field
+    '''
+    pull out name attribute of field
+    '''
+    if isinstance(field, dict):
+        return field["name"]
+    return field
 
 
 def all_table_fields(fields, tablenames=["all"], prefix_both=False):

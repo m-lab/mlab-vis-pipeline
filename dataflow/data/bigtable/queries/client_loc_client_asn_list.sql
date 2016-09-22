@@ -1,5 +1,5 @@
 
-        select
+        SELECT
         location_key, 
 client_asn_number, 
  client_asn_name, 
@@ -66,21 +66,21 @@ last_year_upload_speed_mbps_bins
 ,IFNULL(all.client_country_code, ""), ""
 ,IFNULL(all.client_region_code, ""), ""
 ,IFNULL(all.client_city, ""), ""
-)), " ", "") as location_key,
+)), " ", "") AS location_key,
 
   -- what is its type?
   "city" AS type,
 
   -- meta fields we are selecting
-  all.client_asn_number as client_asn_number,
-all.client_asn_name as client_asn_name,
-all.client_city as client_city,
+  all.client_city as client_city,
 all.client_region as client_region,
 all.client_country as client_country,
 all.client_continent as client_continent,
 all.client_region_code as client_region_code,
 all.client_country_code as client_country_code,
 all.client_continent_code as client_continent_code,
+all.client_asn_name as client_asn_name,
+all.client_asn_number as client_asn_number,
 
   -- timed fields
   last_week.test_count as last_week_test_count,
@@ -138,15 +138,15 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
-client_asn_name, 
-client_city, 
+    client_city, 
 client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -229,42 +229,42 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_city is not null
   group by
     -- group by location fields
-    client_asn_number, 
-client_asn_name, 
-client_city, 
+    client_city, 
 client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code
+client_continent_code, 
+client_asn_name, 
+client_asn_number
 
 ) last_month on
   -- join on location fields from the all table.
-  all.client_asn_number = last_month.client_asn_number and 
-all.client_asn_name = last_month.client_asn_name and 
-all.client_city = last_month.client_city and 
+  all.client_city = last_month.client_city and 
 all.client_region = last_month.client_region and 
 all.client_country = last_month.client_country and 
 all.client_continent = last_month.client_continent and 
 all.client_region_code = last_month.client_region_code and 
 all.client_country_code = last_month.client_country_code and 
-all.client_continent_code = last_month.client_continent_code
+all.client_continent_code = last_month.client_continent_code and 
+all.client_asn_name = last_month.client_asn_name and 
+all.client_asn_number = last_month.client_asn_number
 left join
 (
   SELECT
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
-client_asn_name, 
-client_city, 
+    client_city, 
 client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -347,42 +347,42 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_city is not null
   group by
     -- group by location fields
-    client_asn_number, 
-client_asn_name, 
-client_city, 
+    client_city, 
 client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code
+client_continent_code, 
+client_asn_name, 
+client_asn_number
 
 ) last_week on
   -- join on location fields from the all table.
-  all.client_asn_number = last_week.client_asn_number and 
-all.client_asn_name = last_week.client_asn_name and 
-all.client_city = last_week.client_city and 
+  all.client_city = last_week.client_city and 
 all.client_region = last_week.client_region and 
 all.client_country = last_week.client_country and 
 all.client_continent = last_week.client_continent and 
 all.client_region_code = last_week.client_region_code and 
 all.client_country_code = last_week.client_country_code and 
-all.client_continent_code = last_week.client_continent_code
+all.client_continent_code = last_week.client_continent_code and 
+all.client_asn_name = last_week.client_asn_name and 
+all.client_asn_number = last_week.client_asn_number
 left join
 (
   SELECT
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
-client_asn_name, 
-client_city, 
+    client_city, 
 client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -465,42 +465,42 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_city is not null
   group by
     -- group by location fields
-    client_asn_number, 
-client_asn_name, 
-client_city, 
+    client_city, 
 client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code
+client_continent_code, 
+client_asn_name, 
+client_asn_number
 
 ) last_year on
   -- join on location fields from the all table.
-  all.client_asn_number = last_year.client_asn_number and 
-all.client_asn_name = last_year.client_asn_name and 
-all.client_city = last_year.client_city and 
+  all.client_city = last_year.client_city and 
 all.client_region = last_year.client_region and 
 all.client_country = last_year.client_country and 
 all.client_continent = last_year.client_continent and 
 all.client_region_code = last_year.client_region_code and 
 all.client_country_code = last_year.client_country_code and 
-all.client_continent_code = last_year.client_continent_code
+all.client_continent_code = last_year.client_continent_code and 
+all.client_asn_name = last_year.client_asn_name and 
+all.client_asn_number = last_year.client_asn_number
 
 
   GROUP BY
 
   location_key, 
 client_asn_number,
-client_asn_number, 
-client_asn_name, 
 client_city, 
 client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 last_week_test_count, 
 last_week_download_speed_mbps_median, 
 last_week_upload_speed_mbps_median, 
@@ -556,20 +556,20 @@ last_year_upload_speed_mbps_bins
   REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), ""
 ,IFNULL(all.client_country_code, ""), ""
 ,IFNULL(all.client_region_code, ""), ""
-)), " ", "") as location_key,
+)), " ", "") AS location_key,
 
   -- what is its type?
   "region" AS type,
 
   -- meta fields we are selecting
-  all.client_asn_number as client_asn_number,
-all.client_asn_name as client_asn_name,
-all.client_region as client_region,
+  all.client_region as client_region,
 all.client_country as client_country,
 all.client_continent as client_continent,
 all.client_region_code as client_region_code,
 all.client_country_code as client_country_code,
 all.client_continent_code as client_continent_code,
+all.client_asn_name as client_asn_name,
+all.client_asn_number as client_asn_number,
 
   -- timed fields
   last_week.test_count as last_week_test_count,
@@ -627,14 +627,14 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
-client_asn_name, 
-client_region, 
+    client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -717,39 +717,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_region is not null
   group by
     -- group by location fields
-    client_asn_number, 
-client_asn_name, 
-client_region, 
+    client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code
+client_continent_code, 
+client_asn_name, 
+client_asn_number
 
 ) last_month on
   -- join on location fields from the all table.
-  all.client_asn_number = last_month.client_asn_number and 
-all.client_asn_name = last_month.client_asn_name and 
-all.client_region = last_month.client_region and 
+  all.client_region = last_month.client_region and 
 all.client_country = last_month.client_country and 
 all.client_continent = last_month.client_continent and 
 all.client_region_code = last_month.client_region_code and 
 all.client_country_code = last_month.client_country_code and 
-all.client_continent_code = last_month.client_continent_code
+all.client_continent_code = last_month.client_continent_code and 
+all.client_asn_name = last_month.client_asn_name and 
+all.client_asn_number = last_month.client_asn_number
 left join
 (
   SELECT
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
-client_asn_name, 
-client_region, 
+    client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -832,39 +832,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_region is not null
   group by
     -- group by location fields
-    client_asn_number, 
-client_asn_name, 
-client_region, 
+    client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code
+client_continent_code, 
+client_asn_name, 
+client_asn_number
 
 ) last_week on
   -- join on location fields from the all table.
-  all.client_asn_number = last_week.client_asn_number and 
-all.client_asn_name = last_week.client_asn_name and 
-all.client_region = last_week.client_region and 
+  all.client_region = last_week.client_region and 
 all.client_country = last_week.client_country and 
 all.client_continent = last_week.client_continent and 
 all.client_region_code = last_week.client_region_code and 
 all.client_country_code = last_week.client_country_code and 
-all.client_continent_code = last_week.client_continent_code
+all.client_continent_code = last_week.client_continent_code and 
+all.client_asn_name = last_week.client_asn_name and 
+all.client_asn_number = last_week.client_asn_number
 left join
 (
   SELECT
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
-client_asn_name, 
-client_region, 
+    client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -947,39 +947,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_region is not null
   group by
     -- group by location fields
-    client_asn_number, 
-client_asn_name, 
-client_region, 
+    client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code
+client_continent_code, 
+client_asn_name, 
+client_asn_number
 
 ) last_year on
   -- join on location fields from the all table.
-  all.client_asn_number = last_year.client_asn_number and 
-all.client_asn_name = last_year.client_asn_name and 
-all.client_region = last_year.client_region and 
+  all.client_region = last_year.client_region and 
 all.client_country = last_year.client_country and 
 all.client_continent = last_year.client_continent and 
 all.client_region_code = last_year.client_region_code and 
 all.client_country_code = last_year.client_country_code and 
-all.client_continent_code = last_year.client_continent_code
+all.client_continent_code = last_year.client_continent_code and 
+all.client_asn_name = last_year.client_asn_name and 
+all.client_asn_number = last_year.client_asn_number
 
 
   GROUP BY
 
   location_key, 
 client_asn_number,
-client_asn_number, 
-client_asn_name, 
 client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 last_week_test_count, 
 last_week_download_speed_mbps_median, 
 last_week_upload_speed_mbps_median, 
@@ -1034,18 +1034,18 @@ last_year_upload_speed_mbps_bins
 (SELECT
   REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), ""
 ,IFNULL(all.client_country_code, ""), ""
-)), " ", "") as location_key,
+)), " ", "") AS location_key,
 
   -- what is its type?
   "country" AS type,
 
   -- meta fields we are selecting
-  all.client_asn_number as client_asn_number,
-all.client_asn_name as client_asn_name,
-all.client_country as client_country,
+  all.client_country as client_country,
 all.client_continent as client_continent,
 all.client_country_code as client_country_code,
 all.client_continent_code as client_continent_code,
+all.client_asn_name as client_asn_name,
+all.client_asn_number as client_asn_number,
 
   -- timed fields
   last_week.test_count as last_week_test_count,
@@ -1103,12 +1103,12 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
-client_asn_name, 
-client_country, 
+    client_country, 
 client_continent, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -1191,33 +1191,33 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_country is not null
   group by
     -- group by location fields
-    client_asn_number, 
-client_asn_name, 
-client_country, 
+    client_country, 
 client_continent, 
 client_country_code, 
-client_continent_code
+client_continent_code, 
+client_asn_name, 
+client_asn_number
 
 ) last_month on
   -- join on location fields from the all table.
-  all.client_asn_number = last_month.client_asn_number and 
-all.client_asn_name = last_month.client_asn_name and 
-all.client_country = last_month.client_country and 
+  all.client_country = last_month.client_country and 
 all.client_continent = last_month.client_continent and 
 all.client_country_code = last_month.client_country_code and 
-all.client_continent_code = last_month.client_continent_code
+all.client_continent_code = last_month.client_continent_code and 
+all.client_asn_name = last_month.client_asn_name and 
+all.client_asn_number = last_month.client_asn_number
 left join
 (
   SELECT
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
-client_asn_name, 
-client_country, 
+    client_country, 
 client_continent, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -1300,33 +1300,33 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_country is not null
   group by
     -- group by location fields
-    client_asn_number, 
-client_asn_name, 
-client_country, 
+    client_country, 
 client_continent, 
 client_country_code, 
-client_continent_code
+client_continent_code, 
+client_asn_name, 
+client_asn_number
 
 ) last_week on
   -- join on location fields from the all table.
-  all.client_asn_number = last_week.client_asn_number and 
-all.client_asn_name = last_week.client_asn_name and 
-all.client_country = last_week.client_country and 
+  all.client_country = last_week.client_country and 
 all.client_continent = last_week.client_continent and 
 all.client_country_code = last_week.client_country_code and 
-all.client_continent_code = last_week.client_continent_code
+all.client_continent_code = last_week.client_continent_code and 
+all.client_asn_name = last_week.client_asn_name and 
+all.client_asn_number = last_week.client_asn_number
 left join
 (
   SELECT
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
-client_asn_name, 
-client_country, 
+    client_country, 
 client_continent, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -1409,33 +1409,33 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_country is not null
   group by
     -- group by location fields
-    client_asn_number, 
-client_asn_name, 
-client_country, 
+    client_country, 
 client_continent, 
 client_country_code, 
-client_continent_code
+client_continent_code, 
+client_asn_name, 
+client_asn_number
 
 ) last_year on
   -- join on location fields from the all table.
-  all.client_asn_number = last_year.client_asn_number and 
-all.client_asn_name = last_year.client_asn_name and 
-all.client_country = last_year.client_country and 
+  all.client_country = last_year.client_country and 
 all.client_continent = last_year.client_continent and 
 all.client_country_code = last_year.client_country_code and 
-all.client_continent_code = last_year.client_continent_code
+all.client_continent_code = last_year.client_continent_code and 
+all.client_asn_name = last_year.client_asn_name and 
+all.client_asn_number = last_year.client_asn_number
 
 
   GROUP BY
 
   location_key, 
 client_asn_number,
-client_asn_number, 
-client_asn_name, 
 client_country, 
 client_continent, 
 client_country_code, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 last_week_test_count, 
 last_week_download_speed_mbps_median, 
 last_week_upload_speed_mbps_median, 
@@ -1488,16 +1488,16 @@ last_year_upload_speed_mbps_bins
 -- Type: continent
 -- ============
 (SELECT
-  LOWER(IFNULL(all.client_continent_code, "")) as location_key,
+  LOWER(IFNULL(all.client_continent_code, "")) AS location_key,
 
   -- what is its type?
   "continent" AS type,
 
   -- meta fields we are selecting
-  all.client_asn_number as client_asn_number,
-all.client_asn_name as client_asn_name,
-all.client_continent as client_continent,
+  all.client_continent as client_continent,
 all.client_continent_code as client_continent_code,
+all.client_asn_name as client_asn_name,
+all.client_asn_number as client_asn_number,
 
   -- timed fields
   last_week.test_count as last_week_test_count,
@@ -1555,10 +1555,10 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
+    client_continent, 
+client_continent_code, 
 client_asn_name, 
-client_continent, 
-client_continent_code,
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -1641,27 +1641,27 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_continent is not null
   group by
     -- group by location fields
-    client_asn_number, 
+    client_continent, 
+client_continent_code, 
 client_asn_name, 
-client_continent, 
-client_continent_code
+client_asn_number
 
 ) last_month on
   -- join on location fields from the all table.
-  all.client_asn_number = last_month.client_asn_number and 
+  all.client_continent = last_month.client_continent and 
+all.client_continent_code = last_month.client_continent_code and 
 all.client_asn_name = last_month.client_asn_name and 
-all.client_continent = last_month.client_continent and 
-all.client_continent_code = last_month.client_continent_code
+all.client_asn_number = last_month.client_asn_number
 left join
 (
   SELECT
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
+    client_continent, 
+client_continent_code, 
 client_asn_name, 
-client_continent, 
-client_continent_code,
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -1744,27 +1744,27 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_continent is not null
   group by
     -- group by location fields
-    client_asn_number, 
+    client_continent, 
+client_continent_code, 
 client_asn_name, 
-client_continent, 
-client_continent_code
+client_asn_number
 
 ) last_week on
   -- join on location fields from the all table.
-  all.client_asn_number = last_week.client_asn_number and 
+  all.client_continent = last_week.client_continent and 
+all.client_continent_code = last_week.client_continent_code and 
 all.client_asn_name = last_week.client_asn_name and 
-all.client_continent = last_week.client_continent and 
-all.client_continent_code = last_week.client_continent_code
+all.client_asn_number = last_week.client_asn_number
 left join
 (
   SELECT
     count(*) as test_count,
 
     -- which location fields?
-    client_asn_number, 
+    client_continent, 
+client_continent_code, 
 client_asn_name, 
-client_continent, 
-client_continent_code,
+client_asn_number,
 
     -- measurements:
     nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
@@ -1847,27 +1847,27 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     client_continent is not null
   group by
     -- group by location fields
-    client_asn_number, 
+    client_continent, 
+client_continent_code, 
 client_asn_name, 
-client_continent, 
-client_continent_code
+client_asn_number
 
 ) last_year on
   -- join on location fields from the all table.
-  all.client_asn_number = last_year.client_asn_number and 
+  all.client_continent = last_year.client_continent and 
+all.client_continent_code = last_year.client_continent_code and 
 all.client_asn_name = last_year.client_asn_name and 
-all.client_continent = last_year.client_continent and 
-all.client_continent_code = last_year.client_continent_code
+all.client_asn_number = last_year.client_asn_number
 
 
   GROUP BY
 
   location_key, 
 client_asn_number,
-client_asn_number, 
-client_asn_name, 
 client_continent, 
-client_continent_code,
+client_continent_code, 
+client_asn_name, 
+client_asn_number,
 last_week_test_count, 
 last_week_download_speed_mbps_median, 
 last_week_upload_speed_mbps_median, 

@@ -62,16 +62,15 @@ AGGREGATIONS = {
         "key_name" : "location_key",
         "key_columns" : [
             "location_key",
-            "server_asn_name_lookup"
+            "server_asn_number"
         ],
 
         "key_fields" : [
             {"length": 50, "type": "string", "name": "location_key", "family": "meta"},
-            {"length": 40, "type": "string", "name": "server_asn_name_lookup", "family": "meta",
-             "sql": "lower(REGEXP_REPLACE(server_asn_name, r\"[^\w|_]\", \"\"))"}
+            {"length": 40, "type": "string", "name": "server_asn_number", "family": "meta"}
         ],
 
-        "extra_fields" : ['server_asn_name'],
+        "extra_fields" : ['server_asn_number', 'server_asn_name'],
 
         "fields" : [
             {"name": "server_asn_name", "family": "meta", "type": "string"},
@@ -169,18 +168,19 @@ AGGREGATIONS = {
 
         "key_name" : "location_key",
         "key_columns" : [
-            "server_asn_name"
+            "server_asn_number"
             "location_key",
         ],
 
         "key_fields" : [
-            {"length": 40, "type": "string", "name": "server_asn_name", "family": "meta"},
+            {"length": 40, "type": "string", "name": "server_asn_number", "family": "meta"},
             {"length": 50, "type": "string", "name": "location_key", "family": "meta"}
         ],
 
-        "extra_fields" : ['server_asn_name'],
+        "extra_fields" : ['server_asn_name', 'server_asn_number'],
 
         "fields" : [
+            {"name": "server_asn_name", "family": "meta", "type": "string"},
             {"name": "type", "family": "meta", "type": "string"},
             {"name": "client_city", "family": "meta", "type": "string"},
             {"name": "client_region", "family": "meta", "type": "string"},

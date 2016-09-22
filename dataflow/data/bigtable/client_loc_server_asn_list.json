@@ -9,9 +9,8 @@
     {
       "length": 40, 
       "type": "string", 
-      "name": "server_asn_name_lookup", 
-      "family": "meta", 
-      "sql": "lower(REGEXP_REPLACE(server_asn_name, r\"[^\\w|_]\", \"\"))"
+      "name": "server_asn_number", 
+      "family": "meta"
     }
   ], 
   "bigquery_queryfile": "./data/bigtable/queries/client_loc_server_asn_list.sql", 
@@ -28,9 +27,8 @@
     {
       "length": 40, 
       "type": "string", 
-      "name": "server_asn_name_lookup", 
-      "family": "meta", 
-      "sql": "lower(REGEXP_REPLACE(server_asn_name, r\"[^\\w|_]\", \"\"))"
+      "name": "server_asn_number", 
+      "family": "meta"
     }, 
     {
       "type": "string", 

@@ -1,7 +1,7 @@
 
         SELECT
         location_key, 
-lower(REGEXP_REPLACE(server_asn_name, r"[^\w|_]", "")) AS server_asn_name_lookup, 
+server_asn_number, 
  server_asn_name, 
 type, 
 client_city, 
@@ -79,6 +79,7 @@ all.client_continent as client_continent,
 all.client_region_code as client_region_code,
 all.client_country_code as client_country_code,
 all.client_continent_code as client_continent_code,
+all.server_asn_number as server_asn_number,
 all.server_asn_name as server_asn_name,
 
   -- timed fields
@@ -144,6 +145,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -234,6 +236,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_month on
@@ -245,6 +248,7 @@ all.client_continent = last_month.client_continent and
 all.client_region_code = last_month.client_region_code and 
 all.client_country_code = last_month.client_country_code and 
 all.client_continent_code = last_month.client_continent_code and 
+all.server_asn_number = last_month.server_asn_number and 
 all.server_asn_name = last_month.server_asn_name
 left join
 (
@@ -259,6 +263,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -349,6 +354,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_week on
@@ -360,6 +366,7 @@ all.client_continent = last_week.client_continent and
 all.client_region_code = last_week.client_region_code and 
 all.client_country_code = last_week.client_country_code and 
 all.client_continent_code = last_week.client_continent_code and 
+all.server_asn_number = last_week.server_asn_number and 
 all.server_asn_name = last_week.server_asn_name
 left join
 (
@@ -374,6 +381,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -464,6 +472,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_year on
@@ -475,13 +484,14 @@ all.client_continent = last_year.client_continent and
 all.client_region_code = last_year.client_region_code and 
 all.client_country_code = last_year.client_country_code and 
 all.client_continent_code = last_year.client_continent_code and 
+all.server_asn_number = last_year.server_asn_number and 
 all.server_asn_name = last_year.server_asn_name
 
 
   GROUP BY
 
   location_key, 
-server_asn_name_lookup,
+server_asn_number,
 client_city, 
 client_region, 
 client_country, 
@@ -489,6 +499,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 last_week_test_count, 
 last_week_download_speed_mbps_median, 
@@ -557,6 +568,7 @@ all.client_continent as client_continent,
 all.client_region_code as client_region_code,
 all.client_country_code as client_country_code,
 all.client_continent_code as client_continent_code,
+all.server_asn_number as server_asn_number,
 all.server_asn_name as server_asn_name,
 
   -- timed fields
@@ -621,6 +633,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -710,6 +723,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_month on
@@ -720,6 +734,7 @@ all.client_continent = last_month.client_continent and
 all.client_region_code = last_month.client_region_code and 
 all.client_country_code = last_month.client_country_code and 
 all.client_continent_code = last_month.client_continent_code and 
+all.server_asn_number = last_month.server_asn_number and 
 all.server_asn_name = last_month.server_asn_name
 left join
 (
@@ -733,6 +748,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -822,6 +838,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_week on
@@ -832,6 +849,7 @@ all.client_continent = last_week.client_continent and
 all.client_region_code = last_week.client_region_code and 
 all.client_country_code = last_week.client_country_code and 
 all.client_continent_code = last_week.client_continent_code and 
+all.server_asn_number = last_week.server_asn_number and 
 all.server_asn_name = last_week.server_asn_name
 left join
 (
@@ -845,6 +863,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -934,6 +953,7 @@ client_continent,
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_year on
@@ -944,19 +964,21 @@ all.client_continent = last_year.client_continent and
 all.client_region_code = last_year.client_region_code and 
 all.client_country_code = last_year.client_country_code and 
 all.client_continent_code = last_year.client_continent_code and 
+all.server_asn_number = last_year.server_asn_number and 
 all.server_asn_name = last_year.server_asn_name
 
 
   GROUP BY
 
   location_key, 
-server_asn_name_lookup,
+server_asn_number,
 client_region, 
 client_country, 
 client_continent, 
 client_region_code, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 last_week_test_count, 
 last_week_download_speed_mbps_median, 
@@ -1022,6 +1044,7 @@ last_year_upload_speed_mbps_bins
 all.client_continent as client_continent,
 all.client_country_code as client_country_code,
 all.client_continent_code as client_continent_code,
+all.server_asn_number as server_asn_number,
 all.server_asn_name as server_asn_name,
 
   -- timed fields
@@ -1084,6 +1107,7 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
 client_continent, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -1171,6 +1195,7 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
 client_continent, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_month on
@@ -1179,6 +1204,7 @@ server_asn_name
 all.client_continent = last_month.client_continent and 
 all.client_country_code = last_month.client_country_code and 
 all.client_continent_code = last_month.client_continent_code and 
+all.server_asn_number = last_month.server_asn_number and 
 all.server_asn_name = last_month.server_asn_name
 left join
 (
@@ -1190,6 +1216,7 @@ left join
 client_continent, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -1277,6 +1304,7 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
 client_continent, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_week on
@@ -1285,6 +1313,7 @@ server_asn_name
 all.client_continent = last_week.client_continent and 
 all.client_country_code = last_week.client_country_code and 
 all.client_continent_code = last_week.client_continent_code and 
+all.server_asn_number = last_week.server_asn_number and 
 all.server_asn_name = last_week.server_asn_name
 left join
 (
@@ -1296,6 +1325,7 @@ left join
 client_continent, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -1383,6 +1413,7 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
 client_continent, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_year on
@@ -1391,17 +1422,19 @@ server_asn_name
 all.client_continent = last_year.client_continent and 
 all.client_country_code = last_year.client_country_code and 
 all.client_continent_code = last_year.client_continent_code and 
+all.server_asn_number = last_year.server_asn_number and 
 all.server_asn_name = last_year.server_asn_name
 
 
   GROUP BY
 
   location_key, 
-server_asn_name_lookup,
+server_asn_number,
 client_country, 
 client_continent, 
 client_country_code, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 last_week_test_count, 
 last_week_download_speed_mbps_median, 
@@ -1463,6 +1496,7 @@ last_year_upload_speed_mbps_bins
   -- meta fields we are selecting
   all.client_continent as client_continent,
 all.client_continent_code as client_continent_code,
+all.server_asn_number as server_asn_number,
 all.server_asn_name as server_asn_name,
 
   -- timed fields
@@ -1523,6 +1557,7 @@ last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
     -- which location fields?
     client_continent, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -1608,12 +1643,14 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     -- group by location fields
     client_continent, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_month on
   -- join on location fields from the all table.
   all.client_continent = last_month.client_continent and 
 all.client_continent_code = last_month.client_continent_code and 
+all.server_asn_number = last_month.server_asn_number and 
 all.server_asn_name = last_month.server_asn_name
 left join
 (
@@ -1623,6 +1660,7 @@ left join
     -- which location fields?
     client_continent, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -1708,12 +1746,14 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     -- group by location fields
     client_continent, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_week on
   -- join on location fields from the all table.
   all.client_continent = last_week.client_continent and 
 all.client_continent_code = last_week.client_continent_code and 
+all.server_asn_number = last_week.server_asn_number and 
 all.server_asn_name = last_week.server_asn_name
 left join
 (
@@ -1723,6 +1763,7 @@ left join
     -- which location fields?
     client_continent, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 
     -- measurements:
@@ -1808,21 +1849,24 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
     -- group by location fields
     client_continent, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name
 
 ) last_year on
   -- join on location fields from the all table.
   all.client_continent = last_year.client_continent and 
 all.client_continent_code = last_year.client_continent_code and 
+all.server_asn_number = last_year.server_asn_number and 
 all.server_asn_name = last_year.server_asn_name
 
 
   GROUP BY
 
   location_key, 
-server_asn_name_lookup,
+server_asn_number,
 client_continent, 
 client_continent_code, 
+server_asn_number, 
 server_asn_name,
 last_week_test_count, 
 last_week_download_speed_mbps_median, 

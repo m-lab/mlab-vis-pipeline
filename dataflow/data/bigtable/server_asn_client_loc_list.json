@@ -3,7 +3,7 @@
     {
       "length": 40, 
       "type": "string", 
-      "name": "server_asn_name", 
+      "name": "server_asn_number", 
       "family": "meta"
     }, 
     {
@@ -21,13 +21,18 @@
     {
       "length": 40, 
       "type": "string", 
-      "name": "server_asn_name", 
+      "name": "server_asn_number", 
       "family": "meta"
     }, 
     {
       "length": 50, 
       "type": "string", 
       "name": "location_key", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "server_asn_name", 
       "family": "meta"
     }, 
     {

@@ -34,7 +34,7 @@ from
       server_asn_name,
       server_asn_number
   ) threemonths on
-    all.server_asn_name = threemonths.server_asn_name,
+    all.server_asn_name = threemonths.server_asn_name and
     all.server_asn_number = threemonths.server_asn_number
 
   GROUP BY

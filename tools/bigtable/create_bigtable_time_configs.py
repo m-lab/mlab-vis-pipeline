@@ -110,7 +110,7 @@ TABLE_BASES = {
         "keys": [
             {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
             {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"},
-            {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+            {"name": "server_asn_number", "length": 40, "type": "string", "family": "meta"}
         ],
         "fields": [
             {"name": "client_asn_name", "type": "string", "family": "meta"},
@@ -121,7 +121,7 @@ TABLE_BASES = {
     "server_asn_client_loc": {
         "keys": [
             {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
-            {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"}
+            {"name": "server_asn_number", "length": 40, "type": "string", "family": "meta"}
         ],
         "fields": [
             {"name": "local_time_zone", "type": "string", "family": "meta"},
@@ -164,7 +164,7 @@ TABLE_BASES = {
     },
     "server_asn": {
         "keys": [
-            {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"},
+            {"name": "server_asn_number", "length": 40, "type": "string", "family": "meta"},
         ],
 
         "fields": [
@@ -174,7 +174,7 @@ TABLE_BASES = {
     },
     "server_asn_client_asn": {
         "keys":[
-            {"name": "server_asn_name", "length": 40, "type": "string", "family": "meta"},
+            {"name": "server_asn_number", "length": 40, "type": "string", "family": "meta"},
             {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"}
         ],
         "fields": [
@@ -206,11 +206,11 @@ AGGREGATION_FILTERS = {
         "LENGTH(client_asn_number) > 0"
     ],
     "server_asn": [
-        "LENGTH(server_asn_name) > 0"
+        "LENGTH(server_asn_number) > 0"
     ],
     "server_asn_client_asn": [
         "LENGTH(client_asn_number) > 0",
-        "LENGTH(server_asn_name) > 0"
+        "LENGTH(server_asn_number) > 0"
     ]
 }
 

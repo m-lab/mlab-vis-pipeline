@@ -1,7 +1,7 @@
 SELECT type,
        client_location_key,
        client_asn_number,
-       server_asn_name,
+       server_asn_number,
        client_asn_name,
        local_time_zone,
        local_zone_name,
@@ -23,7 +23,7 @@ FROM
  (SELECT "city" as type,
          REPLACE(LOWER(CONCAT(IFNULL(client_continent_code, ""), IFNULL(client_country_code, ""), IFNULL(client_region_code, ""), IFNULL(client_city, ""), "")), " ", "") AS client_location_key,
          client_asn_number,
-         server_asn_name,
+         server_asn_number,
          client_asn_name,
          local_time_zone,
          local_zone_name,
@@ -43,7 +43,7 @@ FROM
          client_city
   FROM {0}
   WHERE LENGTH(client_asn_number) > 0
-   AND LENGTH(server_asn_name) > 0
+   AND LENGTH(server_asn_number) > 0
    AND LENGTH(client_continent) > 0
    AND LENGTH(client_continent_code) > 0
    AND LENGTH(client_country) > 0
@@ -54,7 +54,7 @@ FROM
   GROUP BY type,
            client_location_key,
            client_asn_number,
-           server_asn_name,
+           server_asn_number,
            client_asn_name,
            local_time_zone,
            local_zone_name,
@@ -70,7 +70,7 @@ FROM
  (SELECT "region" as type,
          REPLACE(LOWER(CONCAT(IFNULL(client_continent_code, ""), IFNULL(client_country_code, ""), IFNULL(client_region_code, ""), "")), " ", "") AS client_location_key,
          client_asn_number,
-         server_asn_name,
+         server_asn_number,
          client_asn_name,
          local_time_zone,
          local_zone_name,
@@ -89,7 +89,7 @@ FROM
          client_region_code
   FROM {0}
   WHERE LENGTH(client_asn_number) > 0
-   AND LENGTH(server_asn_name) > 0
+   AND LENGTH(server_asn_number) > 0
    AND LENGTH(client_continent) > 0
    AND LENGTH(client_continent_code) > 0
    AND LENGTH(client_country) > 0
@@ -99,7 +99,7 @@ FROM
   GROUP BY type,
            client_location_key,
            client_asn_number,
-           server_asn_name,
+           server_asn_number,
            client_asn_name,
            local_time_zone,
            local_zone_name,
@@ -114,7 +114,7 @@ FROM
  (SELECT "continent" as type,
          REPLACE(LOWER(CONCAT(IFNULL(client_continent_code, ""), "")), " ", "") AS client_location_key,
          client_asn_number,
-         server_asn_name,
+         server_asn_number,
          client_asn_name,
          local_time_zone,
          local_zone_name,
@@ -129,13 +129,13 @@ FROM
          client_continent_code
   FROM {0}
   WHERE LENGTH(client_asn_number) > 0
-   AND LENGTH(server_asn_name) > 0
+   AND LENGTH(server_asn_number) > 0
    AND LENGTH(client_continent) > 0
    AND LENGTH(client_continent_code) > 0
   GROUP BY type,
            client_location_key,
            client_asn_number,
-           server_asn_name,
+           server_asn_number,
            client_asn_name,
            local_time_zone,
            local_zone_name,
@@ -146,7 +146,7 @@ FROM
  (SELECT "country" as type,
          REPLACE(LOWER(CONCAT(IFNULL(client_continent_code, ""), IFNULL(client_country_code, ""), "")), " ", "") AS client_location_key,
          client_asn_number,
-         server_asn_name,
+         server_asn_number,
          client_asn_name,
          local_time_zone,
          local_zone_name,
@@ -163,7 +163,7 @@ FROM
          client_country_code
   FROM {0}
   WHERE LENGTH(client_asn_number) > 0
-   AND LENGTH(server_asn_name) > 0
+   AND LENGTH(server_asn_number) > 0
    AND LENGTH(client_continent) > 0
    AND LENGTH(client_continent_code) > 0
    AND LENGTH(client_country) > 0
@@ -171,7 +171,7 @@ FROM
   GROUP BY type,
            client_location_key,
            client_asn_number,
-           server_asn_name,
+           server_asn_number,
            client_asn_name,
            local_time_zone,
            local_zone_name,

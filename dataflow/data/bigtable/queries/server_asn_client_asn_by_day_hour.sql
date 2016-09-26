@@ -1,4 +1,4 @@
-SELECT server_asn_name,
+SELECT server_asn_number,
        client_asn_number,
        client_asn_name,
        local_time_zone,
@@ -14,9 +14,9 @@ FROM {0}
 WHERE LENGTH(client_asn_name) > 0
  AND LENGTH(local_time_zone) > 0
  AND LENGTH(local_zone_name) > 0
- AND LENGTH(server_asn_name) > 0
+ AND LENGTH(server_asn_number) > 0
  AND LENGTH(client_asn_number) > 0
-GROUP BY server_asn_name,
+GROUP BY server_asn_number,
          client_asn_number,
          client_asn_name,
          local_time_zone,

@@ -9,7 +9,7 @@
     {
       "length": 40, 
       "type": "string", 
-      "name": "server_asn_name", 
+      "name": "server_asn_number", 
       "family": "meta"
     }, 
     {
@@ -105,7 +105,7 @@
     {
       "length": 40, 
       "type": "string", 
-      "name": "server_asn_name", 
+      "name": "server_asn_number", 
       "family": "meta"
     }, 
     {

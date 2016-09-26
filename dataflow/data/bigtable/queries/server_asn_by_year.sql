@@ -1,4 +1,4 @@
-SELECT server_asn_name,
+SELECT server_asn_number,
        local_time_zone,
        local_zone_name,
        STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([local_test_date]), "%Y") as date,
@@ -10,8 +10,8 @@ SELECT server_asn_name,
 FROM {0}
 WHERE LENGTH(local_time_zone) > 0
  AND LENGTH(local_zone_name) > 0
- AND LENGTH(server_asn_name) > 0
-GROUP BY server_asn_name,
+ AND LENGTH(server_asn_number) > 0
+GROUP BY server_asn_number,
          local_time_zone,
          local_zone_name,
          [date]

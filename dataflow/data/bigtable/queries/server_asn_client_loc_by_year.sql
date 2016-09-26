@@ -1,6 +1,6 @@
 SELECT type,
        client_location_key,
-       server_asn_name,
+       server_asn_number,
        local_time_zone,
        local_zone_name,
        [date],
@@ -19,7 +19,7 @@ SELECT type,
 FROM
  (SELECT "city" as type,
          REPLACE(LOWER(CONCAT(IFNULL(client_continent_code, ""), IFNULL(client_country_code, ""), IFNULL(client_region_code, ""), IFNULL(client_city, ""), "")), " ", "") AS client_location_key,
-         server_asn_name,
+         server_asn_number,
          local_time_zone,
          local_zone_name,
          STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([local_test_date]), "%Y") as date,
@@ -36,7 +36,7 @@ FROM
          client_region_code,
          client_city
   FROM {0}
-  WHERE LENGTH(server_asn_name) > 0
+  WHERE LENGTH(server_asn_number) > 0
    AND LENGTH(client_continent) > 0
    AND LENGTH(client_continent_code) > 0
    AND LENGTH(client_country) > 0
@@ -46,7 +46,7 @@ FROM
    AND LENGTH(client_city) > 0
   GROUP BY type,
            client_location_key,
-           server_asn_name,
+           server_asn_number,
            local_time_zone,
            local_zone_name,
            [date],
@@ -59,7 +59,7 @@ FROM
            client_city),
  (SELECT "region" as type,
          REPLACE(LOWER(CONCAT(IFNULL(client_continent_code, ""), IFNULL(client_country_code, ""), IFNULL(client_region_code, ""), "")), " ", "") AS client_location_key,
-         server_asn_name,
+         server_asn_number,
          local_time_zone,
          local_zone_name,
          STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([local_test_date]), "%Y") as date,
@@ -75,7 +75,7 @@ FROM
          client_region,
          client_region_code
   FROM {0}
-  WHERE LENGTH(server_asn_name) > 0
+  WHERE LENGTH(server_asn_number) > 0
    AND LENGTH(client_continent) > 0
    AND LENGTH(client_continent_code) > 0
    AND LENGTH(client_country) > 0
@@ -84,7 +84,7 @@ FROM
    AND LENGTH(client_region_code) > 0
   GROUP BY type,
            client_location_key,
-           server_asn_name,
+           server_asn_number,
            local_time_zone,
            local_zone_name,
            [date],
@@ -96,7 +96,7 @@ FROM
            client_region_code),
  (SELECT "continent" as type,
          REPLACE(LOWER(CONCAT(IFNULL(client_continent_code, ""), "")), " ", "") AS client_location_key,
-         server_asn_name,
+         server_asn_number,
          local_time_zone,
          local_zone_name,
          STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([local_test_date]), "%Y") as date,
@@ -108,12 +108,12 @@ FROM
          client_continent,
          client_continent_code
   FROM {0}
-  WHERE LENGTH(server_asn_name) > 0
+  WHERE LENGTH(server_asn_number) > 0
    AND LENGTH(client_continent) > 0
    AND LENGTH(client_continent_code) > 0
   GROUP BY type,
            client_location_key,
-           server_asn_name,
+           server_asn_number,
            local_time_zone,
            local_zone_name,
            [date],
@@ -121,7 +121,7 @@ FROM
            client_continent_code),
  (SELECT "country" as type,
          REPLACE(LOWER(CONCAT(IFNULL(client_continent_code, ""), IFNULL(client_country_code, ""), "")), " ", "") AS client_location_key,
-         server_asn_name,
+         server_asn_number,
          local_time_zone,
          local_zone_name,
          STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([local_test_date]), "%Y") as date,
@@ -135,14 +135,14 @@ FROM
          client_country,
          client_country_code
   FROM {0}
-  WHERE LENGTH(server_asn_name) > 0
+  WHERE LENGTH(server_asn_number) > 0
    AND LENGTH(client_continent) > 0
    AND LENGTH(client_continent_code) > 0
    AND LENGTH(client_country) > 0
    AND LENGTH(client_country_code) > 0
   GROUP BY type,
            client_location_key,
-           server_asn_name,
+           server_asn_number,
            local_time_zone,
            local_zone_name,
            [date],

@@ -231,7 +231,7 @@ AGGREGATIONS = {
         ],
 
         "fields": [
-            {"name": "test_count", "family" : "data", "type" : "integer"},
+            {"name": "test_count", "family" : "meta", "type" : "integer"},
             {"name": "last_three_month_test_count", "family" : "data", "type" : "integer"},
             {"name": "location", "family" : "meta", "type" : "string", "length" : 40},
             {"name": "type", "family" : "meta", "type" : "string", "length" : 40},

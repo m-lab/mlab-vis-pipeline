@@ -39,7 +39,7 @@
     {
       "type": "integer",
       "name": "test_count",
-      "family": "data"
+      "family": "meta"
     },
     {
       "type": "integer",

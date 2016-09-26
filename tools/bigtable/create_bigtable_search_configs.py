@@ -450,7 +450,7 @@ def build_location_list_sql():
     for location_level in LOCATION_LEVELS:
 
         location_type = location_level["type"]
-        child_field = location_level['location_field']
+        child_field = location_level['location_field_id']
         child_fields = config["parent_key_fields"][location_type][:]
         child_fields.append(child_field)
         child_str = replace(
@@ -486,7 +486,7 @@ def build_location_list_sql():
                 TEST_DATE_COMPARISONS[time_comparison],
 
                 # 2 - location field not null
-                location_level["location_field"],
+                location_level["location_field_id"],
 
                 # 3 - all fields
                 join_on_fields(location_level["fields"], time_comparison),

@@ -3,6 +3,7 @@
         location_key, 
 client_asn_number, 
  client_asn_name, 
+test_count, 
 type, 
 client_city, 
 client_region, 
@@ -70,6 +71,7 @@ last_year_upload_speed_mbps_bins
 
   -- what is its type?
   "city" AS type,
+  count(*) as test_count,
 
   -- meta fields we are selecting
   all.client_city as client_city,
@@ -560,6 +562,7 @@ last_year_upload_speed_mbps_bins
 
   -- what is its type?
   "region" AS type,
+  count(*) as test_count,
 
   -- meta fields we are selecting
   all.client_region as client_region,
@@ -1038,6 +1041,7 @@ last_year_upload_speed_mbps_bins
 
   -- what is its type?
   "country" AS type,
+  count(*) as test_count,
 
   -- meta fields we are selecting
   all.client_country as client_country,
@@ -1492,6 +1496,7 @@ last_year_upload_speed_mbps_bins
 
   -- what is its type?
   "continent" AS type,
+  count(*) as test_count,
 
   -- meta fields we are selecting
   all.client_continent as client_continent,

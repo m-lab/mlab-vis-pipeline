@@ -6,6 +6,7 @@
 
   -- what is its type?
   "{1}" AS type,
+  count(*) as test_count,
 
   -- meta fields we are selecting
   {2},

@@ -37,6 +37,11 @@
       "family": "meta"
     }, 
     {
+      "type": "integer", 
+      "name": "test_count", 
+      "family": "meta"
+    }, 
+    {
       "length": 45, 
       "type": "string", 
       "name": "client_city", 

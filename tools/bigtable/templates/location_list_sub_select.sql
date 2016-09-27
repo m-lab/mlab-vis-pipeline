@@ -6,6 +6,7 @@
   {1}, -- child key
 
   "{2}" AS type, -- type
+  count(*) as test_count,
 
   {3}, -- meta fields we are selecting
 

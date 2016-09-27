@@ -21,6 +21,7 @@ AGGREGATIONS = {
 
         "fields" : [
             {"name" : "client_asn_name", "family" : "meta", "type": "string"},
+            {"name" : "test_count", "family" : "meta", "type": "integer"},
             {"name": "type", "family": "meta", "type": "string"},
             {"name": "client_city", "family": "meta", "type": "string"},
             {"name": "client_region", "family": "meta", "type": "string"},
@@ -74,6 +75,7 @@ AGGREGATIONS = {
 
         "fields" : [
             {"name": "server_asn_name", "family": "meta", "type": "string"},
+            {"name" : "test_count", "family" : "meta", "type": "integer"},
             {"name": "type", "family": "meta", "type": "string"},
             {"name": "client_city", "family": "meta", "type": "string"},
             {"name": "client_region", "family": "meta", "type": "string"},
@@ -128,6 +130,7 @@ AGGREGATIONS = {
 
         "fields" : [
             {"name" : "client_asn_name", "family" : "meta", "type": "string"},
+            {"name" : "test_count", "family" : "meta", "type": "integer"},
             {"name": "type", "family": "meta", "type": "string"},
             {"name": "client_city", "family": "meta", "type": "string"},
             {"name": "client_region", "family": "meta", "type": "string"},
@@ -181,6 +184,7 @@ AGGREGATIONS = {
 
         "fields" : [
             {"name": "server_asn_name", "family": "meta", "type": "string"},
+            {"name" : "test_count", "family" : "meta", "type": "integer"},
             {"name": "type", "family": "meta", "type": "string"},
             {"name": "client_city", "family": "meta", "type": "string"},
             {"name": "client_region", "family": "meta", "type": "string"},
@@ -275,6 +279,7 @@ AGGREGATIONS = {
 
         "fields" : [
             {"length": 10, "type": "string", "name": "type", "family": "meta"},
+            {"name" : "test_count", "family" : "meta", "type": "integer"},
             {"length": 45, "type": "string", "name": "client_city", "family": "meta"},
             {"length": 45, "type": "string", "name": "client_region", "family": "meta"},
             {"length": 2, "type": "string", "name": "client_region_code", "family": "meta"},

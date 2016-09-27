@@ -36,6 +36,11 @@
       "family": "meta"
     }, 
     {
+      "type": "integer", 
+      "name": "test_count", 
+      "family": "meta"
+    }, 
+    {
       "type": "string", 
       "name": "type", 
       "family": "meta"

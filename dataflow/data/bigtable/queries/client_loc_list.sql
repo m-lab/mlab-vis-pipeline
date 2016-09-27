@@ -55,6 +55,7 @@ from -- ============
   (SELECT REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region_code, ""), "")), " ", "") as parent_location_key, -- parent key
  REPLACE(LOWER(CONCAT(IFNULL(all.client_city, ""), "")), " ", "") as child_location_key, -- child key
  "city" AS type, -- type
+ count(*) as test_count,
  all.client_city as client_city,
  all.client_region as client_region,
  all.client_country as client_country,
@@ -275,6 +276,7 @@ from -- ============
   (SELECT REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "")), " ", "") as parent_location_key, -- parent key
  REPLACE(LOWER(CONCAT(IFNULL(all.client_region_code, ""), "")), " ", "") as child_location_key, -- child key
  "region" AS type, -- type
+ count(*) as test_count,
  all.client_region as client_region,
  all.client_country as client_country,
  all.client_continent as client_continent,
@@ -484,6 +486,7 @@ from -- ============
   (SELECT REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "")), " ", "") as parent_location_key, -- parent key
  REPLACE(LOWER(CONCAT(IFNULL(all.client_country_code, ""), "")), " ", "") as child_location_key, -- child key
  "country" AS type, -- type
+ count(*) as test_count,
  all.client_country as client_country,
  all.client_continent as client_continent,
  all.client_country_code as client_country_code,
@@ -671,6 +674,7 @@ from -- ============
   (SELECT "" as parent_location_key, -- parent key
  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "")), " ", "") as child_location_key, -- child key
  "continent" AS type, -- type
+ count(*) as test_count,
  all.client_continent as client_continent,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
  last_week.test_count as last_week_test_count,
@@ -836,6 +840,7 @@ from -- ============
   (SELECT "info" as parent_location_key, -- parent key
  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region_code, ""), "",IFNULL(all.client_city, ""), "")), " ", "") as child_location_key, -- child key
  "city" AS type, -- type
+ count(*) as test_count,
  all.client_city as client_city,
  all.client_region as client_region,
  all.client_country as client_country,
@@ -1063,6 +1068,7 @@ from -- ============
   (SELECT "info" as parent_location_key, -- parent key
  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "",IFNULL(all.client_region_code, ""), "")), " ", "") as child_location_key, -- child key
  "region" AS type, -- type
+ count(*) as test_count,
  all.client_region as client_region,
  all.client_country as client_country,
  all.client_continent as client_continent,
@@ -1278,6 +1284,7 @@ from -- ============
   (SELECT "info" as parent_location_key, -- parent key
  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "",IFNULL(all.client_country_code, ""), "")), " ", "") as child_location_key, -- child key
  "country" AS type, -- type
+ count(*) as test_count,
  all.client_country as client_country,
  all.client_continent as client_continent,
  all.client_country_code as client_country_code,
@@ -1469,6 +1476,7 @@ from -- ============
   (SELECT "info" as parent_location_key, -- parent key
  REPLACE(LOWER(CONCAT(IFNULL(all.client_continent_code, ""), "")), " ", "") as child_location_key, -- child key
  "continent" AS type, -- type
+ count(*) as test_count,
  all.client_continent as client_continent,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
  last_week.test_count as last_week_test_count,

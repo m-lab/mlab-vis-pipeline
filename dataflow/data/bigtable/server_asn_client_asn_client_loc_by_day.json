@@ -116,6 +116,11 @@
     }, 
     {
       "type": "string", 
+      "name": "server_asn_name", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
       "name": "client_asn_name", 
       "family": "meta"
     }, 

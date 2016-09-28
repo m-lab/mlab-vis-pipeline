@@ -104,6 +104,11 @@
     }, 
     {
       "type": "string", 
+      "name": "server_asn_name", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
       "name": "local_time_zone", 
       "family": "meta"
     }, 

@@ -1,7 +1,5 @@
 SELECT server_asn_number,
        server_asn_name,
-       local_time_zone,
-       local_zone_name,
        DATE(local_test_date) AS date,
        STRFTIME_UTC_USEC(TIMESTAMP_TO_USEC([local_test_date]), "%H") as hour,
        SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
@@ -11,12 +9,8 @@ SELECT server_asn_number,
        COUNT(*) AS count
 FROM {0}
 WHERE LENGTH(server_asn_name) > 0
- AND LENGTH(local_time_zone) > 0
- AND LENGTH(local_zone_name) > 0
  AND LENGTH(server_asn_number) > 0
 GROUP BY server_asn_number,
          server_asn_name,
-         local_time_zone,
-         local_zone_name,
          [date],
          [hour]

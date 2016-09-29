@@ -114,9 +114,7 @@ TABLE_BASES = {
         ],
         "fields": [
             {"name": "server_asn_name", "type": "string", "family": "meta"},
-            {"name": "client_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "client_asn_name", "type": "string", "family": "meta"}
         ]
     },
     "server_asn_client_loc": {
@@ -125,9 +123,7 @@ TABLE_BASES = {
             {"name": "server_asn_number", "length": 40, "type": "string", "family": "meta"}
         ],
         "fields": [
-            {"name": "server_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "server_asn_name", "type": "string", "family": "meta"}
         ]
     },
 
@@ -137,9 +133,7 @@ TABLE_BASES = {
             {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
         ],
         "fields": [
-            {"name": "client_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "client_asn_name", "type": "string", "family": "meta"}
         ]
     },
     "client_loc": {
@@ -147,8 +141,6 @@ TABLE_BASES = {
             {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
         ],
         "fields": [
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
         ]
     },
 
@@ -159,9 +151,7 @@ TABLE_BASES = {
         ],
 
         "fields": [
-            {"name": "client_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "client_asn_name", "type": "string", "family": "meta"}
         ]
     },
     "server_asn": {
@@ -170,9 +160,7 @@ TABLE_BASES = {
         ],
 
         "fields": [
-            {"name": "server_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "server_asn_name", "type": "string", "family": "meta"}
         ]
     },
     "server_asn_client_asn": {
@@ -182,9 +170,7 @@ TABLE_BASES = {
         ],
         "fields": [
             {"name": "server_asn_name", "type": "string", "family": "meta"},
-            {"name": "client_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "client_asn_name", "type": "string", "family": "meta"}
         ]
     }
 }

@@ -132,16 +132,6 @@
     }, 
     {
       "type": "string", 
-      "name": "local_time_zone", 
-      "family": "meta"
-    }, 
-    {
-      "type": "string", 
-      "name": "local_zone_name", 
-      "family": "meta"
-    }, 
-    {
-      "type": "string", 
       "name": "client_continent", 
       "family": "meta"
     }, 

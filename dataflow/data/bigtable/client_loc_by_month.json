@@ -130,6 +130,11 @@
       "type": "string", 
       "name": "date", 
       "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "type", 
+      "family": "meta"
     }
   ]
 }

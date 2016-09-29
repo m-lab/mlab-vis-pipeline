@@ -142,6 +142,11 @@
       "type": "string", 
       "name": "hour", 
       "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "type", 
+      "family": "meta"
     }
   ]
 }

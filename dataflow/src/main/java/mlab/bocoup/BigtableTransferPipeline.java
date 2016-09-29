@@ -330,7 +330,7 @@ public class BigtableTransferPipeline {
 	 */
 	public static void main(String[] args) {
 		
-		BigtableTransferPipeline.runAll(args, "server_", ".json");
+		BigtableTransferPipeline.runAll(args, "", ".json");
 		
 		//BigtableTransferPipeline.runOne(args, DEFAULT_BIGTABLE_CONFIG_FILE);
 		

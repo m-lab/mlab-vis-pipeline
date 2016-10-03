@@ -1,4 +1,5 @@
 {
+  "projectId": "mlab-oti",
   "queryFile": "./data/bigquery/queries/base_uploads_ip_by_day.sql",
   "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
   "outputTable": "bocoup_prod.base_uploads_ip_by_day",

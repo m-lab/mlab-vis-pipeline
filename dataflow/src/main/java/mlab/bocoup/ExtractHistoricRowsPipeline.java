@@ -12,6 +12,7 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.dataflow.sdk.Pipeline;
@@ -24,8 +25,10 @@ import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.bocoup.pipelineopts.ExtractHistoricRowsPipelineOptions;
 import mlab.bocoup.query.BigQueryIONoLargeResults;
+import mlab.bocoup.query.BigQueryJob;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.CreateDisposition;
 import mlab.bocoup.query.BigQueryIONoLargeResults.Write.WriteDisposition;
+import mlab.bocoup.query.QueryBuilder;
 import mlab.bocoup.util.QueryPipeIterator;
 import mlab.bocoup.util.Schema;
 
@@ -82,6 +85,98 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	public void setState(State s) {
 		this.state = s;
 	}
+	
+	public String[] getDateRange(JSONObject config) throws IOException {
+		String dateRangeQuery = "SELECT STRING(max(web100_log_entry.log_time)) as max_test_date, " +
+				"STRING(min(web100_log_entry.log_time)) as min_test_date " + 
+				"FROM " + (String) config.get("lastDateFrom");
+		
+		BigQueryJob bqj = new BigQueryJob((String) config.get("projectId"));
+		java.util.List<TableRow> rows = bqj.executeQuery(dateRangeQuery);
+		
+		String [] timestamps = new String[2];
+		int i = 0;
+		for (TableRow row : rows) {
+			for (TableCell field : row.getF()) {
+				timestamps[i++] = (String) field.getV();
+		      }
+		}
+		return timestamps;
+	}
+	
+	/**
+	* Runs one main pipeline read and write given that we have a table that
+	* does not have allowLargeResutls set to false.
+	* 
+	* Specification in that scenario do not require a "dates" array or a "numberOfDays"
+	* by which to batch things up.
+	* 
+	* Example:
+	* <code>
+	* {
+	*     "queryFile": "./data/queries/base_downloads_ip_by_day.sql",
+	*     "schemaFile": "./data/schemas/base_downloads_ip.json",
+	*     "outputTable": "bocoup.base_downloads_ip_by_day"
+	* }
+	* </code>
+	*/
+	public void run() {
+		String queryFile = (String) this.configurationObject.get("queryFile");
+		TableSchema tableSchema = Schema.fromJSONFile((String) this.configurationObject.get("schemaFile"));
+		String outputTableName =  (String) this.configurationObject.get("outputTable");
+		JSONArray dates = (JSONArray) this.configurationObject.get("dates");
+		
+		QueryBuilder qb;
+		
+		try {
+			
+			// if no dates are specified in the config file, auto detect the range we have
+			// and work with that. Otherwise, use that dates array. Note that it should have two
+			// values which will be the full range of our data.
+			String [] dateRanges;
+			if (dates == null) {
+				dateRanges = getDateRange(this.configurationObject);
+				qb = new QueryBuilder(queryFile, dateRanges);
+				LOG.info("Working with table date ranges");
+			} else {
+				dateRanges = (String[]) dates.toArray();
+				qb = new QueryBuilder(queryFile, dateRanges);
+				LOG.info("Working with config date ranges");
+			}
+			
+			LOG.debug(">>> Kicking off pipeline for dates: " + dateRanges[0] + " " + dateRanges[1]);
+			LOG.debug("Setup - Query file: " + queryFile);
+			try {
+				LOG.debug("Setup - Table Schema: " + tableSchema.toPrettyString());
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
+			}
+			LOG.debug("Setup - Output table: " + outputTableName);
+			
+			Pipeline pipe = Pipeline.create(this.options);
+			
+			PCollection<TableRow> rows = pipe.apply(
+					BigQueryIONoLargeResults.Read
+					.named("Running query " + queryFile)
+					.fromQuery(qb.getQuery()));
+			
+			rows.apply(BigQueryIONoLargeResults.Write
+					.named("write table for " + queryFile)
+					.to(outputTableName)
+					.withSchema(tableSchema)
+					.withCreateDisposition(this.createDisposition)
+					.withWriteDisposition(this.writeDisposition));
+			
+			DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();
+			result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+			this.setState(result.getState());
+			LOG.info("Job completed, with status: " + result.getState().toString());
+			
+		} catch (IOException |  InterruptedException e) {
+			LOG.error(e.getMessage());
+		}
+	}
+	
 	/**
 	 * Runs a series of pipelines, each capturing a subset of ndt rows.
 	 * Specifications should include:
@@ -99,7 +194,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
      *      ]
      * }
 	 */
-	public void run() {
+	public void runBatched() {
 		
 		String queryFile = (String) this.configurationObject.get("queryFile");
 		TableSchema tableSchema = Schema.fromJSONFile((String) this.configurationObject.get("schemaFile"));

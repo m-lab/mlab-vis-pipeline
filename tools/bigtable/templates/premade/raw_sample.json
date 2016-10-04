@@ -56,22 +56,26 @@
     {
       "type": "double",
       "name": "client_latitude",
-      "family": "meta"
+      "family": "meta",
+      "options": {"round": false}
     },
     {
       "type": "double",
       "name": "client_longitude",
-      "family": "meta"
+      "family": "meta",
+      "options": {"round": false}
     },
     {
       "type": "double",
       "name": "server_latitude",
-      "family": "meta"
+      "family": "meta",
+      "options": {"round": false}
     },
     {
       "type": "double",
       "name": "server_longitude",
-      "family": "meta"
+      "family": "meta",
+      "options": {"round": false}
     },
     {
       "type": "double",

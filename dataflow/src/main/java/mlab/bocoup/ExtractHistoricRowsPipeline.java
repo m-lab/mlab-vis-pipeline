@@ -17,6 +17,9 @@ import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.PipelineResult.State;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
@@ -24,10 +27,7 @@ import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.bocoup.pipelineopts.ExtractHistoricRowsPipelineOptions;
-import mlab.bocoup.query.BigQueryIONoLargeResults;
 import mlab.bocoup.query.BigQueryJob;
-import mlab.bocoup.query.BigQueryIONoLargeResults.Write.CreateDisposition;
-import mlab.bocoup.query.BigQueryIONoLargeResults.Write.WriteDisposition;
 import mlab.bocoup.query.QueryBuilder;
 import mlab.bocoup.util.QueryPipeIterator;
 import mlab.bocoup.util.Schema;
@@ -156,11 +156,11 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 			Pipeline pipe = Pipeline.create(this.options);
 			
 			PCollection<TableRow> rows = pipe.apply(
-					BigQueryIONoLargeResults.Read
+					BigQueryIO.Read
 					.named("Running query " + queryFile)
 					.fromQuery(qb.getQuery()));
 			
-			rows.apply(BigQueryIONoLargeResults.Write
+			rows.apply(BigQueryIO.Write
 					.named("write table for " + queryFile)
 					.to(outputTableName)
 					.withSchema(tableSchema)
@@ -238,7 +238,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 				
 				PCollection<TableRow> rows = qpi.next();
 				
-				rows.apply(BigQueryIONoLargeResults.Write
+				rows.apply(BigQueryIO.Write
 						 .named("write table " + counter)
 						 .to(outputTableName)
 				         .withSchema(tableSchema)

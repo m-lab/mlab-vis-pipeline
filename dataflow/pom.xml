@@ -35,11 +35,19 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>com.google.cloud.dataflow</groupId>
-      <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
-      <version>[1.6.0, 2.0.0)</version>
-    </dependency>
+  
+  	<dependency>
+	    <groupId>com.google.oauth-client</groupId>
+	    <artifactId>google-oauth-client</artifactId>
+	    <version>1.22.0</version>
+	</dependency>
+	  	
+    <!-- https://mvnrepository.com/artifact/com.google.cloud.dataflow/google-cloud-dataflow-java-sdk-all -->
+	<dependency>
+	    <groupId>com.google.cloud.dataflow</groupId>
+	    <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
+	    <version>1.7.0</version>
+	</dependency>
 
 	 <dependency>
     	<groupId>net.sf.jopt-simple</groupId>

@@ -2,8 +2,6 @@ package mlab.bocoup.util;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -12,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.Pipeline;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.bocoup.data.DateRange;
-import mlab.bocoup.query.BigQueryIONoLargeResults;
 import mlab.bocoup.query.QueryBuilder;
 
 public class QueryPipeIterator implements Iterator<PCollection<TableRow>> {
@@ -154,7 +152,7 @@ public class QueryPipeIterator implements Iterator<PCollection<TableRow>> {
 		}
 		
 		PCollection<TableRow> rows = this.pipe.apply(
-				BigQueryIONoLargeResults.Read
+				BigQueryIO.Read
 				.named("Running query " + this.queryName)
 				.fromQuery(this.queryString));
 

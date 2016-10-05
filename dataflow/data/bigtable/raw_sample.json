@@ -1,15 +1,15 @@
 {
   "row_keys": [
     {
-      "length": 50,
-      "type": "string",
-      "name": "client_location_key",
-      "family": "meta"
-    },
-    {
       "length": 10,
       "type": "string",
       "name": "date",
+      "family": "meta"
+    },
+    {
+      "length": 50,
+      "type": "string",
+      "name": "client_location_key",
       "family": "meta"
     }
   ],

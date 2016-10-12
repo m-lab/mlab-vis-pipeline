@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Level;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -161,18 +162,20 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 			
 			dateRangesStr[0] = (String) dateRanges[0];
 			dateRangesStr[1] = (String) dateRanges[1];
-			qb = new QueryBuilder(queryFile, dateRanges);
 			
-			LOG.debug(">>> Kicking off pipeline for dates: " + dateRanges[0] + " " + dateRanges[1]);
-			LOG.debug("Setup - Query file: " + queryFile);
+			
+			LOG.info(">>> Kicking off pipeline for dates: " + dateRangesStr[0] + " " + dateRangesStr[1]);
+			LOG.info("Setup - Query file: " + queryFile);
+			qb = new QueryBuilder(queryFile, dateRanges);
 			try {
-				LOG.debug("Setup - Table Schema: " + tableSchema.toPrettyString());
+				LOG.info("Setup - Table Schema: " + tableSchema.toPrettyString());
 			} catch (IOException e) {
 				LOG.error(e.getMessage());
 			}
-			LOG.debug("Setup - Output table: " + outputTableName);
+			LOG.info("Setup - Output table: " + outputTableName);
 			 
 			if (this.pipeline == null) {
+				LOG.info("CREATING PIPELINE");
 				this.pipeline = Pipeline.create(this.options);
 			}
 			
@@ -194,6 +197,8 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 				result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
 				this.setState(result.getState());
 				LOG.info("Job completed, with status: " + result.getState().toString());
+			} else {
+				LOG.info("will not run");
 			}
 			
 		} catch (IOException |  InterruptedException e) {
@@ -283,9 +288,9 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	}
 	/**
 	 * Run this as a regular Java application with the following arguments:
-	 * --runner com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner 
+	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner 
 	 * --numWorkers=5 
-	 * --configfile="./data/batch-runs/historic/uploads_ip_by_day_base.json" 
+	 * --configfile="./data/bigquery/batch-runs/historic/uploads_ip_by_day_base.json" 
 	 * --project=mlab-oti 
 	 * --stagingLocation="gs://bocoup"
 	 * 
@@ -308,7 +313,8 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	    ExtractHistoricRowsPipeline ehrP = new ExtractHistoricRowsPipeline(options);
 	    ehrP.setConfigurationFile(options.getConfigfile())
 	    	.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
-	    	.setWriteDisposition(WriteDisposition.WRITE_APPEND);
+	    	.setWriteDisposition(WriteDisposition.WRITE_APPEND)
+	    	.shouldExecute(true);
 	    
 	    ehrP.run();
 		

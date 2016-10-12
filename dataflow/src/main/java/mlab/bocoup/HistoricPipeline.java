@@ -95,29 +95,31 @@ public class HistoricPipeline {
 	    if (skipNDTRead != 1) {
 	    	
 	    	// TODO: Can we share a pipeline like this? Not clear. Not clear
-	    	Pipeline pipe = Pipeline.create(options);
+	    	//Pipeline pipe = Pipeline.create(options);
 	    	
 	    	options.setAppName("HistoricPipeline-Download");
-	    	ExtractHistoricRowsPipeline ehrPDL = new ExtractHistoricRowsPipeline(pipe, options);
+	    	ExtractHistoricRowsPipeline ehrPDL = new ExtractHistoricRowsPipeline(options);
 	    	Thread dlPipeThread = new Thread(ehrPDL);
 	    	String downloadsConfigFile = getRunnerConfigFilename(timePeriod, "downloads");
 	    	LOG.info("Downloads configuration: " + downloadsConfigFile);
 	    	ehrPDL.setConfigurationFile(downloadsConfigFile)
 	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
-	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND);
+	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND)
+	    		.shouldExecute(true);
 	    	
 	    	//=== get downloads for timePeriod (many pipelines)
 	    	// set up big query IO options
 	    	HistoricPipelineOptions optionsUl = options.cloneAs(HistoricPipelineOptions.class);
 	    	optionsUl.setAppName("HistoricPipeline-Upload");
 	    
-	    	ExtractHistoricRowsPipeline ehrPUL = new ExtractHistoricRowsPipeline(pipe, optionsUl);
+	    	ExtractHistoricRowsPipeline ehrPUL = new ExtractHistoricRowsPipeline(optionsUl);
 	    	Thread ulPipeThread = new Thread(ehrPUL);
 	    	String uploadsConfigFile = getRunnerConfigFilename(timePeriod, "uploads");
 	    	LOG.info("Uploads configuration: " + uploadsConfigFile);
 	    	ehrPUL.setConfigurationFile(uploadsConfigFile)
 	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
-	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND);
+	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND)
+	    		.shouldExecute(true);
 	     	
 	    	// TODO do these really need to be threads at this point? Not clear. Not. Clear.
 	    	LOG.info("Starting upload/download threads");
@@ -128,10 +130,10 @@ public class HistoricPipeline {
 	    	dlPipeThread.join();
 		    ulPipeThread.join();
 		    
-		    LOG.info("Running pipeline");
-		    DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();
-			result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
-			LOG.info("Job completed, with status: " + result.getState().toString());
+		    //LOG.info("Running pipeline");
+		    //DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();
+			//result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+			//LOG.info("Job completed, with status: " + result.getState().toString());
 		    
 		    next = ehrPUL.getState() == State.DONE && ehrPDL.getState() == State.DONE;
 	    }

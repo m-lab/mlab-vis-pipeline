@@ -3,7 +3,7 @@
   "queryFile": "./data/bigquery/queries/base_uploads_ip_by_day.sql",
   "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
   "outputTable": "bocoup_prod.base_uploads_ip_by_day",
-  "numberOfDays": 4,
+  
   "dates": [
      "2009-01-15T00:00:00Z",
      "2009-06-01T00:00:00Z",

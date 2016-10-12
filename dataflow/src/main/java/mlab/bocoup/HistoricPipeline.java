@@ -94,38 +94,44 @@ public class HistoricPipeline {
 	    boolean next = true;
 	    if (skipNDTRead != 1) {
 	    	
+	    	// TODO: Can we share a pipeline like this? Not clear. Not clear
+	    	Pipeline pipe = Pipeline.create(options);
+	    	
 	    	options.setAppName("HistoricPipeline-Download");
-	    	ExtractHistoricRowsPipeline ehrPDL = new ExtractHistoricRowsPipeline(options);
+	    	ExtractHistoricRowsPipeline ehrPDL = new ExtractHistoricRowsPipeline(pipe, options);
 	    	Thread dlPipeThread = new Thread(ehrPDL);
 	    	String downloadsConfigFile = getRunnerConfigFilename(timePeriod, "downloads");
 	    	LOG.info("Downloads configuration: " + downloadsConfigFile);
 	    	ehrPDL.setConfigurationFile(downloadsConfigFile)
 	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
 	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND);
-	    
-	    	dlPipeThread.start();
-	    
-	    	// TODO. Change this asap.
-	    	// Wait for this to join before kicking off the next one. This is a result of the
-	    	// hardcoded 100 writes to bq limit that we can't resolve right now, so we have to
-	    	// artificially slow this down. 
-	    	dlPipeThread.join();
-	    
+	    	
 	    	//=== get downloads for timePeriod (many pipelines)
 	    	// set up big query IO options
 	    	HistoricPipelineOptions optionsUl = options.cloneAs(HistoricPipelineOptions.class);
 	    	optionsUl.setAppName("HistoricPipeline-Upload");
 	    
-	    	ExtractHistoricRowsPipeline ehrPUL = new ExtractHistoricRowsPipeline(optionsUl);
+	    	ExtractHistoricRowsPipeline ehrPUL = new ExtractHistoricRowsPipeline(pipe, optionsUl);
 	    	Thread ulPipeThread = new Thread(ehrPUL);
 	    	String uploadsConfigFile = getRunnerConfigFilename(timePeriod, "uploads");
 	    	LOG.info("Uploads configuration: " + uploadsConfigFile);
 	    	ehrPUL.setConfigurationFile(uploadsConfigFile)
 	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
 	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND);
-	    	
+	     	
+	    	// TODO do these really need to be threads at this point? Not clear. Not. Clear.
+	    	LOG.info("Starting upload/download threads");
+	    	dlPipeThread.start();
 	    	ulPipeThread.start();
+	    	
+	    	LOG.info("Joining upload/download threads");
+	    	dlPipeThread.join();
 		    ulPipeThread.join();
+		    
+		    LOG.info("Running pipeline");
+		    DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();
+			result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+			LOG.info("Job completed, with status: " + result.getState().toString());
 		    
 		    next = ehrPUL.getState() == State.DONE && ehrPDL.getState() == State.DONE;
 	    }

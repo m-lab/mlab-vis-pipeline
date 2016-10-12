@@ -42,6 +42,13 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	private WriteDisposition writeDisposition = WriteDisposition.WRITE_APPEND;
 	private CreateDisposition createDisposition = CreateDisposition.CREATE_IF_NEEDED;
 	private State state;
+	private Pipeline pipeline;
+	private boolean runPipeline = false;
+	
+	public ExtractHistoricRowsPipeline(Pipeline p, BigQueryOptions options) {
+		this.pipeline = p;
+		this.options = options;
+	}
 	
 	public ExtractHistoricRowsPipeline(BigQueryOptions options) {
 		this.options = options;
@@ -86,10 +93,19 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 		this.state = s;
 	}
 	
+	public ExtractHistoricRowsPipeline shouldExecute(boolean execute) {
+		this.runPipeline  = execute;
+		return this;
+	}
+	
+	public boolean isExecutable() {
+		return this.runPipeline;
+	}
+	
 	public String[] getDateRange(JSONObject config) throws IOException {
 		String dateRangeQuery = "SELECT STRING(max(web100_log_entry.log_time)) as max_test_date, " +
 				"STRING(min(web100_log_entry.log_time)) as min_test_date " + 
-				"FROM " + (String) config.get("lastDateFrom");
+				"FROM " + (String) config.get("lastDateFromTable");
 		
 		BigQueryJob bqj = new BigQueryJob((String) config.get("projectId"));
 		java.util.List<TableRow> rows = bqj.executeQuery(dateRangeQuery);
@@ -133,16 +149,19 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 			// if no dates are specified in the config file, auto detect the range we have
 			// and work with that. Otherwise, use that dates array. Note that it should have two
 			// values which will be the full range of our data.
-			String [] dateRanges;
+			Object [] dateRanges;
+			String [] dateRangesStr = new String[2];
 			if (dates == null) {
 				dateRanges = getDateRange(this.configurationObject);
-				qb = new QueryBuilder(queryFile, dateRanges);
 				LOG.info("Working with table date ranges");
 			} else {
-				dateRanges = (String[]) dates.toArray();
-				qb = new QueryBuilder(queryFile, dateRanges);
+				dateRanges = dates.toArray();
 				LOG.info("Working with config date ranges");
 			}
+			
+			dateRangesStr[0] = (String) dateRanges[0];
+			dateRangesStr[1] = (String) dateRanges[1];
+			qb = new QueryBuilder(queryFile, dateRanges);
 			
 			LOG.debug(">>> Kicking off pipeline for dates: " + dateRanges[0] + " " + dateRanges[1]);
 			LOG.debug("Setup - Query file: " + queryFile);
@@ -152,10 +171,12 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 				LOG.error(e.getMessage());
 			}
 			LOG.debug("Setup - Output table: " + outputTableName);
+			 
+			if (this.pipeline == null) {
+				this.pipeline = Pipeline.create(this.options);
+			}
 			
-			Pipeline pipe = Pipeline.create(this.options);
-			
-			PCollection<TableRow> rows = pipe.apply(
+			PCollection<TableRow> rows = this.pipeline.apply(
 					BigQueryIO.Read
 					.named("Running query " + queryFile)
 					.fromQuery(qb.getQuery()));
@@ -167,10 +188,13 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 					.withCreateDisposition(this.createDisposition)
 					.withWriteDisposition(this.writeDisposition));
 			
-			DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();
-			result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
-			this.setState(result.getState());
-			LOG.info("Job completed, with status: " + result.getState().toString());
+			// by default, the pipeline will not run.
+			if (this.isExecutable()) {
+				DataflowPipelineJob result = (DataflowPipelineJob) this.pipeline.run();
+				result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+				this.setState(result.getState());
+				LOG.info("Job completed, with status: " + result.getState().toString());
+			}
 			
 		} catch (IOException |  InterruptedException e) {
 			LOG.error(e.getMessage());

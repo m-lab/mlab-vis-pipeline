@@ -22,6 +22,8 @@ DATE_CONFIG_TEMPLATE_FILENAME = os.path.join(TEMPLATE_DIR, "time_config_template
 
 RESERVED_WORDS = ['date', 'hour']
 
+TYPE_COLUMN = {"name": "type", "type": "string", "family": "meta"}
+
 METRIC_FIELDS = {
     "download_speed_mbps_median": {
         "field": {"name": "download_speed_mbps_median", "type": "double", "family": "data"},
@@ -113,9 +115,8 @@ TABLE_BASES = {
             {"name": "server_asn_number", "length": 40, "type": "string", "family": "meta"}
         ],
         "fields": [
-            {"name": "client_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "server_asn_name", "type": "string", "family": "meta"},
+            {"name": "client_asn_name", "type": "string", "family": "meta"}
         ]
     },
     "server_asn_client_loc": {
@@ -124,8 +125,7 @@ TABLE_BASES = {
             {"name": "server_asn_number", "length": 40, "type": "string", "family": "meta"}
         ],
         "fields": [
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "server_asn_name", "type": "string", "family": "meta"}
         ]
     },
 
@@ -135,9 +135,7 @@ TABLE_BASES = {
             {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
         ],
         "fields": [
-            {"name": "client_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "client_asn_name", "type": "string", "family": "meta"}
         ]
     },
     "client_loc": {
@@ -145,8 +143,6 @@ TABLE_BASES = {
             {"name": "client_location_key", "length": 50, "type": "string", "family": "meta"},
         ],
         "fields": [
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
         ]
     },
 
@@ -157,9 +153,7 @@ TABLE_BASES = {
         ],
 
         "fields": [
-            {"name": "client_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "client_asn_name", "type": "string", "family": "meta"}
         ]
     },
     "server_asn": {
@@ -168,8 +162,7 @@ TABLE_BASES = {
         ],
 
         "fields": [
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "server_asn_name", "type": "string", "family": "meta"}
         ]
     },
     "server_asn_client_asn": {
@@ -178,9 +171,8 @@ TABLE_BASES = {
             {"name": "client_asn_number", "length": 10, "type": "string", "family": "meta"}
         ],
         "fields": [
-            {"name": "client_asn_name", "type": "string", "family": "meta"},
-            {"name": "local_time_zone", "type": "string", "family": "meta"},
-            {"name": "local_zone_name", "type": "string", "family": "meta"}
+            {"name": "server_asn_name", "type": "string", "family": "meta"},
+            {"name": "client_asn_name", "type": "string", "family": "meta"}
         ]
     }
 }
@@ -506,6 +498,9 @@ def create_config_file(aggregation_id,
     base_config["columns"] = base_config["columns"] + aggregation_options['fields']
     base_config["columns"] = base_config["columns"] + location_columns
     base_config["columns"] = base_config["columns"] + date_config_fields
+
+    if len(location_columns) > 0:
+        base_config["columns"] = base_config["columns"] + [TYPE_COLUMN]
 
     # save file
     config_filepath = os.path.join(CONFIG_DIR, bigtable_table_name + ".json")

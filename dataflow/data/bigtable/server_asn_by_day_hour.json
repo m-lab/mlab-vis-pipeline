@@ -98,12 +98,7 @@
     }, 
     {
       "type": "string", 
-      "name": "local_time_zone", 
-      "family": "meta"
-    }, 
-    {
-      "type": "string", 
-      "name": "local_zone_name", 
+      "name": "server_asn_name", 
       "family": "meta"
     }, 
     {

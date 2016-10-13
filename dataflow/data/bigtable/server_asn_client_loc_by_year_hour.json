@@ -110,12 +110,7 @@
     }, 
     {
       "type": "string", 
-      "name": "local_time_zone", 
-      "family": "meta"
-    }, 
-    {
-      "type": "string", 
-      "name": "local_zone_name", 
+      "name": "server_asn_name", 
       "family": "meta"
     }, 
     {
@@ -163,6 +158,11 @@
       "length": 10, 
       "type": "string", 
       "name": "hour", 
+      "family": "meta"
+    }, 
+    {
+      "type": "string", 
+      "name": "type", 
       "family": "meta"
     }
   ]

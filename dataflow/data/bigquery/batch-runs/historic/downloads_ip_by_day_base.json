@@ -1,8 +1,9 @@
 {
+  "projectId": "mlab-oti",
   "queryFile": "./data/bigquery/queries/base_downloads_ip_by_day.sql",
   "schemaFile": "./data/bigquery/schemas/base_downloads_ip.json",
   "outputTable": "bocoup_prod.base_downloads_ip_by_day",
-  "numberOfDays": 4,
+  
   "dates": [
      "2009-01-15T00:00:00Z",
      "2009-06-01T00:00:00Z",

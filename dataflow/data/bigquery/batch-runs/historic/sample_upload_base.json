@@ -1,20 +1,19 @@
 {
+  "projectId": "mlab-oti",
   "queryFile": "./data/bigquery/queries/base_uploads_ip_by_day.sql",
   "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
-  "outputTable": "bocoup.zz6_base_uploads_ip_by_day",
-  "numberOfDays": 7,
+  "outputTable": "bocoup_test.base_uploads_ip_by_day",
 
   "dates": [
-     "2010-01-00T00:00:00Z",
+     "2010-01-01T00:00:00Z",
      "2010-01-05T00:00:00Z"
   ],
 
-  "lastDateFrom": "bocoup.uploads_ip_by_day_with_isps",
-  "dateColumn": "test_date",
+  "lastDateFromTable": "[mlab-oti:ndtbocoup.ndt]",
 
-  "mergeTable": "bocoup.zz7_base_merged_ip_by_day",
+  "mergeTable": "bocoup_test.base_merged_ip_by_day",
   "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
 
-  "withISPTable": "bocoup.zz7_all_ip_by_day",
+  "withISPTable": "bocoup_test.all_ip_by_day",
   "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
 }

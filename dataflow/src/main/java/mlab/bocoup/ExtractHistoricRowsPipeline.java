@@ -6,16 +6,21 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Level;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.PipelineResult.State;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
@@ -23,9 +28,8 @@ import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.bocoup.pipelineopts.ExtractHistoricRowsPipelineOptions;
-import mlab.bocoup.query.BigQueryIONoLargeResults;
-import mlab.bocoup.query.BigQueryIONoLargeResults.Write.CreateDisposition;
-import mlab.bocoup.query.BigQueryIONoLargeResults.Write.WriteDisposition;
+import mlab.bocoup.query.BigQueryJob;
+import mlab.bocoup.query.QueryBuilder;
 import mlab.bocoup.util.QueryPipeIterator;
 import mlab.bocoup.util.Schema;
 
@@ -39,6 +43,13 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	private WriteDisposition writeDisposition = WriteDisposition.WRITE_APPEND;
 	private CreateDisposition createDisposition = CreateDisposition.CREATE_IF_NEEDED;
 	private State state;
+	private Pipeline pipeline;
+	private boolean runPipeline = false;
+	
+	public ExtractHistoricRowsPipeline(Pipeline p, BigQueryOptions options) {
+		this.pipeline = p;
+		this.options = options;
+	}
 	
 	public ExtractHistoricRowsPipeline(BigQueryOptions options) {
 		this.options = options;
@@ -82,6 +93,119 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	public void setState(State s) {
 		this.state = s;
 	}
+	
+	public ExtractHistoricRowsPipeline shouldExecute(boolean execute) {
+		this.runPipeline  = execute;
+		return this;
+	}
+	
+	public boolean isExecutable() {
+		return this.runPipeline;
+	}
+	
+	public String[] getDateRange(JSONObject config) throws IOException {
+		String dateRangeQuery = "SELECT STRING(max(web100_log_entry.log_time)) as max_test_date, " +
+				"STRING(min(web100_log_entry.log_time)) as min_test_date " + 
+				"FROM " + (String) config.get("lastDateFromTable");
+		
+		BigQueryJob bqj = new BigQueryJob((String) config.get("projectId"));
+		java.util.List<TableRow> rows = bqj.executeQuery(dateRangeQuery);
+		
+		String [] timestamps = new String[2];
+		int i = 0;
+		for (TableRow row : rows) {
+			for (TableCell field : row.getF()) {
+				timestamps[i++] = (String) field.getV();
+		      }
+		}
+		return timestamps;
+	}
+	
+	/**
+	* Runs one main pipeline read and write given that we have a table that
+	* does not have allowLargeResutls set to false.
+	* 
+	* Specification in that scenario do not require a "dates" array or a "numberOfDays"
+	* by which to batch things up.
+	* 
+	* Example:
+	* <code>
+	* {
+	*     "queryFile": "./data/queries/base_downloads_ip_by_day.sql",
+	*     "schemaFile": "./data/schemas/base_downloads_ip.json",
+	*     "outputTable": "bocoup.base_downloads_ip_by_day"
+	* }
+	* </code>
+	*/
+	public void run() {
+		String queryFile = (String) this.configurationObject.get("queryFile");
+		TableSchema tableSchema = Schema.fromJSONFile((String) this.configurationObject.get("schemaFile"));
+		String outputTableName =  (String) this.configurationObject.get("outputTable");
+		JSONArray dates = (JSONArray) this.configurationObject.get("dates");
+		
+		QueryBuilder qb;
+		
+		try {
+			
+			// if no dates are specified in the config file, auto detect the range we have
+			// and work with that. Otherwise, use that dates array. Note that it should have two
+			// values which will be the full range of our data.
+			Object [] dateRanges;
+			String [] dateRangesStr = new String[2];
+			if (dates == null) {
+				dateRanges = getDateRange(this.configurationObject);
+				LOG.info("Working with table date ranges");
+			} else {
+				dateRanges = dates.toArray();
+				LOG.info("Working with config date ranges");
+			}
+			
+			dateRangesStr[0] = (String) dateRanges[0];
+			dateRangesStr[1] = (String) dateRanges[1];
+			
+			
+			LOG.info(">>> Kicking off pipeline for dates: " + dateRangesStr[0] + " " + dateRangesStr[1]);
+			LOG.info("Setup - Query file: " + queryFile);
+			qb = new QueryBuilder(queryFile, dateRanges);
+			try {
+				LOG.info("Setup - Table Schema: " + tableSchema.toPrettyString());
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
+			}
+			LOG.info("Setup - Output table: " + outputTableName);
+			 
+			if (this.pipeline == null) {
+				LOG.info("CREATING PIPELINE");
+				this.pipeline = Pipeline.create(this.options);
+			}
+			
+			PCollection<TableRow> rows = this.pipeline.apply(
+					BigQueryIO.Read
+					.named("Running query " + queryFile)
+					.fromQuery(qb.getQuery()));
+			
+			rows.apply(BigQueryIO.Write
+					.named("write table for " + queryFile)
+					.to(outputTableName)
+					.withSchema(tableSchema)
+					.withCreateDisposition(this.createDisposition)
+					.withWriteDisposition(this.writeDisposition));
+			
+			// by default, the pipeline will not run.
+			if (this.isExecutable()) {
+				DataflowPipelineJob result = (DataflowPipelineJob) this.pipeline.run();
+				result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+				this.setState(result.getState());
+				LOG.info("Job completed, with status: " + result.getState().toString());
+			} else {
+				LOG.info("will not run");
+			}
+			
+		} catch (IOException |  InterruptedException e) {
+			LOG.error(e.getMessage());
+		}
+	}
+	
 	/**
 	 * Runs a series of pipelines, each capturing a subset of ndt rows.
 	 * Specifications should include:
@@ -99,7 +223,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
      *      ]
      * }
 	 */
-	public void run() {
+	public void runBatched() {
 		
 		String queryFile = (String) this.configurationObject.get("queryFile");
 		TableSchema tableSchema = Schema.fromJSONFile((String) this.configurationObject.get("schemaFile"));
@@ -143,7 +267,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 				
 				PCollection<TableRow> rows = qpi.next();
 				
-				rows.apply(BigQueryIONoLargeResults.Write
+				rows.apply(BigQueryIO.Write
 						 .named("write table " + counter)
 						 .to(outputTableName)
 				         .withSchema(tableSchema)
@@ -164,9 +288,9 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	}
 	/**
 	 * Run this as a regular Java application with the following arguments:
-	 * --runner com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner 
+	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner 
 	 * --numWorkers=5 
-	 * --configfile="./data/batch-runs/historic/uploads_ip_by_day_base.json" 
+	 * --configfile="./data/bigquery/batch-runs/historic/uploads_ip_by_day_base.json" 
 	 * --project=mlab-oti 
 	 * --stagingLocation="gs://bocoup"
 	 * 
@@ -189,7 +313,8 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	    ExtractHistoricRowsPipeline ehrP = new ExtractHistoricRowsPipeline(options);
 	    ehrP.setConfigurationFile(options.getConfigfile())
 	    	.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
-	    	.setWriteDisposition(WriteDisposition.WRITE_APPEND);
+	    	.setWriteDisposition(WriteDisposition.WRITE_APPEND)
+	    	.shouldExecute(true);
 	    
 	    ehrP.run();
 		

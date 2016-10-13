@@ -119,25 +119,30 @@ public class AddLocalTimeFn extends DoFn<TableRow, TableRow> {
 		
 		TableRow dataRow = c.element().clone();
 		
-		String testDate = (String) dataRow.get("test_date");
-		double lat = (Double) dataRow.get("client_latitude");
-		double lng = (Double) dataRow.get("client_longitude");
-		
-		Map<String, Iterable<TableRow>> timezonesMap = c.sideInput(this.groupedZones);
-		
-		String timezoneName = TimezoneMapper.latLngToTimezoneString(lat, lng);
-		Iterable<TableRow> rows = timezonesMap.get(timezoneName);
-		
-		if (timezonesMap.containsKey(timezoneName)) {
-			LocalTimeDetails details = this.utcToLocalTime(rows, timezoneName, testDate, lat, lng); 
+		if (dataRow.containsKey("client_latitude") && dataRow.containsKey("client_longitude") ) {
+			String testDate = (String) dataRow.get("test_date");
+			double lat = (Double) dataRow.get("client_latitude");
+			double lng = (Double) dataRow.get("client_longitude");
 			
-			dataRow.set("local_test_date", details.getTimestamp());
-			dataRow.set("local_time_zone", details.getTimezone());
-			dataRow.set("local_zone_name", details.getZone());
-			dataRow.set("local_gmt_offset", details.getOffset());
-		} else {
-			LOG.error("No entries for " + timezoneName);
+			Map<String, Iterable<TableRow>> timezonesMap = c.sideInput(this.groupedZones);
+			
+			String timezoneName = TimezoneMapper.latLngToTimezoneString(lat, lng);
+			Iterable<TableRow> rows = timezonesMap.get(timezoneName);
+			
+			if (timezonesMap.containsKey(timezoneName)) {
+				LocalTimeDetails details = this.utcToLocalTime(rows, timezoneName, testDate, lat, lng); 
+				
+				dataRow.set("local_test_date", details.getTimestamp());
+				dataRow.set("local_time_zone", details.getTimezone());
+				dataRow.set("local_zone_name", details.getZone());
+				dataRow.set("local_gmt_offset", details.getOffset());
+			} else {
+				LOG.error("No entries for " + timezoneName);
+			}
+			
 		}
+		
+		
 		
 		c.output(dataRow);
 	}

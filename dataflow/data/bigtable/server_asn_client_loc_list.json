@@ -82,6 +82,71 @@
     }, 
     {
       "type": "integer", 
+      "name": "last_three_months_test_count", 
+      "family": "meta"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_download_speed_mbps_median", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_upload_speed_mbps_median", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_download_speed_mbps_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_upload_speed_mbps_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_download_speed_mbps_min", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_upload_speed_mbps_min", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_download_speed_mbps_max", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_upload_speed_mbps_max", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_download_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_upload_speed_mbps_stddev", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_rtt_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "double", 
+      "name": "last_three_months_retransmit_avg", 
+      "family": "data"
+    }, 
+    {
+      "type": "integer", 
       "name": "last_month_test_count", 
       "family": "meta"
     }, 
@@ -147,67 +212,67 @@
     }, 
     {
       "type": "integer", 
-      "name": "last_week_test_count", 
+      "name": "last_six_months_test_count", 
       "family": "meta"
     }, 
     {
       "type": "double", 
-      "name": "last_week_download_speed_mbps_median", 
+      "name": "last_six_months_download_speed_mbps_median", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_upload_speed_mbps_median", 
+      "name": "last_six_months_upload_speed_mbps_median", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_download_speed_mbps_avg", 
+      "name": "last_six_months_download_speed_mbps_avg", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_upload_speed_mbps_avg", 
+      "name": "last_six_months_upload_speed_mbps_avg", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_download_speed_mbps_min", 
+      "name": "last_six_months_download_speed_mbps_min", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_upload_speed_mbps_min", 
+      "name": "last_six_months_upload_speed_mbps_min", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_download_speed_mbps_max", 
+      "name": "last_six_months_download_speed_mbps_max", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_upload_speed_mbps_max", 
+      "name": "last_six_months_upload_speed_mbps_max", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_download_speed_mbps_stddev", 
+      "name": "last_six_months_download_speed_mbps_stddev", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_upload_speed_mbps_stddev", 
+      "name": "last_six_months_upload_speed_mbps_stddev", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_rtt_avg", 
+      "name": "last_six_months_rtt_avg", 
       "family": "data"
     }, 
     {
       "type": "double", 
-      "name": "last_week_retransmit_avg", 
+      "name": "last_six_months_retransmit_avg", 
       "family": "data"
     }, 
     {
@@ -277,6 +342,16 @@
     }, 
     {
       "type": "integer_list", 
+      "name": "last_three_months_download_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "integer_list", 
+      "name": "last_three_months_upload_speed_mbps_bins", 
+      "family": "data"
+    }, 
+    {
+      "type": "integer_list", 
       "name": "last_month_download_speed_mbps_bins", 
       "family": "data"
     }, 
@@ -287,12 +362,12 @@
     }, 
     {
       "type": "integer_list", 
-      "name": "last_week_download_speed_mbps_bins", 
+      "name": "last_six_months_download_speed_mbps_bins", 
       "family": "data"
     }, 
     {
       "type": "integer_list", 
-      "name": "last_week_upload_speed_mbps_bins", 
+      "name": "last_six_months_upload_speed_mbps_bins", 
       "family": "data"
     }, 
     {

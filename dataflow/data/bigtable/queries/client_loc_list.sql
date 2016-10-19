@@ -9,19 +9,6 @@ select parent_location_key,
        client_region_code,
        client_country_code,
        client_continent_code,
-       last_week_test_count,
-       last_week_download_speed_mbps_median,
-       last_week_upload_speed_mbps_median,
-       last_week_download_speed_mbps_avg,
-       last_week_upload_speed_mbps_avg,
-       last_week_download_speed_mbps_min,
-       last_week_upload_speed_mbps_min,
-       last_week_download_speed_mbps_max,
-       last_week_upload_speed_mbps_max,
-       last_week_download_speed_mbps_stddev,
-       last_week_upload_speed_mbps_stddev,
-       last_week_rtt_avg,
-       last_week_retransmit_avg,
        last_month_test_count,
        last_month_download_speed_mbps_median,
        last_month_upload_speed_mbps_median,
@@ -35,6 +22,32 @@ select parent_location_key,
        last_month_upload_speed_mbps_stddev,
        last_month_rtt_avg,
        last_month_retransmit_avg,
+       last_three_months_test_count,
+       last_three_months_download_speed_mbps_median,
+       last_three_months_upload_speed_mbps_median,
+       last_three_months_download_speed_mbps_avg,
+       last_three_months_upload_speed_mbps_avg,
+       last_three_months_download_speed_mbps_min,
+       last_three_months_upload_speed_mbps_min,
+       last_three_months_download_speed_mbps_max,
+       last_three_months_upload_speed_mbps_max,
+       last_three_months_download_speed_mbps_stddev,
+       last_three_months_upload_speed_mbps_stddev,
+       last_three_months_rtt_avg,
+       last_three_months_retransmit_avg,
+       last_six_months_test_count,
+       last_six_months_download_speed_mbps_median,
+       last_six_months_upload_speed_mbps_median,
+       last_six_months_download_speed_mbps_avg,
+       last_six_months_upload_speed_mbps_avg,
+       last_six_months_download_speed_mbps_min,
+       last_six_months_upload_speed_mbps_min,
+       last_six_months_download_speed_mbps_max,
+       last_six_months_upload_speed_mbps_max,
+       last_six_months_download_speed_mbps_stddev,
+       last_six_months_upload_speed_mbps_stddev,
+       last_six_months_rtt_avg,
+       last_six_months_retransmit_avg,
        last_year_test_count,
        last_year_download_speed_mbps_median,
        last_year_upload_speed_mbps_median,
@@ -63,19 +76,6 @@ from -- ============
  all.client_region_code as client_region_code,
  all.client_country_code as client_country_code,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
- last_week.test_count as last_week_test_count,
- last_week.download_speed_mbps_median as last_week_download_speed_mbps_median,
- last_week.upload_speed_mbps_median as last_week_upload_speed_mbps_median,
- last_week.download_speed_mbps_avg as last_week_download_speed_mbps_avg,
- last_week.upload_speed_mbps_avg as last_week_upload_speed_mbps_avg,
- last_week.download_speed_mbps_min as last_week_download_speed_mbps_min,
- last_week.upload_speed_mbps_min as last_week_upload_speed_mbps_min,
- last_week.download_speed_mbps_max as last_week_download_speed_mbps_max,
- last_week.upload_speed_mbps_max as last_week_upload_speed_mbps_max,
- last_week.download_speed_mbps_stddev as last_week_download_speed_mbps_stddev,
- last_week.upload_speed_mbps_stddev as last_week_upload_speed_mbps_stddev,
- last_week.rtt_avg as last_week_rtt_avg,
- last_week.retransmit_avg as last_week_retransmit_avg,
  last_month.test_count as last_month_test_count,
  last_month.download_speed_mbps_median as last_month_download_speed_mbps_median,
  last_month.upload_speed_mbps_median as last_month_upload_speed_mbps_median,
@@ -89,6 +89,32 @@ from -- ============
  last_month.upload_speed_mbps_stddev as last_month_upload_speed_mbps_stddev,
  last_month.rtt_avg as last_month_rtt_avg,
  last_month.retransmit_avg as last_month_retransmit_avg,
+ last_three_months.test_count as last_three_months_test_count,
+ last_three_months.download_speed_mbps_median as last_three_months_download_speed_mbps_median,
+ last_three_months.upload_speed_mbps_median as last_three_months_upload_speed_mbps_median,
+ last_three_months.download_speed_mbps_avg as last_three_months_download_speed_mbps_avg,
+ last_three_months.upload_speed_mbps_avg as last_three_months_upload_speed_mbps_avg,
+ last_three_months.download_speed_mbps_min as last_three_months_download_speed_mbps_min,
+ last_three_months.upload_speed_mbps_min as last_three_months_upload_speed_mbps_min,
+ last_three_months.download_speed_mbps_max as last_three_months_download_speed_mbps_max,
+ last_three_months.upload_speed_mbps_max as last_three_months_upload_speed_mbps_max,
+ last_three_months.download_speed_mbps_stddev as last_three_months_download_speed_mbps_stddev,
+ last_three_months.upload_speed_mbps_stddev as last_three_months_upload_speed_mbps_stddev,
+ last_three_months.rtt_avg as last_three_months_rtt_avg,
+ last_three_months.retransmit_avg as last_three_months_retransmit_avg,
+ last_six_months.test_count as last_six_months_test_count,
+ last_six_months.download_speed_mbps_median as last_six_months_download_speed_mbps_median,
+ last_six_months.upload_speed_mbps_median as last_six_months_upload_speed_mbps_median,
+ last_six_months.download_speed_mbps_avg as last_six_months_download_speed_mbps_avg,
+ last_six_months.upload_speed_mbps_avg as last_six_months_upload_speed_mbps_avg,
+ last_six_months.download_speed_mbps_min as last_six_months_download_speed_mbps_min,
+ last_six_months.upload_speed_mbps_min as last_six_months_upload_speed_mbps_min,
+ last_six_months.download_speed_mbps_max as last_six_months_download_speed_mbps_max,
+ last_six_months.upload_speed_mbps_max as last_six_months_upload_speed_mbps_max,
+ last_six_months.download_speed_mbps_stddev as last_six_months_download_speed_mbps_stddev,
+ last_six_months.upload_speed_mbps_stddev as last_six_months_upload_speed_mbps_stddev,
+ last_six_months.rtt_avg as last_six_months_rtt_avg,
+ last_six_months.retransmit_avg as last_six_months_retransmit_avg,
  last_year.test_count as last_year_test_count,
  last_year.download_speed_mbps_median as last_year_download_speed_mbps_median,
  last_year.upload_speed_mbps_median as last_year_upload_speed_mbps_median,
@@ -105,6 +131,45 @@ from -- ============
 
    FROM {0} all -- left join madness here!
 
+   left join
+     ( SELECT count(*) as test_count, -- which location fields?
+ client_city,
+ client_region,
+ client_country,
+ client_continent,
+ client_region_code,
+ client_country_code,
+ client_continent_code, -- measurements:
+ nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
+ nth(51, quantiles(upload_speed_mbps, 101)) AS upload_speed_mbps_median,
+ AVG(download_speed_mbps) AS download_speed_mbps_avg,
+ AVG(upload_speed_mbps) AS upload_speed_mbps_avg,
+ MIN(download_speed_mbps) AS download_speed_mbps_min,
+ MAX(download_speed_mbps) AS download_speed_mbps_max,
+ MIN(upload_speed_mbps) AS upload_speed_mbps_min,
+ MAX(upload_speed_mbps) AS upload_speed_mbps_max,
+ STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
+ STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
+ SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
+ AVG(packet_retransmit_rate) AS retransmit_avg,
+      from {0}
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+        and client_city is not null
+      group by -- group by location fields
+ client_city,
+ client_region,
+ client_country,
+ client_continent,
+ client_region_code,
+ client_country_code,
+ client_continent_code ) last_three_months on -- join on location fields from the all table.
+ all.client_city = last_three_months.client_city
+   and all.client_region = last_three_months.client_region
+   and all.client_country = last_three_months.client_country
+   and all.client_continent = last_three_months.client_continent
+   and all.client_region_code = last_three_months.client_region_code
+   and all.client_country_code = last_three_months.client_country_code
+   and all.client_continent_code = last_three_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_city,
@@ -166,7 +231,7 @@ from -- ============
  SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
  AVG(packet_retransmit_rate) AS retransmit_avg,
       from {0}
-      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
         and client_city is not null
       group by -- group by location fields
  client_city,
@@ -175,14 +240,14 @@ from -- ============
  client_continent,
  client_region_code,
  client_country_code,
- client_continent_code ) last_week on -- join on location fields from the all table.
- all.client_city = last_week.client_city
-   and all.client_region = last_week.client_region
-   and all.client_country = last_week.client_country
-   and all.client_continent = last_week.client_continent
-   and all.client_region_code = last_week.client_region_code
-   and all.client_country_code = last_week.client_country_code
-   and all.client_continent_code = last_week.client_continent_code
+ client_continent_code ) last_six_months on -- join on location fields from the all table.
+ all.client_city = last_six_months.client_city
+   and all.client_region = last_six_months.client_region
+   and all.client_country = last_six_months.client_country
+   and all.client_continent = last_six_months.client_continent
+   and all.client_region_code = last_six_months.client_region_code
+   and all.client_country_code = last_six_months.client_country_code
+   and all.client_continent_code = last_six_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_city,
@@ -231,19 +296,6 @@ from -- ============
             client_region_code,
             client_country_code,
             client_continent_code,
-            last_week_test_count,
-            last_week_download_speed_mbps_median,
-            last_week_upload_speed_mbps_median,
-            last_week_download_speed_mbps_avg,
-            last_week_upload_speed_mbps_avg,
-            last_week_download_speed_mbps_min,
-            last_week_upload_speed_mbps_min,
-            last_week_download_speed_mbps_max,
-            last_week_upload_speed_mbps_max,
-            last_week_download_speed_mbps_stddev,
-            last_week_upload_speed_mbps_stddev,
-            last_week_rtt_avg,
-            last_week_retransmit_avg,
             last_month_test_count,
             last_month_download_speed_mbps_median,
             last_month_upload_speed_mbps_median,
@@ -257,6 +309,32 @@ from -- ============
             last_month_upload_speed_mbps_stddev,
             last_month_rtt_avg,
             last_month_retransmit_avg,
+            last_three_months_test_count,
+            last_three_months_download_speed_mbps_median,
+            last_three_months_upload_speed_mbps_median,
+            last_three_months_download_speed_mbps_avg,
+            last_three_months_upload_speed_mbps_avg,
+            last_three_months_download_speed_mbps_min,
+            last_three_months_upload_speed_mbps_min,
+            last_three_months_download_speed_mbps_max,
+            last_three_months_upload_speed_mbps_max,
+            last_three_months_download_speed_mbps_stddev,
+            last_three_months_upload_speed_mbps_stddev,
+            last_three_months_rtt_avg,
+            last_three_months_retransmit_avg,
+            last_six_months_test_count,
+            last_six_months_download_speed_mbps_median,
+            last_six_months_upload_speed_mbps_median,
+            last_six_months_download_speed_mbps_avg,
+            last_six_months_upload_speed_mbps_avg,
+            last_six_months_download_speed_mbps_min,
+            last_six_months_upload_speed_mbps_min,
+            last_six_months_download_speed_mbps_max,
+            last_six_months_upload_speed_mbps_max,
+            last_six_months_download_speed_mbps_stddev,
+            last_six_months_upload_speed_mbps_stddev,
+            last_six_months_rtt_avg,
+            last_six_months_retransmit_avg,
             last_year_test_count,
             last_year_download_speed_mbps_median,
             last_year_upload_speed_mbps_median,
@@ -283,19 +361,6 @@ from -- ============
  all.client_region_code as client_region_code,
  all.client_country_code as client_country_code,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
- last_week.test_count as last_week_test_count,
- last_week.download_speed_mbps_median as last_week_download_speed_mbps_median,
- last_week.upload_speed_mbps_median as last_week_upload_speed_mbps_median,
- last_week.download_speed_mbps_avg as last_week_download_speed_mbps_avg,
- last_week.upload_speed_mbps_avg as last_week_upload_speed_mbps_avg,
- last_week.download_speed_mbps_min as last_week_download_speed_mbps_min,
- last_week.upload_speed_mbps_min as last_week_upload_speed_mbps_min,
- last_week.download_speed_mbps_max as last_week_download_speed_mbps_max,
- last_week.upload_speed_mbps_max as last_week_upload_speed_mbps_max,
- last_week.download_speed_mbps_stddev as last_week_download_speed_mbps_stddev,
- last_week.upload_speed_mbps_stddev as last_week_upload_speed_mbps_stddev,
- last_week.rtt_avg as last_week_rtt_avg,
- last_week.retransmit_avg as last_week_retransmit_avg,
  last_month.test_count as last_month_test_count,
  last_month.download_speed_mbps_median as last_month_download_speed_mbps_median,
  last_month.upload_speed_mbps_median as last_month_upload_speed_mbps_median,
@@ -309,6 +374,32 @@ from -- ============
  last_month.upload_speed_mbps_stddev as last_month_upload_speed_mbps_stddev,
  last_month.rtt_avg as last_month_rtt_avg,
  last_month.retransmit_avg as last_month_retransmit_avg,
+ last_three_months.test_count as last_three_months_test_count,
+ last_three_months.download_speed_mbps_median as last_three_months_download_speed_mbps_median,
+ last_three_months.upload_speed_mbps_median as last_three_months_upload_speed_mbps_median,
+ last_three_months.download_speed_mbps_avg as last_three_months_download_speed_mbps_avg,
+ last_three_months.upload_speed_mbps_avg as last_three_months_upload_speed_mbps_avg,
+ last_three_months.download_speed_mbps_min as last_three_months_download_speed_mbps_min,
+ last_three_months.upload_speed_mbps_min as last_three_months_upload_speed_mbps_min,
+ last_three_months.download_speed_mbps_max as last_three_months_download_speed_mbps_max,
+ last_three_months.upload_speed_mbps_max as last_three_months_upload_speed_mbps_max,
+ last_three_months.download_speed_mbps_stddev as last_three_months_download_speed_mbps_stddev,
+ last_three_months.upload_speed_mbps_stddev as last_three_months_upload_speed_mbps_stddev,
+ last_three_months.rtt_avg as last_three_months_rtt_avg,
+ last_three_months.retransmit_avg as last_three_months_retransmit_avg,
+ last_six_months.test_count as last_six_months_test_count,
+ last_six_months.download_speed_mbps_median as last_six_months_download_speed_mbps_median,
+ last_six_months.upload_speed_mbps_median as last_six_months_upload_speed_mbps_median,
+ last_six_months.download_speed_mbps_avg as last_six_months_download_speed_mbps_avg,
+ last_six_months.upload_speed_mbps_avg as last_six_months_upload_speed_mbps_avg,
+ last_six_months.download_speed_mbps_min as last_six_months_download_speed_mbps_min,
+ last_six_months.upload_speed_mbps_min as last_six_months_upload_speed_mbps_min,
+ last_six_months.download_speed_mbps_max as last_six_months_download_speed_mbps_max,
+ last_six_months.upload_speed_mbps_max as last_six_months_upload_speed_mbps_max,
+ last_six_months.download_speed_mbps_stddev as last_six_months_download_speed_mbps_stddev,
+ last_six_months.upload_speed_mbps_stddev as last_six_months_upload_speed_mbps_stddev,
+ last_six_months.rtt_avg as last_six_months_rtt_avg,
+ last_six_months.retransmit_avg as last_six_months_retransmit_avg,
  last_year.test_count as last_year_test_count,
  last_year.download_speed_mbps_median as last_year_download_speed_mbps_median,
  last_year.upload_speed_mbps_median as last_year_upload_speed_mbps_median,
@@ -325,6 +416,42 @@ from -- ============
 
    FROM {0} all -- left join madness here!
 
+   left join
+     ( SELECT count(*) as test_count, -- which location fields?
+ client_region,
+ client_country,
+ client_continent,
+ client_region_code,
+ client_country_code,
+ client_continent_code, -- measurements:
+ nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
+ nth(51, quantiles(upload_speed_mbps, 101)) AS upload_speed_mbps_median,
+ AVG(download_speed_mbps) AS download_speed_mbps_avg,
+ AVG(upload_speed_mbps) AS upload_speed_mbps_avg,
+ MIN(download_speed_mbps) AS download_speed_mbps_min,
+ MAX(download_speed_mbps) AS download_speed_mbps_max,
+ MIN(upload_speed_mbps) AS upload_speed_mbps_min,
+ MAX(upload_speed_mbps) AS upload_speed_mbps_max,
+ STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
+ STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
+ SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
+ AVG(packet_retransmit_rate) AS retransmit_avg,
+      from {0}
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+        and client_region is not null
+      group by -- group by location fields
+ client_region,
+ client_country,
+ client_continent,
+ client_region_code,
+ client_country_code,
+ client_continent_code ) last_three_months on -- join on location fields from the all table.
+ all.client_region = last_three_months.client_region
+   and all.client_country = last_three_months.client_country
+   and all.client_continent = last_three_months.client_continent
+   and all.client_region_code = last_three_months.client_region_code
+   and all.client_country_code = last_three_months.client_country_code
+   and all.client_continent_code = last_three_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_region,
@@ -382,7 +509,7 @@ from -- ============
  SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
  AVG(packet_retransmit_rate) AS retransmit_avg,
       from {0}
-      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
         and client_region is not null
       group by -- group by location fields
  client_region,
@@ -390,13 +517,13 @@ from -- ============
  client_continent,
  client_region_code,
  client_country_code,
- client_continent_code ) last_week on -- join on location fields from the all table.
- all.client_region = last_week.client_region
-   and all.client_country = last_week.client_country
-   and all.client_continent = last_week.client_continent
-   and all.client_region_code = last_week.client_region_code
-   and all.client_country_code = last_week.client_country_code
-   and all.client_continent_code = last_week.client_continent_code
+ client_continent_code ) last_six_months on -- join on location fields from the all table.
+ all.client_region = last_six_months.client_region
+   and all.client_country = last_six_months.client_country
+   and all.client_continent = last_six_months.client_continent
+   and all.client_region_code = last_six_months.client_region_code
+   and all.client_country_code = last_six_months.client_country_code
+   and all.client_continent_code = last_six_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_region,
@@ -441,19 +568,6 @@ from -- ============
             client_region_code,
             client_country_code,
             client_continent_code,
-            last_week_test_count,
-            last_week_download_speed_mbps_median,
-            last_week_upload_speed_mbps_median,
-            last_week_download_speed_mbps_avg,
-            last_week_upload_speed_mbps_avg,
-            last_week_download_speed_mbps_min,
-            last_week_upload_speed_mbps_min,
-            last_week_download_speed_mbps_max,
-            last_week_upload_speed_mbps_max,
-            last_week_download_speed_mbps_stddev,
-            last_week_upload_speed_mbps_stddev,
-            last_week_rtt_avg,
-            last_week_retransmit_avg,
             last_month_test_count,
             last_month_download_speed_mbps_median,
             last_month_upload_speed_mbps_median,
@@ -467,6 +581,32 @@ from -- ============
             last_month_upload_speed_mbps_stddev,
             last_month_rtt_avg,
             last_month_retransmit_avg,
+            last_three_months_test_count,
+            last_three_months_download_speed_mbps_median,
+            last_three_months_upload_speed_mbps_median,
+            last_three_months_download_speed_mbps_avg,
+            last_three_months_upload_speed_mbps_avg,
+            last_three_months_download_speed_mbps_min,
+            last_three_months_upload_speed_mbps_min,
+            last_three_months_download_speed_mbps_max,
+            last_three_months_upload_speed_mbps_max,
+            last_three_months_download_speed_mbps_stddev,
+            last_three_months_upload_speed_mbps_stddev,
+            last_three_months_rtt_avg,
+            last_three_months_retransmit_avg,
+            last_six_months_test_count,
+            last_six_months_download_speed_mbps_median,
+            last_six_months_upload_speed_mbps_median,
+            last_six_months_download_speed_mbps_avg,
+            last_six_months_upload_speed_mbps_avg,
+            last_six_months_download_speed_mbps_min,
+            last_six_months_upload_speed_mbps_min,
+            last_six_months_download_speed_mbps_max,
+            last_six_months_upload_speed_mbps_max,
+            last_six_months_download_speed_mbps_stddev,
+            last_six_months_upload_speed_mbps_stddev,
+            last_six_months_rtt_avg,
+            last_six_months_retransmit_avg,
             last_year_test_count,
             last_year_download_speed_mbps_median,
             last_year_upload_speed_mbps_median,
@@ -491,19 +631,6 @@ from -- ============
  all.client_continent as client_continent,
  all.client_country_code as client_country_code,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
- last_week.test_count as last_week_test_count,
- last_week.download_speed_mbps_median as last_week_download_speed_mbps_median,
- last_week.upload_speed_mbps_median as last_week_upload_speed_mbps_median,
- last_week.download_speed_mbps_avg as last_week_download_speed_mbps_avg,
- last_week.upload_speed_mbps_avg as last_week_upload_speed_mbps_avg,
- last_week.download_speed_mbps_min as last_week_download_speed_mbps_min,
- last_week.upload_speed_mbps_min as last_week_upload_speed_mbps_min,
- last_week.download_speed_mbps_max as last_week_download_speed_mbps_max,
- last_week.upload_speed_mbps_max as last_week_upload_speed_mbps_max,
- last_week.download_speed_mbps_stddev as last_week_download_speed_mbps_stddev,
- last_week.upload_speed_mbps_stddev as last_week_upload_speed_mbps_stddev,
- last_week.rtt_avg as last_week_rtt_avg,
- last_week.retransmit_avg as last_week_retransmit_avg,
  last_month.test_count as last_month_test_count,
  last_month.download_speed_mbps_median as last_month_download_speed_mbps_median,
  last_month.upload_speed_mbps_median as last_month_upload_speed_mbps_median,
@@ -517,6 +644,32 @@ from -- ============
  last_month.upload_speed_mbps_stddev as last_month_upload_speed_mbps_stddev,
  last_month.rtt_avg as last_month_rtt_avg,
  last_month.retransmit_avg as last_month_retransmit_avg,
+ last_three_months.test_count as last_three_months_test_count,
+ last_three_months.download_speed_mbps_median as last_three_months_download_speed_mbps_median,
+ last_three_months.upload_speed_mbps_median as last_three_months_upload_speed_mbps_median,
+ last_three_months.download_speed_mbps_avg as last_three_months_download_speed_mbps_avg,
+ last_three_months.upload_speed_mbps_avg as last_three_months_upload_speed_mbps_avg,
+ last_three_months.download_speed_mbps_min as last_three_months_download_speed_mbps_min,
+ last_three_months.upload_speed_mbps_min as last_three_months_upload_speed_mbps_min,
+ last_three_months.download_speed_mbps_max as last_three_months_download_speed_mbps_max,
+ last_three_months.upload_speed_mbps_max as last_three_months_upload_speed_mbps_max,
+ last_three_months.download_speed_mbps_stddev as last_three_months_download_speed_mbps_stddev,
+ last_three_months.upload_speed_mbps_stddev as last_three_months_upload_speed_mbps_stddev,
+ last_three_months.rtt_avg as last_three_months_rtt_avg,
+ last_three_months.retransmit_avg as last_three_months_retransmit_avg,
+ last_six_months.test_count as last_six_months_test_count,
+ last_six_months.download_speed_mbps_median as last_six_months_download_speed_mbps_median,
+ last_six_months.upload_speed_mbps_median as last_six_months_upload_speed_mbps_median,
+ last_six_months.download_speed_mbps_avg as last_six_months_download_speed_mbps_avg,
+ last_six_months.upload_speed_mbps_avg as last_six_months_upload_speed_mbps_avg,
+ last_six_months.download_speed_mbps_min as last_six_months_download_speed_mbps_min,
+ last_six_months.upload_speed_mbps_min as last_six_months_upload_speed_mbps_min,
+ last_six_months.download_speed_mbps_max as last_six_months_download_speed_mbps_max,
+ last_six_months.upload_speed_mbps_max as last_six_months_upload_speed_mbps_max,
+ last_six_months.download_speed_mbps_stddev as last_six_months_download_speed_mbps_stddev,
+ last_six_months.upload_speed_mbps_stddev as last_six_months_upload_speed_mbps_stddev,
+ last_six_months.rtt_avg as last_six_months_rtt_avg,
+ last_six_months.retransmit_avg as last_six_months_retransmit_avg,
  last_year.test_count as last_year_test_count,
  last_year.download_speed_mbps_median as last_year_download_speed_mbps_median,
  last_year.upload_speed_mbps_median as last_year_upload_speed_mbps_median,
@@ -533,6 +686,36 @@ from -- ============
 
    FROM {0} all -- left join madness here!
 
+   left join
+     ( SELECT count(*) as test_count, -- which location fields?
+ client_country,
+ client_continent,
+ client_country_code,
+ client_continent_code, -- measurements:
+ nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
+ nth(51, quantiles(upload_speed_mbps, 101)) AS upload_speed_mbps_median,
+ AVG(download_speed_mbps) AS download_speed_mbps_avg,
+ AVG(upload_speed_mbps) AS upload_speed_mbps_avg,
+ MIN(download_speed_mbps) AS download_speed_mbps_min,
+ MAX(download_speed_mbps) AS download_speed_mbps_max,
+ MIN(upload_speed_mbps) AS upload_speed_mbps_min,
+ MAX(upload_speed_mbps) AS upload_speed_mbps_max,
+ STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
+ STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
+ SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
+ AVG(packet_retransmit_rate) AS retransmit_avg,
+      from {0}
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+        and client_country is not null
+      group by -- group by location fields
+ client_country,
+ client_continent,
+ client_country_code,
+ client_continent_code ) last_three_months on -- join on location fields from the all table.
+ all.client_country = last_three_months.client_country
+   and all.client_continent = last_three_months.client_continent
+   and all.client_country_code = last_three_months.client_country_code
+   and all.client_continent_code = last_three_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_country,
@@ -582,17 +765,17 @@ from -- ============
  SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
  AVG(packet_retransmit_rate) AS retransmit_avg,
       from {0}
-      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
         and client_country is not null
       group by -- group by location fields
  client_country,
  client_continent,
  client_country_code,
- client_continent_code ) last_week on -- join on location fields from the all table.
- all.client_country = last_week.client_country
-   and all.client_continent = last_week.client_continent
-   and all.client_country_code = last_week.client_country_code
-   and all.client_continent_code = last_week.client_continent_code
+ client_continent_code ) last_six_months on -- join on location fields from the all table.
+ all.client_country = last_six_months.client_country
+   and all.client_continent = last_six_months.client_continent
+   and all.client_country_code = last_six_months.client_country_code
+   and all.client_continent_code = last_six_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_country,
@@ -629,19 +812,6 @@ from -- ============
             client_continent,
             client_country_code,
             client_continent_code,
-            last_week_test_count,
-            last_week_download_speed_mbps_median,
-            last_week_upload_speed_mbps_median,
-            last_week_download_speed_mbps_avg,
-            last_week_upload_speed_mbps_avg,
-            last_week_download_speed_mbps_min,
-            last_week_upload_speed_mbps_min,
-            last_week_download_speed_mbps_max,
-            last_week_upload_speed_mbps_max,
-            last_week_download_speed_mbps_stddev,
-            last_week_upload_speed_mbps_stddev,
-            last_week_rtt_avg,
-            last_week_retransmit_avg,
             last_month_test_count,
             last_month_download_speed_mbps_median,
             last_month_upload_speed_mbps_median,
@@ -655,6 +825,32 @@ from -- ============
             last_month_upload_speed_mbps_stddev,
             last_month_rtt_avg,
             last_month_retransmit_avg,
+            last_three_months_test_count,
+            last_three_months_download_speed_mbps_median,
+            last_three_months_upload_speed_mbps_median,
+            last_three_months_download_speed_mbps_avg,
+            last_three_months_upload_speed_mbps_avg,
+            last_three_months_download_speed_mbps_min,
+            last_three_months_upload_speed_mbps_min,
+            last_three_months_download_speed_mbps_max,
+            last_three_months_upload_speed_mbps_max,
+            last_three_months_download_speed_mbps_stddev,
+            last_three_months_upload_speed_mbps_stddev,
+            last_three_months_rtt_avg,
+            last_three_months_retransmit_avg,
+            last_six_months_test_count,
+            last_six_months_download_speed_mbps_median,
+            last_six_months_upload_speed_mbps_median,
+            last_six_months_download_speed_mbps_avg,
+            last_six_months_upload_speed_mbps_avg,
+            last_six_months_download_speed_mbps_min,
+            last_six_months_upload_speed_mbps_min,
+            last_six_months_download_speed_mbps_max,
+            last_six_months_upload_speed_mbps_max,
+            last_six_months_download_speed_mbps_stddev,
+            last_six_months_upload_speed_mbps_stddev,
+            last_six_months_rtt_avg,
+            last_six_months_retransmit_avg,
             last_year_test_count,
             last_year_download_speed_mbps_median,
             last_year_upload_speed_mbps_median,
@@ -677,19 +873,6 @@ from -- ============
  count(*) as test_count,
  all.client_continent as client_continent,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
- last_week.test_count as last_week_test_count,
- last_week.download_speed_mbps_median as last_week_download_speed_mbps_median,
- last_week.upload_speed_mbps_median as last_week_upload_speed_mbps_median,
- last_week.download_speed_mbps_avg as last_week_download_speed_mbps_avg,
- last_week.upload_speed_mbps_avg as last_week_upload_speed_mbps_avg,
- last_week.download_speed_mbps_min as last_week_download_speed_mbps_min,
- last_week.upload_speed_mbps_min as last_week_upload_speed_mbps_min,
- last_week.download_speed_mbps_max as last_week_download_speed_mbps_max,
- last_week.upload_speed_mbps_max as last_week_upload_speed_mbps_max,
- last_week.download_speed_mbps_stddev as last_week_download_speed_mbps_stddev,
- last_week.upload_speed_mbps_stddev as last_week_upload_speed_mbps_stddev,
- last_week.rtt_avg as last_week_rtt_avg,
- last_week.retransmit_avg as last_week_retransmit_avg,
  last_month.test_count as last_month_test_count,
  last_month.download_speed_mbps_median as last_month_download_speed_mbps_median,
  last_month.upload_speed_mbps_median as last_month_upload_speed_mbps_median,
@@ -703,6 +886,32 @@ from -- ============
  last_month.upload_speed_mbps_stddev as last_month_upload_speed_mbps_stddev,
  last_month.rtt_avg as last_month_rtt_avg,
  last_month.retransmit_avg as last_month_retransmit_avg,
+ last_three_months.test_count as last_three_months_test_count,
+ last_three_months.download_speed_mbps_median as last_three_months_download_speed_mbps_median,
+ last_three_months.upload_speed_mbps_median as last_three_months_upload_speed_mbps_median,
+ last_three_months.download_speed_mbps_avg as last_three_months_download_speed_mbps_avg,
+ last_three_months.upload_speed_mbps_avg as last_three_months_upload_speed_mbps_avg,
+ last_three_months.download_speed_mbps_min as last_three_months_download_speed_mbps_min,
+ last_three_months.upload_speed_mbps_min as last_three_months_upload_speed_mbps_min,
+ last_three_months.download_speed_mbps_max as last_three_months_download_speed_mbps_max,
+ last_three_months.upload_speed_mbps_max as last_three_months_upload_speed_mbps_max,
+ last_three_months.download_speed_mbps_stddev as last_three_months_download_speed_mbps_stddev,
+ last_three_months.upload_speed_mbps_stddev as last_three_months_upload_speed_mbps_stddev,
+ last_three_months.rtt_avg as last_three_months_rtt_avg,
+ last_three_months.retransmit_avg as last_three_months_retransmit_avg,
+ last_six_months.test_count as last_six_months_test_count,
+ last_six_months.download_speed_mbps_median as last_six_months_download_speed_mbps_median,
+ last_six_months.upload_speed_mbps_median as last_six_months_upload_speed_mbps_median,
+ last_six_months.download_speed_mbps_avg as last_six_months_download_speed_mbps_avg,
+ last_six_months.upload_speed_mbps_avg as last_six_months_upload_speed_mbps_avg,
+ last_six_months.download_speed_mbps_min as last_six_months_download_speed_mbps_min,
+ last_six_months.upload_speed_mbps_min as last_six_months_upload_speed_mbps_min,
+ last_six_months.download_speed_mbps_max as last_six_months_download_speed_mbps_max,
+ last_six_months.upload_speed_mbps_max as last_six_months_upload_speed_mbps_max,
+ last_six_months.download_speed_mbps_stddev as last_six_months_download_speed_mbps_stddev,
+ last_six_months.upload_speed_mbps_stddev as last_six_months_upload_speed_mbps_stddev,
+ last_six_months.rtt_avg as last_six_months_rtt_avg,
+ last_six_months.retransmit_avg as last_six_months_retransmit_avg,
  last_year.test_count as last_year_test_count,
  last_year.download_speed_mbps_median as last_year_download_speed_mbps_median,
  last_year.upload_speed_mbps_median as last_year_upload_speed_mbps_median,
@@ -719,6 +928,30 @@ from -- ============
 
    FROM {0} all -- left join madness here!
 
+   left join
+     ( SELECT count(*) as test_count, -- which location fields?
+ client_continent,
+ client_continent_code, -- measurements:
+ nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
+ nth(51, quantiles(upload_speed_mbps, 101)) AS upload_speed_mbps_median,
+ AVG(download_speed_mbps) AS download_speed_mbps_avg,
+ AVG(upload_speed_mbps) AS upload_speed_mbps_avg,
+ MIN(download_speed_mbps) AS download_speed_mbps_min,
+ MAX(download_speed_mbps) AS download_speed_mbps_max,
+ MIN(upload_speed_mbps) AS upload_speed_mbps_min,
+ MAX(upload_speed_mbps) AS upload_speed_mbps_max,
+ STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
+ STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
+ SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
+ AVG(packet_retransmit_rate) AS retransmit_avg,
+      from {0}
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+        and client_continent is not null
+      group by -- group by location fields
+ client_continent,
+ client_continent_code ) last_three_months on -- join on location fields from the all table.
+ all.client_continent = last_three_months.client_continent
+   and all.client_continent_code = last_three_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_continent,
@@ -760,13 +993,13 @@ from -- ============
  SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
  AVG(packet_retransmit_rate) AS retransmit_avg,
       from {0}
-      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
         and client_continent is not null
       group by -- group by location fields
  client_continent,
- client_continent_code ) last_week on -- join on location fields from the all table.
- all.client_continent = last_week.client_continent
-   and all.client_continent_code = last_week.client_continent_code
+ client_continent_code ) last_six_months on -- join on location fields from the all table.
+ all.client_continent = last_six_months.client_continent
+   and all.client_continent_code = last_six_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_continent,
@@ -795,19 +1028,6 @@ from -- ============
             child_location_key,
             client_continent,
             client_continent_code,
-            last_week_test_count,
-            last_week_download_speed_mbps_median,
-            last_week_upload_speed_mbps_median,
-            last_week_download_speed_mbps_avg,
-            last_week_upload_speed_mbps_avg,
-            last_week_download_speed_mbps_min,
-            last_week_upload_speed_mbps_min,
-            last_week_download_speed_mbps_max,
-            last_week_upload_speed_mbps_max,
-            last_week_download_speed_mbps_stddev,
-            last_week_upload_speed_mbps_stddev,
-            last_week_rtt_avg,
-            last_week_retransmit_avg,
             last_month_test_count,
             last_month_download_speed_mbps_median,
             last_month_upload_speed_mbps_median,
@@ -821,6 +1041,32 @@ from -- ============
             last_month_upload_speed_mbps_stddev,
             last_month_rtt_avg,
             last_month_retransmit_avg,
+            last_three_months_test_count,
+            last_three_months_download_speed_mbps_median,
+            last_three_months_upload_speed_mbps_median,
+            last_three_months_download_speed_mbps_avg,
+            last_three_months_upload_speed_mbps_avg,
+            last_three_months_download_speed_mbps_min,
+            last_three_months_upload_speed_mbps_min,
+            last_three_months_download_speed_mbps_max,
+            last_three_months_upload_speed_mbps_max,
+            last_three_months_download_speed_mbps_stddev,
+            last_three_months_upload_speed_mbps_stddev,
+            last_three_months_rtt_avg,
+            last_three_months_retransmit_avg,
+            last_six_months_test_count,
+            last_six_months_download_speed_mbps_median,
+            last_six_months_upload_speed_mbps_median,
+            last_six_months_download_speed_mbps_avg,
+            last_six_months_upload_speed_mbps_avg,
+            last_six_months_download_speed_mbps_min,
+            last_six_months_upload_speed_mbps_min,
+            last_six_months_download_speed_mbps_max,
+            last_six_months_upload_speed_mbps_max,
+            last_six_months_download_speed_mbps_stddev,
+            last_six_months_upload_speed_mbps_stddev,
+            last_six_months_rtt_avg,
+            last_six_months_retransmit_avg,
             last_year_test_count,
             last_year_download_speed_mbps_median,
             last_year_upload_speed_mbps_median,
@@ -848,19 +1094,6 @@ from -- ============
  all.client_region_code as client_region_code,
  all.client_country_code as client_country_code,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
- last_week.test_count as last_week_test_count,
- last_week.download_speed_mbps_median as last_week_download_speed_mbps_median,
- last_week.upload_speed_mbps_median as last_week_upload_speed_mbps_median,
- last_week.download_speed_mbps_avg as last_week_download_speed_mbps_avg,
- last_week.upload_speed_mbps_avg as last_week_upload_speed_mbps_avg,
- last_week.download_speed_mbps_min as last_week_download_speed_mbps_min,
- last_week.upload_speed_mbps_min as last_week_upload_speed_mbps_min,
- last_week.download_speed_mbps_max as last_week_download_speed_mbps_max,
- last_week.upload_speed_mbps_max as last_week_upload_speed_mbps_max,
- last_week.download_speed_mbps_stddev as last_week_download_speed_mbps_stddev,
- last_week.upload_speed_mbps_stddev as last_week_upload_speed_mbps_stddev,
- last_week.rtt_avg as last_week_rtt_avg,
- last_week.retransmit_avg as last_week_retransmit_avg,
  last_month.test_count as last_month_test_count,
  last_month.download_speed_mbps_median as last_month_download_speed_mbps_median,
  last_month.upload_speed_mbps_median as last_month_upload_speed_mbps_median,
@@ -874,6 +1107,32 @@ from -- ============
  last_month.upload_speed_mbps_stddev as last_month_upload_speed_mbps_stddev,
  last_month.rtt_avg as last_month_rtt_avg,
  last_month.retransmit_avg as last_month_retransmit_avg,
+ last_three_months.test_count as last_three_months_test_count,
+ last_three_months.download_speed_mbps_median as last_three_months_download_speed_mbps_median,
+ last_three_months.upload_speed_mbps_median as last_three_months_upload_speed_mbps_median,
+ last_three_months.download_speed_mbps_avg as last_three_months_download_speed_mbps_avg,
+ last_three_months.upload_speed_mbps_avg as last_three_months_upload_speed_mbps_avg,
+ last_three_months.download_speed_mbps_min as last_three_months_download_speed_mbps_min,
+ last_three_months.upload_speed_mbps_min as last_three_months_upload_speed_mbps_min,
+ last_three_months.download_speed_mbps_max as last_three_months_download_speed_mbps_max,
+ last_three_months.upload_speed_mbps_max as last_three_months_upload_speed_mbps_max,
+ last_three_months.download_speed_mbps_stddev as last_three_months_download_speed_mbps_stddev,
+ last_three_months.upload_speed_mbps_stddev as last_three_months_upload_speed_mbps_stddev,
+ last_three_months.rtt_avg as last_three_months_rtt_avg,
+ last_three_months.retransmit_avg as last_three_months_retransmit_avg,
+ last_six_months.test_count as last_six_months_test_count,
+ last_six_months.download_speed_mbps_median as last_six_months_download_speed_mbps_median,
+ last_six_months.upload_speed_mbps_median as last_six_months_upload_speed_mbps_median,
+ last_six_months.download_speed_mbps_avg as last_six_months_download_speed_mbps_avg,
+ last_six_months.upload_speed_mbps_avg as last_six_months_upload_speed_mbps_avg,
+ last_six_months.download_speed_mbps_min as last_six_months_download_speed_mbps_min,
+ last_six_months.upload_speed_mbps_min as last_six_months_upload_speed_mbps_min,
+ last_six_months.download_speed_mbps_max as last_six_months_download_speed_mbps_max,
+ last_six_months.upload_speed_mbps_max as last_six_months_upload_speed_mbps_max,
+ last_six_months.download_speed_mbps_stddev as last_six_months_download_speed_mbps_stddev,
+ last_six_months.upload_speed_mbps_stddev as last_six_months_upload_speed_mbps_stddev,
+ last_six_months.rtt_avg as last_six_months_rtt_avg,
+ last_six_months.retransmit_avg as last_six_months_retransmit_avg,
  last_year.test_count as last_year_test_count,
  last_year.download_speed_mbps_median as last_year_download_speed_mbps_median,
  last_year.upload_speed_mbps_median as last_year_upload_speed_mbps_median,
@@ -890,6 +1149,45 @@ from -- ============
 
    FROM {0} all -- left join madness here!
 
+   left join
+     ( SELECT count(*) as test_count, -- which location fields?
+ client_city,
+ client_region,
+ client_country,
+ client_continent,
+ client_region_code,
+ client_country_code,
+ client_continent_code, -- measurements:
+ nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
+ nth(51, quantiles(upload_speed_mbps, 101)) AS upload_speed_mbps_median,
+ AVG(download_speed_mbps) AS download_speed_mbps_avg,
+ AVG(upload_speed_mbps) AS upload_speed_mbps_avg,
+ MIN(download_speed_mbps) AS download_speed_mbps_min,
+ MAX(download_speed_mbps) AS download_speed_mbps_max,
+ MIN(upload_speed_mbps) AS upload_speed_mbps_min,
+ MAX(upload_speed_mbps) AS upload_speed_mbps_max,
+ STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
+ STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
+ SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
+ AVG(packet_retransmit_rate) AS retransmit_avg,
+      from {0}
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+        and client_city is not null
+      group by -- group by location fields
+ client_city,
+ client_region,
+ client_country,
+ client_continent,
+ client_region_code,
+ client_country_code,
+ client_continent_code ) last_three_months on -- join on location fields from the all table.
+ all.client_city = last_three_months.client_city
+   and all.client_region = last_three_months.client_region
+   and all.client_country = last_three_months.client_country
+   and all.client_continent = last_three_months.client_continent
+   and all.client_region_code = last_three_months.client_region_code
+   and all.client_country_code = last_three_months.client_country_code
+   and all.client_continent_code = last_three_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_city,
@@ -951,7 +1249,7 @@ from -- ============
  SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
  AVG(packet_retransmit_rate) AS retransmit_avg,
       from {0}
-      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
         and client_city is not null
       group by -- group by location fields
  client_city,
@@ -960,14 +1258,14 @@ from -- ============
  client_continent,
  client_region_code,
  client_country_code,
- client_continent_code ) last_week on -- join on location fields from the all table.
- all.client_city = last_week.client_city
-   and all.client_region = last_week.client_region
-   and all.client_country = last_week.client_country
-   and all.client_continent = last_week.client_continent
-   and all.client_region_code = last_week.client_region_code
-   and all.client_country_code = last_week.client_country_code
-   and all.client_continent_code = last_week.client_continent_code
+ client_continent_code ) last_six_months on -- join on location fields from the all table.
+ all.client_city = last_six_months.client_city
+   and all.client_region = last_six_months.client_region
+   and all.client_country = last_six_months.client_country
+   and all.client_continent = last_six_months.client_continent
+   and all.client_region_code = last_six_months.client_region_code
+   and all.client_country_code = last_six_months.client_country_code
+   and all.client_continent_code = last_six_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_city,
@@ -1023,19 +1321,6 @@ from -- ============
             client_region_code,
             client_country_code,
             client_continent_code,
-            last_week_test_count,
-            last_week_download_speed_mbps_median,
-            last_week_upload_speed_mbps_median,
-            last_week_download_speed_mbps_avg,
-            last_week_upload_speed_mbps_avg,
-            last_week_download_speed_mbps_min,
-            last_week_upload_speed_mbps_min,
-            last_week_download_speed_mbps_max,
-            last_week_upload_speed_mbps_max,
-            last_week_download_speed_mbps_stddev,
-            last_week_upload_speed_mbps_stddev,
-            last_week_rtt_avg,
-            last_week_retransmit_avg,
             last_month_test_count,
             last_month_download_speed_mbps_median,
             last_month_upload_speed_mbps_median,
@@ -1049,6 +1334,32 @@ from -- ============
             last_month_upload_speed_mbps_stddev,
             last_month_rtt_avg,
             last_month_retransmit_avg,
+            last_three_months_test_count,
+            last_three_months_download_speed_mbps_median,
+            last_three_months_upload_speed_mbps_median,
+            last_three_months_download_speed_mbps_avg,
+            last_three_months_upload_speed_mbps_avg,
+            last_three_months_download_speed_mbps_min,
+            last_three_months_upload_speed_mbps_min,
+            last_three_months_download_speed_mbps_max,
+            last_three_months_upload_speed_mbps_max,
+            last_three_months_download_speed_mbps_stddev,
+            last_three_months_upload_speed_mbps_stddev,
+            last_three_months_rtt_avg,
+            last_three_months_retransmit_avg,
+            last_six_months_test_count,
+            last_six_months_download_speed_mbps_median,
+            last_six_months_upload_speed_mbps_median,
+            last_six_months_download_speed_mbps_avg,
+            last_six_months_upload_speed_mbps_avg,
+            last_six_months_download_speed_mbps_min,
+            last_six_months_upload_speed_mbps_min,
+            last_six_months_download_speed_mbps_max,
+            last_six_months_upload_speed_mbps_max,
+            last_six_months_download_speed_mbps_stddev,
+            last_six_months_upload_speed_mbps_stddev,
+            last_six_months_rtt_avg,
+            last_six_months_retransmit_avg,
             last_year_test_count,
             last_year_download_speed_mbps_median,
             last_year_upload_speed_mbps_median,
@@ -1075,19 +1386,6 @@ from -- ============
  all.client_region_code as client_region_code,
  all.client_country_code as client_country_code,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
- last_week.test_count as last_week_test_count,
- last_week.download_speed_mbps_median as last_week_download_speed_mbps_median,
- last_week.upload_speed_mbps_median as last_week_upload_speed_mbps_median,
- last_week.download_speed_mbps_avg as last_week_download_speed_mbps_avg,
- last_week.upload_speed_mbps_avg as last_week_upload_speed_mbps_avg,
- last_week.download_speed_mbps_min as last_week_download_speed_mbps_min,
- last_week.upload_speed_mbps_min as last_week_upload_speed_mbps_min,
- last_week.download_speed_mbps_max as last_week_download_speed_mbps_max,
- last_week.upload_speed_mbps_max as last_week_upload_speed_mbps_max,
- last_week.download_speed_mbps_stddev as last_week_download_speed_mbps_stddev,
- last_week.upload_speed_mbps_stddev as last_week_upload_speed_mbps_stddev,
- last_week.rtt_avg as last_week_rtt_avg,
- last_week.retransmit_avg as last_week_retransmit_avg,
  last_month.test_count as last_month_test_count,
  last_month.download_speed_mbps_median as last_month_download_speed_mbps_median,
  last_month.upload_speed_mbps_median as last_month_upload_speed_mbps_median,
@@ -1101,6 +1399,32 @@ from -- ============
  last_month.upload_speed_mbps_stddev as last_month_upload_speed_mbps_stddev,
  last_month.rtt_avg as last_month_rtt_avg,
  last_month.retransmit_avg as last_month_retransmit_avg,
+ last_three_months.test_count as last_three_months_test_count,
+ last_three_months.download_speed_mbps_median as last_three_months_download_speed_mbps_median,
+ last_three_months.upload_speed_mbps_median as last_three_months_upload_speed_mbps_median,
+ last_three_months.download_speed_mbps_avg as last_three_months_download_speed_mbps_avg,
+ last_three_months.upload_speed_mbps_avg as last_three_months_upload_speed_mbps_avg,
+ last_three_months.download_speed_mbps_min as last_three_months_download_speed_mbps_min,
+ last_three_months.upload_speed_mbps_min as last_three_months_upload_speed_mbps_min,
+ last_three_months.download_speed_mbps_max as last_three_months_download_speed_mbps_max,
+ last_three_months.upload_speed_mbps_max as last_three_months_upload_speed_mbps_max,
+ last_three_months.download_speed_mbps_stddev as last_three_months_download_speed_mbps_stddev,
+ last_three_months.upload_speed_mbps_stddev as last_three_months_upload_speed_mbps_stddev,
+ last_three_months.rtt_avg as last_three_months_rtt_avg,
+ last_three_months.retransmit_avg as last_three_months_retransmit_avg,
+ last_six_months.test_count as last_six_months_test_count,
+ last_six_months.download_speed_mbps_median as last_six_months_download_speed_mbps_median,
+ last_six_months.upload_speed_mbps_median as last_six_months_upload_speed_mbps_median,
+ last_six_months.download_speed_mbps_avg as last_six_months_download_speed_mbps_avg,
+ last_six_months.upload_speed_mbps_avg as last_six_months_upload_speed_mbps_avg,
+ last_six_months.download_speed_mbps_min as last_six_months_download_speed_mbps_min,
+ last_six_months.upload_speed_mbps_min as last_six_months_upload_speed_mbps_min,
+ last_six_months.download_speed_mbps_max as last_six_months_download_speed_mbps_max,
+ last_six_months.upload_speed_mbps_max as last_six_months_upload_speed_mbps_max,
+ last_six_months.download_speed_mbps_stddev as last_six_months_download_speed_mbps_stddev,
+ last_six_months.upload_speed_mbps_stddev as last_six_months_upload_speed_mbps_stddev,
+ last_six_months.rtt_avg as last_six_months_rtt_avg,
+ last_six_months.retransmit_avg as last_six_months_retransmit_avg,
  last_year.test_count as last_year_test_count,
  last_year.download_speed_mbps_median as last_year_download_speed_mbps_median,
  last_year.upload_speed_mbps_median as last_year_upload_speed_mbps_median,
@@ -1117,6 +1441,42 @@ from -- ============
 
    FROM {0} all -- left join madness here!
 
+   left join
+     ( SELECT count(*) as test_count, -- which location fields?
+ client_region,
+ client_country,
+ client_continent,
+ client_region_code,
+ client_country_code,
+ client_continent_code, -- measurements:
+ nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
+ nth(51, quantiles(upload_speed_mbps, 101)) AS upload_speed_mbps_median,
+ AVG(download_speed_mbps) AS download_speed_mbps_avg,
+ AVG(upload_speed_mbps) AS upload_speed_mbps_avg,
+ MIN(download_speed_mbps) AS download_speed_mbps_min,
+ MAX(download_speed_mbps) AS download_speed_mbps_max,
+ MIN(upload_speed_mbps) AS upload_speed_mbps_min,
+ MAX(upload_speed_mbps) AS upload_speed_mbps_max,
+ STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
+ STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
+ SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
+ AVG(packet_retransmit_rate) AS retransmit_avg,
+      from {0}
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+        and client_region_code is not null
+      group by -- group by location fields
+ client_region,
+ client_country,
+ client_continent,
+ client_region_code,
+ client_country_code,
+ client_continent_code ) last_three_months on -- join on location fields from the all table.
+ all.client_region = last_three_months.client_region
+   and all.client_country = last_three_months.client_country
+   and all.client_continent = last_three_months.client_continent
+   and all.client_region_code = last_three_months.client_region_code
+   and all.client_country_code = last_three_months.client_country_code
+   and all.client_continent_code = last_three_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_region,
@@ -1174,7 +1534,7 @@ from -- ============
  SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
  AVG(packet_retransmit_rate) AS retransmit_avg,
       from {0}
-      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
         and client_region_code is not null
       group by -- group by location fields
  client_region,
@@ -1182,13 +1542,13 @@ from -- ============
  client_continent,
  client_region_code,
  client_country_code,
- client_continent_code ) last_week on -- join on location fields from the all table.
- all.client_region = last_week.client_region
-   and all.client_country = last_week.client_country
-   and all.client_continent = last_week.client_continent
-   and all.client_region_code = last_week.client_region_code
-   and all.client_country_code = last_week.client_country_code
-   and all.client_continent_code = last_week.client_continent_code
+ client_continent_code ) last_six_months on -- join on location fields from the all table.
+ all.client_region = last_six_months.client_region
+   and all.client_country = last_six_months.client_country
+   and all.client_continent = last_six_months.client_continent
+   and all.client_region_code = last_six_months.client_region_code
+   and all.client_country_code = last_six_months.client_country_code
+   and all.client_continent_code = last_six_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_region,
@@ -1239,19 +1599,6 @@ from -- ============
             client_region_code,
             client_country_code,
             client_continent_code,
-            last_week_test_count,
-            last_week_download_speed_mbps_median,
-            last_week_upload_speed_mbps_median,
-            last_week_download_speed_mbps_avg,
-            last_week_upload_speed_mbps_avg,
-            last_week_download_speed_mbps_min,
-            last_week_upload_speed_mbps_min,
-            last_week_download_speed_mbps_max,
-            last_week_upload_speed_mbps_max,
-            last_week_download_speed_mbps_stddev,
-            last_week_upload_speed_mbps_stddev,
-            last_week_rtt_avg,
-            last_week_retransmit_avg,
             last_month_test_count,
             last_month_download_speed_mbps_median,
             last_month_upload_speed_mbps_median,
@@ -1265,6 +1612,32 @@ from -- ============
             last_month_upload_speed_mbps_stddev,
             last_month_rtt_avg,
             last_month_retransmit_avg,
+            last_three_months_test_count,
+            last_three_months_download_speed_mbps_median,
+            last_three_months_upload_speed_mbps_median,
+            last_three_months_download_speed_mbps_avg,
+            last_three_months_upload_speed_mbps_avg,
+            last_three_months_download_speed_mbps_min,
+            last_three_months_upload_speed_mbps_min,
+            last_three_months_download_speed_mbps_max,
+            last_three_months_upload_speed_mbps_max,
+            last_three_months_download_speed_mbps_stddev,
+            last_three_months_upload_speed_mbps_stddev,
+            last_three_months_rtt_avg,
+            last_three_months_retransmit_avg,
+            last_six_months_test_count,
+            last_six_months_download_speed_mbps_median,
+            last_six_months_upload_speed_mbps_median,
+            last_six_months_download_speed_mbps_avg,
+            last_six_months_upload_speed_mbps_avg,
+            last_six_months_download_speed_mbps_min,
+            last_six_months_upload_speed_mbps_min,
+            last_six_months_download_speed_mbps_max,
+            last_six_months_upload_speed_mbps_max,
+            last_six_months_download_speed_mbps_stddev,
+            last_six_months_upload_speed_mbps_stddev,
+            last_six_months_rtt_avg,
+            last_six_months_retransmit_avg,
             last_year_test_count,
             last_year_download_speed_mbps_median,
             last_year_upload_speed_mbps_median,
@@ -1289,19 +1662,6 @@ from -- ============
  all.client_continent as client_continent,
  all.client_country_code as client_country_code,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
- last_week.test_count as last_week_test_count,
- last_week.download_speed_mbps_median as last_week_download_speed_mbps_median,
- last_week.upload_speed_mbps_median as last_week_upload_speed_mbps_median,
- last_week.download_speed_mbps_avg as last_week_download_speed_mbps_avg,
- last_week.upload_speed_mbps_avg as last_week_upload_speed_mbps_avg,
- last_week.download_speed_mbps_min as last_week_download_speed_mbps_min,
- last_week.upload_speed_mbps_min as last_week_upload_speed_mbps_min,
- last_week.download_speed_mbps_max as last_week_download_speed_mbps_max,
- last_week.upload_speed_mbps_max as last_week_upload_speed_mbps_max,
- last_week.download_speed_mbps_stddev as last_week_download_speed_mbps_stddev,
- last_week.upload_speed_mbps_stddev as last_week_upload_speed_mbps_stddev,
- last_week.rtt_avg as last_week_rtt_avg,
- last_week.retransmit_avg as last_week_retransmit_avg,
  last_month.test_count as last_month_test_count,
  last_month.download_speed_mbps_median as last_month_download_speed_mbps_median,
  last_month.upload_speed_mbps_median as last_month_upload_speed_mbps_median,
@@ -1315,6 +1675,32 @@ from -- ============
  last_month.upload_speed_mbps_stddev as last_month_upload_speed_mbps_stddev,
  last_month.rtt_avg as last_month_rtt_avg,
  last_month.retransmit_avg as last_month_retransmit_avg,
+ last_three_months.test_count as last_three_months_test_count,
+ last_three_months.download_speed_mbps_median as last_three_months_download_speed_mbps_median,
+ last_three_months.upload_speed_mbps_median as last_three_months_upload_speed_mbps_median,
+ last_three_months.download_speed_mbps_avg as last_three_months_download_speed_mbps_avg,
+ last_three_months.upload_speed_mbps_avg as last_three_months_upload_speed_mbps_avg,
+ last_three_months.download_speed_mbps_min as last_three_months_download_speed_mbps_min,
+ last_three_months.upload_speed_mbps_min as last_three_months_upload_speed_mbps_min,
+ last_three_months.download_speed_mbps_max as last_three_months_download_speed_mbps_max,
+ last_three_months.upload_speed_mbps_max as last_three_months_upload_speed_mbps_max,
+ last_three_months.download_speed_mbps_stddev as last_three_months_download_speed_mbps_stddev,
+ last_three_months.upload_speed_mbps_stddev as last_three_months_upload_speed_mbps_stddev,
+ last_three_months.rtt_avg as last_three_months_rtt_avg,
+ last_three_months.retransmit_avg as last_three_months_retransmit_avg,
+ last_six_months.test_count as last_six_months_test_count,
+ last_six_months.download_speed_mbps_median as last_six_months_download_speed_mbps_median,
+ last_six_months.upload_speed_mbps_median as last_six_months_upload_speed_mbps_median,
+ last_six_months.download_speed_mbps_avg as last_six_months_download_speed_mbps_avg,
+ last_six_months.upload_speed_mbps_avg as last_six_months_upload_speed_mbps_avg,
+ last_six_months.download_speed_mbps_min as last_six_months_download_speed_mbps_min,
+ last_six_months.upload_speed_mbps_min as last_six_months_upload_speed_mbps_min,
+ last_six_months.download_speed_mbps_max as last_six_months_download_speed_mbps_max,
+ last_six_months.upload_speed_mbps_max as last_six_months_upload_speed_mbps_max,
+ last_six_months.download_speed_mbps_stddev as last_six_months_download_speed_mbps_stddev,
+ last_six_months.upload_speed_mbps_stddev as last_six_months_upload_speed_mbps_stddev,
+ last_six_months.rtt_avg as last_six_months_rtt_avg,
+ last_six_months.retransmit_avg as last_six_months_retransmit_avg,
  last_year.test_count as last_year_test_count,
  last_year.download_speed_mbps_median as last_year_download_speed_mbps_median,
  last_year.upload_speed_mbps_median as last_year_upload_speed_mbps_median,
@@ -1331,6 +1717,36 @@ from -- ============
 
    FROM {0} all -- left join madness here!
 
+   left join
+     ( SELECT count(*) as test_count, -- which location fields?
+ client_country,
+ client_continent,
+ client_country_code,
+ client_continent_code, -- measurements:
+ nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
+ nth(51, quantiles(upload_speed_mbps, 101)) AS upload_speed_mbps_median,
+ AVG(download_speed_mbps) AS download_speed_mbps_avg,
+ AVG(upload_speed_mbps) AS upload_speed_mbps_avg,
+ MIN(download_speed_mbps) AS download_speed_mbps_min,
+ MAX(download_speed_mbps) AS download_speed_mbps_max,
+ MIN(upload_speed_mbps) AS upload_speed_mbps_min,
+ MAX(upload_speed_mbps) AS upload_speed_mbps_max,
+ STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
+ STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
+ SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
+ AVG(packet_retransmit_rate) AS retransmit_avg,
+      from {0}
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+        and client_country_code is not null
+      group by -- group by location fields
+ client_country,
+ client_continent,
+ client_country_code,
+ client_continent_code ) last_three_months on -- join on location fields from the all table.
+ all.client_country = last_three_months.client_country
+   and all.client_continent = last_three_months.client_continent
+   and all.client_country_code = last_three_months.client_country_code
+   and all.client_continent_code = last_three_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_country,
@@ -1380,17 +1796,17 @@ from -- ============
  SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
  AVG(packet_retransmit_rate) AS retransmit_avg,
       from {0}
-      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
         and client_country_code is not null
       group by -- group by location fields
  client_country,
  client_continent,
  client_country_code,
- client_continent_code ) last_week on -- join on location fields from the all table.
- all.client_country = last_week.client_country
-   and all.client_continent = last_week.client_continent
-   and all.client_country_code = last_week.client_country_code
-   and all.client_continent_code = last_week.client_continent_code
+ client_continent_code ) last_six_months on -- join on location fields from the all table.
+ all.client_country = last_six_months.client_country
+   and all.client_continent = last_six_months.client_continent
+   and all.client_country_code = last_six_months.client_country_code
+   and all.client_continent_code = last_six_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_country,
@@ -1431,19 +1847,6 @@ from -- ============
             client_continent,
             client_country_code,
             client_continent_code,
-            last_week_test_count,
-            last_week_download_speed_mbps_median,
-            last_week_upload_speed_mbps_median,
-            last_week_download_speed_mbps_avg,
-            last_week_upload_speed_mbps_avg,
-            last_week_download_speed_mbps_min,
-            last_week_upload_speed_mbps_min,
-            last_week_download_speed_mbps_max,
-            last_week_upload_speed_mbps_max,
-            last_week_download_speed_mbps_stddev,
-            last_week_upload_speed_mbps_stddev,
-            last_week_rtt_avg,
-            last_week_retransmit_avg,
             last_month_test_count,
             last_month_download_speed_mbps_median,
             last_month_upload_speed_mbps_median,
@@ -1457,6 +1860,32 @@ from -- ============
             last_month_upload_speed_mbps_stddev,
             last_month_rtt_avg,
             last_month_retransmit_avg,
+            last_three_months_test_count,
+            last_three_months_download_speed_mbps_median,
+            last_three_months_upload_speed_mbps_median,
+            last_three_months_download_speed_mbps_avg,
+            last_three_months_upload_speed_mbps_avg,
+            last_three_months_download_speed_mbps_min,
+            last_three_months_upload_speed_mbps_min,
+            last_three_months_download_speed_mbps_max,
+            last_three_months_upload_speed_mbps_max,
+            last_three_months_download_speed_mbps_stddev,
+            last_three_months_upload_speed_mbps_stddev,
+            last_three_months_rtt_avg,
+            last_three_months_retransmit_avg,
+            last_six_months_test_count,
+            last_six_months_download_speed_mbps_median,
+            last_six_months_upload_speed_mbps_median,
+            last_six_months_download_speed_mbps_avg,
+            last_six_months_upload_speed_mbps_avg,
+            last_six_months_download_speed_mbps_min,
+            last_six_months_upload_speed_mbps_min,
+            last_six_months_download_speed_mbps_max,
+            last_six_months_upload_speed_mbps_max,
+            last_six_months_download_speed_mbps_stddev,
+            last_six_months_upload_speed_mbps_stddev,
+            last_six_months_rtt_avg,
+            last_six_months_retransmit_avg,
             last_year_test_count,
             last_year_download_speed_mbps_median,
             last_year_upload_speed_mbps_median,
@@ -1479,19 +1908,6 @@ from -- ============
  count(*) as test_count,
  all.client_continent as client_continent,
  all.client_continent_code as client_continent_code, -- meta fields we are selecting
- last_week.test_count as last_week_test_count,
- last_week.download_speed_mbps_median as last_week_download_speed_mbps_median,
- last_week.upload_speed_mbps_median as last_week_upload_speed_mbps_median,
- last_week.download_speed_mbps_avg as last_week_download_speed_mbps_avg,
- last_week.upload_speed_mbps_avg as last_week_upload_speed_mbps_avg,
- last_week.download_speed_mbps_min as last_week_download_speed_mbps_min,
- last_week.upload_speed_mbps_min as last_week_upload_speed_mbps_min,
- last_week.download_speed_mbps_max as last_week_download_speed_mbps_max,
- last_week.upload_speed_mbps_max as last_week_upload_speed_mbps_max,
- last_week.download_speed_mbps_stddev as last_week_download_speed_mbps_stddev,
- last_week.upload_speed_mbps_stddev as last_week_upload_speed_mbps_stddev,
- last_week.rtt_avg as last_week_rtt_avg,
- last_week.retransmit_avg as last_week_retransmit_avg,
  last_month.test_count as last_month_test_count,
  last_month.download_speed_mbps_median as last_month_download_speed_mbps_median,
  last_month.upload_speed_mbps_median as last_month_upload_speed_mbps_median,
@@ -1505,6 +1921,32 @@ from -- ============
  last_month.upload_speed_mbps_stddev as last_month_upload_speed_mbps_stddev,
  last_month.rtt_avg as last_month_rtt_avg,
  last_month.retransmit_avg as last_month_retransmit_avg,
+ last_three_months.test_count as last_three_months_test_count,
+ last_three_months.download_speed_mbps_median as last_three_months_download_speed_mbps_median,
+ last_three_months.upload_speed_mbps_median as last_three_months_upload_speed_mbps_median,
+ last_three_months.download_speed_mbps_avg as last_three_months_download_speed_mbps_avg,
+ last_three_months.upload_speed_mbps_avg as last_three_months_upload_speed_mbps_avg,
+ last_three_months.download_speed_mbps_min as last_three_months_download_speed_mbps_min,
+ last_three_months.upload_speed_mbps_min as last_three_months_upload_speed_mbps_min,
+ last_three_months.download_speed_mbps_max as last_three_months_download_speed_mbps_max,
+ last_three_months.upload_speed_mbps_max as last_three_months_upload_speed_mbps_max,
+ last_three_months.download_speed_mbps_stddev as last_three_months_download_speed_mbps_stddev,
+ last_three_months.upload_speed_mbps_stddev as last_three_months_upload_speed_mbps_stddev,
+ last_three_months.rtt_avg as last_three_months_rtt_avg,
+ last_three_months.retransmit_avg as last_three_months_retransmit_avg,
+ last_six_months.test_count as last_six_months_test_count,
+ last_six_months.download_speed_mbps_median as last_six_months_download_speed_mbps_median,
+ last_six_months.upload_speed_mbps_median as last_six_months_upload_speed_mbps_median,
+ last_six_months.download_speed_mbps_avg as last_six_months_download_speed_mbps_avg,
+ last_six_months.upload_speed_mbps_avg as last_six_months_upload_speed_mbps_avg,
+ last_six_months.download_speed_mbps_min as last_six_months_download_speed_mbps_min,
+ last_six_months.upload_speed_mbps_min as last_six_months_upload_speed_mbps_min,
+ last_six_months.download_speed_mbps_max as last_six_months_download_speed_mbps_max,
+ last_six_months.upload_speed_mbps_max as last_six_months_upload_speed_mbps_max,
+ last_six_months.download_speed_mbps_stddev as last_six_months_download_speed_mbps_stddev,
+ last_six_months.upload_speed_mbps_stddev as last_six_months_upload_speed_mbps_stddev,
+ last_six_months.rtt_avg as last_six_months_rtt_avg,
+ last_six_months.retransmit_avg as last_six_months_retransmit_avg,
  last_year.test_count as last_year_test_count,
  last_year.download_speed_mbps_median as last_year_download_speed_mbps_median,
  last_year.upload_speed_mbps_median as last_year_upload_speed_mbps_median,
@@ -1521,6 +1963,30 @@ from -- ============
 
    FROM {0} all -- left join madness here!
 
+   left join
+     ( SELECT count(*) as test_count, -- which location fields?
+ client_continent,
+ client_continent_code, -- measurements:
+ nth(51, quantiles(download_speed_mbps, 101)) AS download_speed_mbps_median,
+ nth(51, quantiles(upload_speed_mbps, 101)) AS upload_speed_mbps_median,
+ AVG(download_speed_mbps) AS download_speed_mbps_avg,
+ AVG(upload_speed_mbps) AS upload_speed_mbps_avg,
+ MIN(download_speed_mbps) AS download_speed_mbps_min,
+ MAX(download_speed_mbps) AS download_speed_mbps_max,
+ MIN(upload_speed_mbps) AS upload_speed_mbps_min,
+ MAX(upload_speed_mbps) AS upload_speed_mbps_max,
+ STDDEV(download_speed_mbps) AS download_speed_mbps_stddev,
+ STDDEV(upload_speed_mbps) AS upload_speed_mbps_stddev,
+ SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
+ AVG(packet_retransmit_rate) AS retransmit_avg,
+      from {0}
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+        and client_continent_code is not null
+      group by -- group by location fields
+ client_continent,
+ client_continent_code ) last_three_months on -- join on location fields from the all table.
+ all.client_continent = last_three_months.client_continent
+   and all.client_continent_code = last_three_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_continent,
@@ -1562,13 +2028,13 @@ from -- ============
  SUM(rtt_sum) / SUM(rtt_count) AS rtt_avg,
  AVG(packet_retransmit_rate) AS retransmit_avg,
       from {0}
-      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, "DAY")
+      where test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
         and client_continent_code is not null
       group by -- group by location fields
  client_continent,
- client_continent_code ) last_week on -- join on location fields from the all table.
- all.client_continent = last_week.client_continent
-   and all.client_continent_code = last_week.client_continent_code
+ client_continent_code ) last_six_months on -- join on location fields from the all table.
+ all.client_continent = last_six_months.client_continent
+   and all.client_continent_code = last_six_months.client_continent_code
    left join
      ( SELECT count(*) as test_count, -- which location fields?
  client_continent,
@@ -1599,19 +2065,6 @@ from -- ============
             child_location_key,
             client_continent,
             client_continent_code,
-            last_week_test_count,
-            last_week_download_speed_mbps_median,
-            last_week_upload_speed_mbps_median,
-            last_week_download_speed_mbps_avg,
-            last_week_upload_speed_mbps_avg,
-            last_week_download_speed_mbps_min,
-            last_week_upload_speed_mbps_min,
-            last_week_download_speed_mbps_max,
-            last_week_upload_speed_mbps_max,
-            last_week_download_speed_mbps_stddev,
-            last_week_upload_speed_mbps_stddev,
-            last_week_rtt_avg,
-            last_week_retransmit_avg,
             last_month_test_count,
             last_month_download_speed_mbps_median,
             last_month_upload_speed_mbps_median,
@@ -1625,6 +2078,32 @@ from -- ============
             last_month_upload_speed_mbps_stddev,
             last_month_rtt_avg,
             last_month_retransmit_avg,
+            last_three_months_test_count,
+            last_three_months_download_speed_mbps_median,
+            last_three_months_upload_speed_mbps_median,
+            last_three_months_download_speed_mbps_avg,
+            last_three_months_upload_speed_mbps_avg,
+            last_three_months_download_speed_mbps_min,
+            last_three_months_upload_speed_mbps_min,
+            last_three_months_download_speed_mbps_max,
+            last_three_months_upload_speed_mbps_max,
+            last_three_months_download_speed_mbps_stddev,
+            last_three_months_upload_speed_mbps_stddev,
+            last_three_months_rtt_avg,
+            last_three_months_retransmit_avg,
+            last_six_months_test_count,
+            last_six_months_download_speed_mbps_median,
+            last_six_months_upload_speed_mbps_median,
+            last_six_months_download_speed_mbps_avg,
+            last_six_months_upload_speed_mbps_avg,
+            last_six_months_download_speed_mbps_min,
+            last_six_months_upload_speed_mbps_min,
+            last_six_months_download_speed_mbps_max,
+            last_six_months_upload_speed_mbps_max,
+            last_six_months_download_speed_mbps_stddev,
+            last_six_months_upload_speed_mbps_stddev,
+            last_six_months_rtt_avg,
+            last_six_months_retransmit_avg,
             last_year_test_count,
             last_year_download_speed_mbps_median,
             last_year_upload_speed_mbps_median,

@@ -307,8 +307,9 @@ AGGREGATIONS = {
 }
 
 TIME_RANGES = [
-    "last_week",
     "last_month",
+    "last_three_months",
+    "last_six_months",
     "last_year"
 ]
 
@@ -316,8 +317,9 @@ HISTOGRAM_BINS = [0,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,
     84,88,92,96,100]
 
 TEST_DATE_COMPARISONS =  {
-    "last_week" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -7, \"DAY\")",
     "last_month" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, \"MONTH\")",
+    "last_three_months" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, \"MONTH\")",
+    "last_six_months" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, \"MONTH\")",
     "last_year" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, \"YEAR\")"
 }
 

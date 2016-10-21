@@ -54,10 +54,16 @@ last_year_retransmit_avg,
         "0,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100" as speed_mbps_bins,
         last_month_download_speed_mbps_bins,
 last_month_upload_speed_mbps_bins,
+last_month_rtt_avg_bins,
+last_month_packet_retransmit_rate_bins,
 last_six_months_download_speed_mbps_bins,
 last_six_months_upload_speed_mbps_bins,
+last_six_months_rtt_avg_bins,
+last_six_months_packet_retransmit_rate_bins,
 last_year_download_speed_mbps_bins,
-last_year_upload_speed_mbps_bins
+last_year_upload_speed_mbps_bins,
+last_year_rtt_avg_bins,
+last_year_packet_retransmit_rate_bins
         from
     -- ============
 -- Type: city
@@ -126,10 +132,16 @@ last_year.rtt_avg as last_year_rtt_avg,
 last_year.retransmit_avg as last_year_retransmit_avg,
 last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins, 
 last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins, 
+last_month.rtt_avg_bins as last_month_rtt_avg_bins, 
+last_month.packet_retransmit_rate_bins as last_month_packet_retransmit_rate_bins, 
 last_six_months.download_speed_mbps_bins as last_six_months_download_speed_mbps_bins, 
 last_six_months.upload_speed_mbps_bins as last_six_months_upload_speed_mbps_bins, 
+last_six_months.rtt_avg_bins as last_six_months_rtt_avg_bins, 
+last_six_months.packet_retransmit_rate_bins as last_six_months_packet_retransmit_rate_bins, 
 last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins, 
-last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
+last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins, 
+last_year.rtt_avg_bins as last_year_rtt_avg_bins, 
+last_year.packet_retransmit_rate_bins as last_year_packet_retransmit_rate_bins
 
   FROM {0} all
 
@@ -223,7 +235,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -341,7 +385,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -459,7 +535,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -544,10 +652,16 @@ last_year_rtt_avg,
 last_year_retransmit_avg, 
 last_month_download_speed_mbps_bins, 
 last_month_upload_speed_mbps_bins, 
+last_month_rtt_avg_bins, 
+last_month_packet_retransmit_rate_bins, 
 last_six_months_download_speed_mbps_bins, 
 last_six_months_upload_speed_mbps_bins, 
+last_six_months_rtt_avg_bins, 
+last_six_months_packet_retransmit_rate_bins, 
 last_year_download_speed_mbps_bins, 
-last_year_upload_speed_mbps_bins
+last_year_upload_speed_mbps_bins, 
+last_year_rtt_avg_bins, 
+last_year_packet_retransmit_rate_bins
 
 )
 , 
@@ -616,10 +730,16 @@ last_year.rtt_avg as last_year_rtt_avg,
 last_year.retransmit_avg as last_year_retransmit_avg,
 last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins, 
 last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins, 
+last_month.rtt_avg_bins as last_month_rtt_avg_bins, 
+last_month.packet_retransmit_rate_bins as last_month_packet_retransmit_rate_bins, 
 last_six_months.download_speed_mbps_bins as last_six_months_download_speed_mbps_bins, 
 last_six_months.upload_speed_mbps_bins as last_six_months_upload_speed_mbps_bins, 
+last_six_months.rtt_avg_bins as last_six_months_rtt_avg_bins, 
+last_six_months.packet_retransmit_rate_bins as last_six_months_packet_retransmit_rate_bins, 
 last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins, 
-last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
+last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins, 
+last_year.rtt_avg_bins as last_year_rtt_avg_bins, 
+last_year.packet_retransmit_rate_bins as last_year_packet_retransmit_rate_bins
 
   FROM {0} all
 
@@ -712,7 +832,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -827,7 +979,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -942,7 +1126,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -1024,10 +1240,16 @@ last_year_rtt_avg,
 last_year_retransmit_avg, 
 last_month_download_speed_mbps_bins, 
 last_month_upload_speed_mbps_bins, 
+last_month_rtt_avg_bins, 
+last_month_packet_retransmit_rate_bins, 
 last_six_months_download_speed_mbps_bins, 
 last_six_months_upload_speed_mbps_bins, 
+last_six_months_rtt_avg_bins, 
+last_six_months_packet_retransmit_rate_bins, 
 last_year_download_speed_mbps_bins, 
-last_year_upload_speed_mbps_bins
+last_year_upload_speed_mbps_bins, 
+last_year_rtt_avg_bins, 
+last_year_packet_retransmit_rate_bins
 
 )
 , 
@@ -1093,10 +1315,16 @@ last_year.rtt_avg as last_year_rtt_avg,
 last_year.retransmit_avg as last_year_retransmit_avg,
 last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins, 
 last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins, 
+last_month.rtt_avg_bins as last_month_rtt_avg_bins, 
+last_month.packet_retransmit_rate_bins as last_month_packet_retransmit_rate_bins, 
 last_six_months.download_speed_mbps_bins as last_six_months_download_speed_mbps_bins, 
 last_six_months.upload_speed_mbps_bins as last_six_months_upload_speed_mbps_bins, 
+last_six_months.rtt_avg_bins as last_six_months_rtt_avg_bins, 
+last_six_months.packet_retransmit_rate_bins as last_six_months_packet_retransmit_rate_bins, 
 last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins, 
-last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
+last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins, 
+last_year.rtt_avg_bins as last_year_rtt_avg_bins, 
+last_year.packet_retransmit_rate_bins as last_year_packet_retransmit_rate_bins
 
   FROM {0} all
 
@@ -1187,7 +1415,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -1296,7 +1556,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -1405,7 +1697,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -1481,10 +1805,16 @@ last_year_rtt_avg,
 last_year_retransmit_avg, 
 last_month_download_speed_mbps_bins, 
 last_month_upload_speed_mbps_bins, 
+last_month_rtt_avg_bins, 
+last_month_packet_retransmit_rate_bins, 
 last_six_months_download_speed_mbps_bins, 
 last_six_months_upload_speed_mbps_bins, 
+last_six_months_rtt_avg_bins, 
+last_six_months_packet_retransmit_rate_bins, 
 last_year_download_speed_mbps_bins, 
-last_year_upload_speed_mbps_bins
+last_year_upload_speed_mbps_bins, 
+last_year_rtt_avg_bins, 
+last_year_packet_retransmit_rate_bins
 
 )
 , 
@@ -1546,10 +1876,16 @@ last_year.rtt_avg as last_year_rtt_avg,
 last_year.retransmit_avg as last_year_retransmit_avg,
 last_month.download_speed_mbps_bins as last_month_download_speed_mbps_bins, 
 last_month.upload_speed_mbps_bins as last_month_upload_speed_mbps_bins, 
+last_month.rtt_avg_bins as last_month_rtt_avg_bins, 
+last_month.packet_retransmit_rate_bins as last_month_packet_retransmit_rate_bins, 
 last_six_months.download_speed_mbps_bins as last_six_months_download_speed_mbps_bins, 
 last_six_months.upload_speed_mbps_bins as last_six_months_upload_speed_mbps_bins, 
+last_six_months.rtt_avg_bins as last_six_months_rtt_avg_bins, 
+last_six_months.packet_retransmit_rate_bins as last_six_months_packet_retransmit_rate_bins, 
 last_year.download_speed_mbps_bins as last_year_download_speed_mbps_bins, 
-last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins
+last_year.upload_speed_mbps_bins as last_year_upload_speed_mbps_bins, 
+last_year.rtt_avg_bins as last_year_rtt_avg_bins, 
+last_year.packet_retransmit_rate_bins as last_year_packet_retransmit_rate_bins
 
   FROM {0} all
 
@@ -1638,7 +1974,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -1741,7 +2109,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -1844,7 +2244,39 @@ STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 88 AND IFNULL(upload_speed_mbps, 0
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 92 AND IFNULL(upload_speed_mbps, 0) < 96, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 96 AND IFNULL(upload_speed_mbps, 0) < 100, 1,0))), ",",
 STRING(SUM(IF(IFNULL(upload_speed_mbps, 0) >= 100, 1,0)))
-) as upload_speed_mbps_bins
+) as upload_speed_mbps_bins, 
+concat(STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 50 AND IFNULL(rtt_avg, 0) < 100, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 100 AND IFNULL(rtt_avg, 0) < 150, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 150 AND IFNULL(rtt_avg, 0) < 200, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 200 AND IFNULL(rtt_avg, 0) < 250, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 250 AND IFNULL(rtt_avg, 0) < 300, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 300 AND IFNULL(rtt_avg, 0) < 350, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 350 AND IFNULL(rtt_avg, 0) < 400, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 400 AND IFNULL(rtt_avg, 0) < 450, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 450 AND IFNULL(rtt_avg, 0) < 500, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 500 AND IFNULL(rtt_avg, 0) < 550, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 550 AND IFNULL(rtt_avg, 0) < 600, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 600 AND IFNULL(rtt_avg, 0) < 650, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 650 AND IFNULL(rtt_avg, 0) < 700, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 700 AND IFNULL(rtt_avg, 0) < 750, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 750 AND IFNULL(rtt_avg, 0) < 800, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 800 AND IFNULL(rtt_avg, 0) < 850, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 850 AND IFNULL(rtt_avg, 0) < 900, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 900 AND IFNULL(rtt_avg, 0) < 950, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 950 AND IFNULL(rtt_avg, 0) < 1000, 1,0))), ",",
+STRING(SUM(IF(IFNULL(rtt_avg, 0) >= 1000, 1,0)))
+) as rtt_avg_bins, 
+concat(STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.01 AND IFNULL(packet_retransmit_rate, 0) < 0.02, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.02 AND IFNULL(packet_retransmit_rate, 0) < 0.03, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.03 AND IFNULL(packet_retransmit_rate, 0) < 0.04, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.04 AND IFNULL(packet_retransmit_rate, 0) < 0.05, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.05 AND IFNULL(packet_retransmit_rate, 0) < 0.06, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.06 AND IFNULL(packet_retransmit_rate, 0) < 0.07, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.07 AND IFNULL(packet_retransmit_rate, 0) < 0.08, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.08 AND IFNULL(packet_retransmit_rate, 0) < 0.09, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.09 AND IFNULL(packet_retransmit_rate, 0) < 0.1, 1,0))), ",",
+STRING(SUM(IF(IFNULL(packet_retransmit_rate, 0) >= 0.1, 1,0)))
+) as packet_retransmit_rate_bins
 
   from {0}
   where
@@ -1914,10 +2346,16 @@ last_year_rtt_avg,
 last_year_retransmit_avg, 
 last_month_download_speed_mbps_bins, 
 last_month_upload_speed_mbps_bins, 
+last_month_rtt_avg_bins, 
+last_month_packet_retransmit_rate_bins, 
 last_six_months_download_speed_mbps_bins, 
 last_six_months_upload_speed_mbps_bins, 
+last_six_months_rtt_avg_bins, 
+last_six_months_packet_retransmit_rate_bins, 
 last_year_download_speed_mbps_bins, 
-last_year_upload_speed_mbps_bins
+last_year_upload_speed_mbps_bins, 
+last_year_rtt_avg_bins, 
+last_year_packet_retransmit_rate_bins
 
 )
 

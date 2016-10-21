@@ -1,3 +1,10 @@
+SPEED_HISTOGRAM_BINS = [0,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,
+    84,88,92,96,100]
+
+RTT_HISTOGRAM_BINS = [50,100,150,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000]
+
+RTR_HISTOGRAM_BINS = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
+
 AGGREGATIONS = {
 
     "client_loc_client_asn_list" : {
@@ -33,8 +40,10 @@ AGGREGATIONS = {
         ],
 
         "binned_fields" : [
-            {"type": "integer_list", "name": "download_speed_mbps", "family": "data"},
-            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data"},
+            {"type": "integer_list", "name": "download_speed_mbps", "family": "data", "bins": SPEED_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data", "bins": SPEED_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "rtt_avg", "family": "data", "bins": RTT_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "packet_retransmit_rate", "family": "data", "bins": RTR_HISTOGRAM_BINS},
         ],
 
         "timed_fields" : [
@@ -87,8 +96,10 @@ AGGREGATIONS = {
         ],
 
         "binned_fields" : [
-            {"type": "integer_list", "name": "download_speed_mbps", "family": "data"},
-            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data"},
+            {"type": "integer_list", "name": "download_speed_mbps", "family": "data", "bins": SPEED_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data", "bins": SPEED_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "rtt_avg", "family": "data", "bins": RTT_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "packet_retransmit_rate", "family": "data", "bins": RTR_HISTOGRAM_BINS},
         ],
 
         "timed_fields" : [
@@ -142,8 +153,10 @@ AGGREGATIONS = {
         ],
 
         "binned_fields" : [
-            {"type": "integer_list", "name": "download_speed_mbps", "family": "data"},
-            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data"},
+            {"type": "integer_list", "name": "download_speed_mbps", "family": "data", "bins": SPEED_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data", "bins": SPEED_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "rtt_avg", "family": "data", "bins": RTT_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "packet_retransmit_rate", "family": "data", "bins": RTR_HISTOGRAM_BINS},
         ],
 
         "timed_fields" : [
@@ -196,8 +209,10 @@ AGGREGATIONS = {
         ],
 
         "binned_fields" : [
-            {"type": "integer_list", "name": "download_speed_mbps", "family": "data"},
-            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data"},
+            {"type": "integer_list", "name": "download_speed_mbps", "family": "data", "bins": SPEED_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "upload_speed_mbps", "family": "data", "bins": SPEED_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "rtt_avg", "family": "data", "bins": RTT_HISTOGRAM_BINS},
+            {"type": "integer_list", "name": "packet_retransmit_rate", "family": "data", "bins": RTR_HISTOGRAM_BINS},
         ],
 
         "timed_fields" : [
@@ -313,8 +328,6 @@ TIME_RANGES = [
     "last_year"
 ]
 
-HISTOGRAM_BINS = [0,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,
-    84,88,92,96,100]
 
 TEST_DATE_COMPARISONS =  {
     "last_month" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, \"MONTH\")",

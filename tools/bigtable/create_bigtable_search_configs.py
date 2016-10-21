@@ -12,7 +12,7 @@ from create_bigtable_time_configs import \
     get_query_relative_filename, get_query_full_filename, \
     BIGQUERY_DATE_TABLE, CONFIG_DIR
 from configurations.search_tables import AGGREGATIONS, LOCATION_LEVELS, \
-    TIME_RANGES, TEST_DATE_COMPARISONS, HISTOGRAM_BINS
+    TIME_RANGES, TEST_DATE_COMPARISONS, SPEED_HISTOGRAM_BINS
 
 # -- Templates:
 # Location lists:
@@ -81,7 +81,7 @@ def build_base_query_string(agg_config):
         timed_list_fields(agg_config["timed_fields"], TIME_RANGES))
 
     # add histogram bins for reference
-    bins = ",".join(str(b) for b in HISTOGRAM_BINS)
+    bins = ",".join(str(b) for b in SPEED_HISTOGRAM_BINS)
 
     # add concatenated histogram bins
     bin_fields = []
@@ -170,7 +170,7 @@ def build_location_sub_queries(agg_config, subselect_template, leftjoin_template
             # compute histogram fields
             binned_fields = []
             for field in agg_config["binned_fields"]:
-                binned_fields.append(output_bin_string(field, HISTOGRAM_BINS))
+                binned_fields.append(output_bin_string(field, field['bins']))
 
             left_join = build_left_join(leftjoin_template, time_comparison, location_level, agg_config, binned_fields)
             left_joins += left_join

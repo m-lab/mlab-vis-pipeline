@@ -107,7 +107,7 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 			rowKeys.add(paddedKeyValue);
 		}
 		String rowKey = String.join("|", rowKeys);
-		return rowKey.getBytes();
+		return rowKey.getBytes(StandardCharsets.UTF_8);
 	}
 
 	public void processElement(ProcessContext c) throws Exception {

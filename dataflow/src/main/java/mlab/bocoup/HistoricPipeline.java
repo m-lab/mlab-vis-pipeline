@@ -174,6 +174,19 @@ public class HistoricPipeline {
 
 			PCollection<TableRow> ispdRows = addISPs.apply(mergedRows);
 
+			// ==== add server locations and mlab site info
+			AddMlabSitesInfoPipeline addMlabSitesInfo = new AddMlabSitesInfoPipeline(pipe);
+			addMlabSitesInfo.setWriteData(false)
+					.setOutputTable((String) downloadsConfig.get("withISPTable"))
+					.setInputTable((String) downloadsConfig.get("mergeTable"))
+					.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
+					.setWriteDisposition(
+							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
+					.setCreateDisposition(
+							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
+
+			PCollection<TableRow> infodRows = addISPs.apply(ispdRows);
+			
 			// ==== add local time
 			AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(pipe);
 			addLocalTime.setWriteData(false)
@@ -184,7 +197,7 @@ public class HistoricPipeline {
 					.setCreateDisposition(
 							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
 
-			PCollection<TableRow> timedRows = addLocalTime.apply(ispdRows);
+			PCollection<TableRow> timedRows = addLocalTime.apply(infodRows);
 			
 			// ==== add location names
 			AddLocationPipeline addLocations = new AddLocationPipeline(pipe);

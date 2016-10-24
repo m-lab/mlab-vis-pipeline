@@ -84,6 +84,19 @@ public class UpdatePipeline {
 		
 		PCollection<TableRow> ispdRows = addISPs.apply(mergedRows);
 		
+		// ==== add server locations and mlab site info
+		AddMlabSitesInfoPipeline addMlabSitesInfo = new AddMlabSitesInfoPipeline(pipe2);
+		addMlabSitesInfo.setWriteData(false)
+			.setOutputTable((String) downloadsConfig.get("withISPTable"))
+			.setInputTable((String) downloadsConfig.get("mergeTable"))
+			.setOutputSchema(Schema.fromJSONFile(
+					(String) downloadsConfig.get("withISPTableSchema")))
+			.setWriteDisposition(WriteDisposition.WRITE_APPEND)
+			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
+		
+		PCollection<TableRow> infodRows = addMlabSitesInfo.apply(ispdRows);
+		
+		
 		// ==== merge ASNs
 		MergeASNsPipeline mergeASNs = new MergeASNsPipeline(pipe2);
 		mergeASNs.setWriteData(false)
@@ -94,7 +107,7 @@ public class UpdatePipeline {
 			.setWriteDisposition(WriteDisposition.WRITE_APPEND)
 			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
 		
-		PCollection<TableRow> mergedIspdRows = mergeASNs.apply(ispdRows);
+		PCollection<TableRow> mergedIspdRows = mergeASNs.apply(infodRows);
 	
 		
 		// ==== add local time

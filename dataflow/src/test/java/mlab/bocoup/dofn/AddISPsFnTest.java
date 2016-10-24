@@ -150,8 +150,9 @@ public class AddISPsFnTest {
 	@Test
 	public void testClientAsn() {		
 		// create the DoFn to test
-		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "client_asn_name",
-				"client_asn_number", "min_ip_hex", "max_ip_hex", "min_ip_hex", "max_ip_hex", "asn_name", "asn_number");
+		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "min_ip_hex",
+				"max_ip_hex", "min_ip_hex", "max_ip_hex", "client_asn_name", "client_asn_number", "asn_name",
+				"asn_number");
 		
 		// create the tester
 		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(addIspsFn);
@@ -184,8 +185,8 @@ public class AddISPsFnTest {
 	@Test
 	public void testNoAsnNumber() {
 		// create the DoFn to test
-		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "client_asn_name",
-				"client_asn_number", "min_ip_hex", "max_ip_hex", "min_ip_hex", "max_ip_hex", "asn_name", null);
+		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "min_ip_hex",
+				"max_ip_hex", "min_ip_hex", "max_ip_hex", "client_asn_name", "client_asn_number", "asn_name", null);
 		
 		// create the tester
 		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(addIspsFn);
@@ -209,8 +210,9 @@ public class AddISPsFnTest {
 	@Test
 	public void testDifferentIPv6Columns() {
 		// create the DoFn to test
-		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "client_asn_name",
-				"client_asn_number", "min_ip_hex", "max_ip_hex", "min_ipv6_hex", "max_ipv6_hex", "asn_name", "asn_number");
+		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "min_ip_hex",
+				"max_ip_hex", "min_ipv6_hex", "max_ipv6_hex", "client_asn_name", "client_asn_number", "asn_name",
+				"asn_number");
 		
 		// create the tester
 		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(addIspsFn);

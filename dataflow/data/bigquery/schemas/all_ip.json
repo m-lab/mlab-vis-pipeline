@@ -268,5 +268,10 @@
     "name": "server_continent",
     "type": "STRING",
     "mode": "NULLABLE"
+  },
+  {
+    "name": "mlab_site_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
   }
 ]

@@ -15,6 +15,7 @@ CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIRECTORY = "{0}/output".format(CUR_DIR)
 OUTPUT_FILE = "{0}/mlab_sites_processed.csv".format(OUTPUT_DIRECTORY)
 INPUT_FILE = "../../../dataflow/data/bigquery/mlab-sites/M-Lab Sites - Sites.csv"
+INPUT_LOCATIONS_FILE = "../../../dataflow/data/bigquery/mlab-sites/mlab_site_locations.csv"
 IP_MIN_COLUMN = "Machine IPv4 Min IP"
 IP_MAX_COLUMN = "Machine IPv4 Max IP"
 IP_NETMASK_COLUMN = "Machine IPv4 IP prefix netmask"
@@ -25,6 +26,9 @@ TRANSIT_PROVIDER = "Transit provider"
 SITE_COLUMN = "Site"
 DATE_COLUMNS = ["In service", "Retired"]
 
+COUNTRY_CODE_COLUMN = "Country"
+REGION_CODE_COLUMN = "State"
+CITY_COLUMN = "City"
 CONTINENT_CODE_COLUMN = "Continent Code"
 CONTINENT_COLUMN = "Region"
 CONTINTENT_CODES = {
@@ -36,6 +40,11 @@ CONTINTENT_CODES = {
     "South America": "SA",
     "Oceania": "OC"
 }
+
+LOCATION_SITE_ID_COLUMN = "Site ID"
+LOCATION_LATITUDE_COLUMN = "Latitude"
+LOCATION_LONGITUDE_COLUMN = "Longitude"
+
 
 def normalize_ip(ip_string):
     """
@@ -96,7 +105,7 @@ def hex_encode_ip(ip_addr):
 
     return base64.b16encode(ip_addr.packed).rjust(32, '0')
 
-def process_row(row):
+def process_row(row, location_map):
     """
     Processes a row in the CSV
 
@@ -111,10 +120,20 @@ def process_row(row):
     ips = get_ip_extent(row[IP_PREFIX_COLUMN])
     ipv6_ips = get_ip_extent(row[IPV6_PREFIX_COLUMN])
 
+    continent_code = CONTINTENT_CODES[row[CONTINENT_COLUMN]] if row[CONTINENT_COLUMN] in CONTINTENT_CODES else None
+    site_id = row[SITE_COLUMN]
+
+    location = location_map[site_id.lower()]
 
     # simplify
     row = {
-        'site': row[SITE_COLUMN],
+        'site': site_id.lower(),
+        'latitude': location['latitude'],
+        'longitude': location['longitude'],
+        'city': row[CITY_COLUMN],
+        'region_code': row[REGION_CODE_COLUMN],
+        'country_code': row[COUNTRY_CODE_COLUMN],
+        'continent_code': continent_code,
         'min_ip_hex': hex_encode_ip(ips[0]) if ips else None,
         'max_ip_hex': hex_encode_ip(ips[-1]) if ips else None,
         'transit_provider': row[TRANSIT_PROVIDER],
@@ -130,6 +149,29 @@ def process_row(row):
 
     return row
 
+def build_location_map():
+    """
+    Builds the location map from the location input file
+    where MLab Site ID maps to latitude and longitude
+
+    Returns:
+        dict: MLab Site ID -> {latitude, longitude}
+    """
+    location_map = {}
+
+    with open(INPUT_LOCATIONS_FILE, 'rbU') as csvfile:
+        reader = csv.DictReader(csvfile)
+
+        for row in reader:
+            site_id = row[LOCATION_SITE_ID_COLUMN]
+            location_map[site_id] = {
+                'site': site_id,
+                'latitude': row[LOCATION_LATITUDE_COLUMN],
+                'longitude': row[LOCATION_LONGITUDE_COLUMN]
+            }
+
+    return location_map
+
 def process_csv():
     """
     Adds in the IP related columns to the CSV,
@@ -140,16 +182,33 @@ def process_csv():
         (void)
     """
     csv_rows = []
-    fieldnames = ['site', 'min_ip_hex', 'max_ip_hex', 'transit_provider',
-                  'min_ip', 'max_ip', 'ip_prefix', 'min_ipv6_hex',
-                  'max_ipv6_hex', 'min_ipv6', 'max_ipv6', 'ipv6_prefix']
+    fieldnames = ['site',
+                  'latitude',
+                  'longitude',
+                  'city',
+                  'region_code',
+                  'country_code',
+                  'continent_code',
+                  'min_ip_hex',
+                  'max_ip_hex',
+                  'transit_provider',
+                  'min_ip',
+                  'max_ip',
+                  'ip_prefix',
+                  'min_ipv6_hex',
+                  'max_ipv6_hex',
+                  'min_ipv6',
+                  'max_ipv6',
+                  'ipv6_prefix']
+
+    location_map = build_location_map()
 
     # Read in the CSV file and augment the columns
     with open(INPUT_FILE, 'rb') as csvfile:
         reader = csv.DictReader(csvfile)
 
         for row in reader:
-            csv_rows.append(process_row(row))
+            csv_rows.append(process_row(row, location_map))
 
     # Write the new CSV file with new columns
     with open(OUTPUT_FILE, 'w') as csvfile:

@@ -149,33 +149,33 @@ public class HistoricPipeline {
 			Pipeline pipe = Pipeline.create(optionsMergeAndISP);
 			
 			// ==== merge upload and download into a single set of rows (outputs a table and also gives the rows back)
-			MergeUploadDownloadPipeline mudP = new MergeUploadDownloadPipeline(pipe);
+			MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(pipe);
 
-			mudP.setDownloadTable((String) downloadsConfig.get("outputTable"))
+			mergeUploadDownload.setDownloadTable((String) downloadsConfig.get("outputTable"))
 					.setUploadTable((String) uploadsConfig.get("outputTable"))
 					.setOutputTable((String) downloadsConfig.get("mergeTable"))
 					.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 					.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
 
-			PCollection<TableRow> mergedRows = mudP.apply();
+			PCollection<TableRow> rows = mergeUploadDownload.apply();
 
 			// ==== add ISPs
-			PCollection<TableRow> ispdRows = new AddISPsPipeline(pipe).apply(mergedRows);
+			rows = new AddISPsPipeline(pipe).apply(rows);
 
 			// ==== add server locations and mlab site info
-			PCollection<TableRow> infodRows = new AddMlabSitesInfoPipeline(pipe).apply(ispdRows);
+			rows = new AddMlabSitesInfoPipeline(pipe).apply(rows);
 			
 			// ==== merge ASNs
-			PCollection<TableRow> mergedAsnsRows = new MergeASNsPipeline(pipe).apply(infodRows);
+			rows = new MergeASNsPipeline(pipe).apply(rows);
 			
 			// ==== add local time
-			PCollection<TableRow> timedRows = new AddLocalTimePipeline(pipe).apply(mergedAsnsRows);
+			rows = new AddLocalTimePipeline(pipe).apply(rows);
 			
 			// ==== add location names
-			PCollection<TableRow> locationNamedRows = new AddLocationPipeline(pipe).apply(timedRows);
+			rows = new AddLocationPipeline(pipe).apply(rows);
 			
 			// write to the final table
-			BigQueryIOHelpers.writeTable(locationNamedRows, (String) downloadsConfig.get("withISPTable"), 
+			BigQueryIOHelpers.writeTable(rows, (String) downloadsConfig.get("withISPTable"), 
 					Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")),
 					WriteDisposition.WRITE_TRUNCATE, CreateDisposition.CREATE_IF_NEEDED);
 			

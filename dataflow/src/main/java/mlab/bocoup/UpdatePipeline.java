@@ -26,7 +26,7 @@ public class UpdatePipeline {
 	 * To run, pass --timePeriod as either "day" or "hour".
 	 */
 	public static void main(String[] args) throws Exception {
-		
+		// get the pipeline options
 		PipelineOptionsFactory.register(UpdatePipelineOptions.class);
 		UpdatePipelineOptions options = PipelineOptionsFactory.fromArgs(args)
 					.withValidation()
@@ -48,21 +48,20 @@ public class UpdatePipeline {
     
 	    dup.apply();
 	    
-	    DataflowPipelineJob resultUpdate = (DataflowPipelineJob) pipe.run();
-	    resultUpdate.waitToFinish(-1, TimeUnit.MINUTES, 
-	    		new MonitoringUtil.PrintHandler(System.out));
-		LOG.info("Update table job completed, with status: " + 
-	    		resultUpdate.getState().toString());
-		
+	    // wait for this pipeline to finish running since it outputs tables that are read in later
+		DataflowPipelineJob resultUpdate = (DataflowPipelineJob) pipe.run();
+		resultUpdate.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+		LOG.info("Update table job completed, with status: " + resultUpdate.getState().toString());
+
 		// Pipeline 2:
-		// ===== merge the tables
 		JSONObject downloadsConfig = dup.getDownloadsConfig();
 		JSONObject uploadsConfig = dup.getUploadsConfig();
 		
 		UpdatePipelineOptions optionsMergeAndISP = options.cloneAs(UpdatePipelineOptions.class);
 	    optionsMergeAndISP.setAppName("UpdatePipeline-MergeAndISP");
 		Pipeline pipe2 = Pipeline.create(optionsMergeAndISP);
-		
+
+		// ==== merge the tables		
 		MergeUploadDownloadPipeline mudP = new MergeUploadDownloadPipeline(pipe2);
 		mudP.setDownloadTable((String) downloadsConfig.get("outputTable"))
 			.setUploadTable((String) uploadsConfig.get("outputTable"))
@@ -73,55 +72,22 @@ public class UpdatePipeline {
 		PCollection<TableRow> mergedRows = mudP.apply();
 		
 		// ==== add ISPs
-		AddISPsPipeline addISPs = new AddISPsPipeline(pipe2);
-		addISPs.setWriteData(false)
-			.setOutputTable((String) downloadsConfig.get("withISPTable"))
-			.setInputTable((String) downloadsConfig.get("mergeTable"))
-			.setOutputSchema(Schema.fromJSONFile(
-					(String) downloadsConfig.get("withISPTableSchema")))
-			.setWriteDisposition(WriteDisposition.WRITE_APPEND)
-			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
-		
+		AddISPsPipeline addISPs = new AddISPsPipeline(pipe2).setWriteData(false);
 		PCollection<TableRow> ispdRows = addISPs.apply(mergedRows);
 		
 		// ==== add server locations and mlab site info
-		AddMlabSitesInfoPipeline addMlabSitesInfo = new AddMlabSitesInfoPipeline(pipe2);
-		addMlabSitesInfo.setWriteData(false)
-			.setOutputTable((String) downloadsConfig.get("withISPTable"))
-			.setInputTable((String) downloadsConfig.get("mergeTable"))
-			.setOutputSchema(Schema.fromJSONFile(
-					(String) downloadsConfig.get("withISPTableSchema")))
-			.setWriteDisposition(WriteDisposition.WRITE_APPEND)
-			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
-		
+		AddMlabSitesInfoPipeline addMlabSitesInfo = new AddMlabSitesInfoPipeline(pipe2).setWriteData(false);
 		PCollection<TableRow> infodRows = addMlabSitesInfo.apply(ispdRows);
 		
-		
 		// ==== merge ASNs
-		MergeASNsPipeline mergeASNs = new MergeASNsPipeline(pipe2);
-		mergeASNs.setWriteData(false)
-			.setOutputTable((String) downloadsConfig.get("withISPTable"))
-			.setInputTable((String) downloadsConfig.get("withISPTable"))
-			.setOutputSchema(Schema.fromJSONFile(
-					(String) downloadsConfig.get("withISPTableSchema")))
-			.setWriteDisposition(WriteDisposition.WRITE_APPEND)
-			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
-		
+		MergeASNsPipeline mergeASNs = new MergeASNsPipeline(pipe2).setWriteData(false);
 		PCollection<TableRow> mergedIspdRows = mergeASNs.apply(infodRows);
 	
-		
 		// ==== add local time
-		AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(pipe2);
-		addLocalTime.setWriteData(true)
-				.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
-				.setOutputTable((String) downloadsConfig.get("withISPTable"))
-				.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
-				.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
-
+		AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(pipe2).setWriteData(false);
 		PCollection<TableRow> timedRows = addLocalTime.apply(mergedIspdRows);
 		
-		
-		// ==== add location names
+		// ==== add location names (and output the table)
 		AddLocationPipeline addLocations = new AddLocationPipeline(pipe);
 		addLocations
 			.setWriteData(true)
@@ -134,10 +100,12 @@ public class UpdatePipeline {
 		
 		addLocations.apply(timedRows);
 		
+		// run the pipeline
 		DataflowPipelineJob resultsMergeAndISPs = (DataflowPipelineJob) pipe2.run();
-		resultsMergeAndISPs.waitToFinish(-1, TimeUnit.MINUTES, 
-				new MonitoringUtil.PrintHandler(System.out));
-		LOG.info("Merge + ISPs job completed, with status: " + 
-				resultsMergeAndISPs.getState().toString());
+		
+		// wait for the pipeline to finish
+		resultsMergeAndISPs.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+		
+		LOG.info("Merge + ISPs job completed, with status: " + resultsMergeAndISPs.getState().toString());
 	}
 }

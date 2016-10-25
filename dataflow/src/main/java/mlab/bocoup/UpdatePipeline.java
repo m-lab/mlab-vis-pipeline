@@ -93,10 +93,8 @@ public class UpdatePipeline {
 			.setWriteData(true)
 			.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
 			.setOutputTable((String) downloadsConfig.get("withISPTable"))
-			.setWriteDisposition(
-					com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
-			.setCreateDisposition(
-					com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
+			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
+			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
 		
 		addLocations.apply(timedRows);
 		

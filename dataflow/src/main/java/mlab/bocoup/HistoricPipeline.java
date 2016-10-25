@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.PipelineResult.State;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
@@ -19,6 +20,7 @@ import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.bocoup.pipelineopts.HistoricPipelineOptions;
+import mlab.bocoup.util.BigQueryIOHelpers;
 import mlab.bocoup.util.Schema;
 
 public class HistoricPipeline {
@@ -90,50 +92,46 @@ public class HistoricPipeline {
 	    // only blocking within their own run routines, we are extracting them
 	    // into their own threads, that will then rejoin when they are complete.
 	    // this allows these two to run in parallel.
-	    //=== get downloads for timePeriod
+
 	    boolean next = true;
 	    if (skipNDTRead != 1) {
-	    	
-	    	// TODO: Can we share a pipeline like this? Not clear. Not clear
-	    	//Pipeline pipe = Pipeline.create(options);
-	    	
+			// === get downloads for timePeriod
 	    	options.setAppName("HistoricPipeline-Download");
+	    	
 	    	ExtractHistoricRowsPipeline ehrPDL = new ExtractHistoricRowsPipeline(options);
 	    	Thread dlPipeThread = new Thread(ehrPDL);
 	    	String downloadsConfigFile = getRunnerConfigFilename(timePeriod, "downloads");
+	    	
 	    	LOG.info("Downloads configuration: " + downloadsConfigFile);
 	    	ehrPDL.setConfigurationFile(downloadsConfigFile)
 	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
 	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND)
 	    		.shouldExecute(true);
 	    	
-	    	//=== get downloads for timePeriod (many pipelines)
-	    	// set up big query IO options
+	    	//=== get uploads for timePeriod
+	    	// set up big query IO options (it doesn't seem to let us share the download ones)
 	    	HistoricPipelineOptions optionsUl = options.cloneAs(HistoricPipelineOptions.class);
 	    	optionsUl.setAppName("HistoricPipeline-Upload");
 	    
 	    	ExtractHistoricRowsPipeline ehrPUL = new ExtractHistoricRowsPipeline(optionsUl);
 	    	Thread ulPipeThread = new Thread(ehrPUL);
 	    	String uploadsConfigFile = getRunnerConfigFilename(timePeriod, "uploads");
+	    
 	    	LOG.info("Uploads configuration: " + uploadsConfigFile);
 	    	ehrPUL.setConfigurationFile(uploadsConfigFile)
 	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
 	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND)
 	    		.shouldExecute(true);
 	     	
-	    	// TODO do these really need to be threads at this point? Not clear. Not. Clear.
+	    	// start the two threads 
 	    	LOG.info("Starting upload/download threads");
 	    	dlPipeThread.start();
 	    	ulPipeThread.start();
 	    	
+	    	// wait for the two threads to finish
 	    	LOG.info("Joining upload/download threads");
 	    	dlPipeThread.join();
 		    ulPipeThread.join();
-		    
-		    //LOG.info("Running pipeline");
-		    //DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();
-			//result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
-			//LOG.info("Job completed, with status: " + result.getState().toString());
 		    
 		    next = ehrPUL.getState() == State.DONE && ehrPDL.getState() == State.DONE;
 	    }
@@ -149,71 +147,44 @@ public class HistoricPipeline {
 			HistoricPipelineOptions optionsMergeAndISP = options.cloneAs(HistoricPipelineOptions.class);
 			optionsMergeAndISP.setAppName("HistoricPipeline-MergeAndISP");
 			Pipeline pipe = Pipeline.create(optionsMergeAndISP);
-			MergeUploadDownloadPipeline mudP = new MergeUploadDownloadPipeline(pipe);
+			
+			// === merge upload and download into a single set of rows (outputs a table and also gives the rows back)
+			MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(pipe);
 
-			mudP.setDownloadTable((String) downloadsConfig.get("outputTable"))
+			mergeUploadDownload.setDownloadTable((String) downloadsConfig.get("outputTable"))
 					.setUploadTable((String) uploadsConfig.get("outputTable"))
 					.setOutputTable((String) downloadsConfig.get("mergeTable"))
-					.setWriteDisposition(
-							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
-					.setCreateDisposition(
-							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
+					.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
+					.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
 
-			PCollection<TableRow> mergedRows = mudP.apply();
+			PCollection<TableRow> rows = mergeUploadDownload.apply();
 
-			// ==== add ISPs
-			AddISPsPipeline addISPs = new AddISPsPipeline(pipe);
-			addISPs.setWriteData(false)
-					.setOutputTable((String) downloadsConfig.get("withISPTable"))
-					.setInputTable((String) downloadsConfig.get("mergeTable"))
-					.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
-					.setWriteDisposition(
-							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
-					.setCreateDisposition(
-							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
+			// === add ISPs
+			rows = new AddISPsPipeline(pipe).apply(rows);
 
-			PCollection<TableRow> ispdRows = addISPs.apply(mergedRows);
-
-			// ==== add server locations and mlab site info
-			AddMlabSitesInfoPipeline addMlabSitesInfo = new AddMlabSitesInfoPipeline(pipe);
-			addMlabSitesInfo.setWriteData(false)
-					.setOutputTable((String) downloadsConfig.get("withISPTable"))
-					.setInputTable((String) downloadsConfig.get("mergeTable"))
-					.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
-					.setWriteDisposition(
-							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
-					.setCreateDisposition(
-							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
-
-			PCollection<TableRow> infodRows = addMlabSitesInfo.apply(ispdRows);
+			// === add server locations and mlab site info
+			rows = new AddMlabSitesInfoPipeline(pipe).apply(rows);
 			
-			// ==== add local time
-			AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(pipe);
-			addLocalTime.setWriteData(false)
-					.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
-					.setOutputTable((String) downloadsConfig.get("withISPTable"))
-					.setWriteDisposition(
-							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
-					.setCreateDisposition(
-							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
-
-			PCollection<TableRow> timedRows = addLocalTime.apply(infodRows);
+			// === merge ASNs
+			rows = new MergeASNsPipeline(pipe).apply(rows);
 			
-			// ==== add location names
-			AddLocationPipeline addLocations = new AddLocationPipeline(pipe);
-			addLocations
-				.setWriteData(true)
-				.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
-				.setOutputTable((String) downloadsConfig.get("withISPTable"))
-				.setWriteDisposition(
-						com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
-				.setCreateDisposition(
-						com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
+			// === add local time
+			rows = new AddLocalTimePipeline(pipe).apply(rows);
 			
-			addLocations.apply(timedRows);
+			// === add location names
+			rows = new AddLocationPipeline(pipe).apply(rows);
 			
+			// write to the final table
+			BigQueryIOHelpers.writeTable(rows, (String) downloadsConfig.get("withISPTable"), 
+					Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")),
+					WriteDisposition.WRITE_TRUNCATE, CreateDisposition.CREATE_IF_NEEDED);
+			
+			// kick off the pipeline
 			DataflowPipelineJob resultsMergeAndISPs = (DataflowPipelineJob) pipe.run();
+			
+			// wait for the pipeline to finish executing
 			resultsMergeAndISPs.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+			
 			LOG.info("Merge + ISPs job completed, with status: " + resultsMergeAndISPs.getState().toString());
 	    } else {
 	    	LOG.error("Download or Upload pipelines failed.");

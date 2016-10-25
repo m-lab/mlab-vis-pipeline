@@ -16,6 +16,7 @@ import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.bocoup.pipelineopts.UpdatePipelineOptions;
+import mlab.bocoup.util.BigQueryIOHelpers;
 import mlab.bocoup.util.Schema;
 
 public class UpdatePipeline {
@@ -26,7 +27,7 @@ public class UpdatePipeline {
 	 * To run, pass --timePeriod as either "day" or "hour".
 	 */
 	public static void main(String[] args) throws Exception {
-		
+		// get the pipeline options
 		PipelineOptionsFactory.register(UpdatePipelineOptions.class);
 		UpdatePipelineOptions options = PipelineOptionsFactory.fromArgs(args)
 					.withValidation()
@@ -48,96 +49,55 @@ public class UpdatePipeline {
     
 	    dup.apply();
 	    
-	    DataflowPipelineJob resultUpdate = (DataflowPipelineJob) pipe.run();
-	    resultUpdate.waitToFinish(-1, TimeUnit.MINUTES, 
-	    		new MonitoringUtil.PrintHandler(System.out));
-		LOG.info("Update table job completed, with status: " + 
-	    		resultUpdate.getState().toString());
-		
+	    // wait for this pipeline to finish running since it outputs tables that are read in later
+		DataflowPipelineJob resultUpdate = (DataflowPipelineJob) pipe.run();
+		resultUpdate.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+		LOG.info("Update table job completed, with status: " + resultUpdate.getState().toString());
+
 		// Pipeline 2:
-		// ===== merge the tables
 		JSONObject downloadsConfig = dup.getDownloadsConfig();
 		JSONObject uploadsConfig = dup.getUploadsConfig();
 		
 		UpdatePipelineOptions optionsMergeAndISP = options.cloneAs(UpdatePipelineOptions.class);
 	    optionsMergeAndISP.setAppName("UpdatePipeline-MergeAndISP");
 		Pipeline pipe2 = Pipeline.create(optionsMergeAndISP);
-		
-		MergeUploadDownloadPipeline mudP = new MergeUploadDownloadPipeline(pipe2);
-		mudP.setDownloadTable((String) downloadsConfig.get("outputTable"))
+
+		// === merge the table (outputs a table and also returns the rows)
+		MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(pipe2);
+		mergeUploadDownload.setDownloadTable((String) downloadsConfig.get("outputTable"))
 			.setUploadTable((String) uploadsConfig.get("outputTable"))
 			.setOutputTable((String) downloadsConfig.get("mergeTable"))
 			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
 		
-		PCollection<TableRow> mergedRows = mudP.apply();
-		
-		// ==== add ISPs
-		AddISPsPipeline addISPs = new AddISPsPipeline(pipe2);
-		addISPs.setWriteData(false)
-			.setOutputTable((String) downloadsConfig.get("withISPTable"))
-			.setInputTable((String) downloadsConfig.get("mergeTable"))
-			.setOutputSchema(Schema.fromJSONFile(
-					(String) downloadsConfig.get("withISPTableSchema")))
-			.setWriteDisposition(WriteDisposition.WRITE_APPEND)
-			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
-		
-		PCollection<TableRow> ispdRows = addISPs.apply(mergedRows);
-		
-		// ==== add server locations and mlab site info
-		AddMlabSitesInfoPipeline addMlabSitesInfo = new AddMlabSitesInfoPipeline(pipe2);
-		addMlabSitesInfo.setWriteData(false)
-			.setOutputTable((String) downloadsConfig.get("withISPTable"))
-			.setInputTable((String) downloadsConfig.get("mergeTable"))
-			.setOutputSchema(Schema.fromJSONFile(
-					(String) downloadsConfig.get("withISPTableSchema")))
-			.setWriteDisposition(WriteDisposition.WRITE_APPEND)
-			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
-		
-		PCollection<TableRow> infodRows = addMlabSitesInfo.apply(ispdRows);
-		
-		
-		// ==== merge ASNs
-		MergeASNsPipeline mergeASNs = new MergeASNsPipeline(pipe2);
-		mergeASNs.setWriteData(false)
-			.setOutputTable((String) downloadsConfig.get("withISPTable"))
-			.setInputTable((String) downloadsConfig.get("withISPTable"))
-			.setOutputSchema(Schema.fromJSONFile(
-					(String) downloadsConfig.get("withISPTableSchema")))
-			.setWriteDisposition(WriteDisposition.WRITE_APPEND)
-			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
-		
-		PCollection<TableRow> mergedIspdRows = mergeASNs.apply(infodRows);
-	
-		
-		// ==== add local time
-		AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(pipe2);
-		addLocalTime.setWriteData(true)
-				.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
-				.setOutputTable((String) downloadsConfig.get("withISPTable"))
-				.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
-				.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
+		PCollection<TableRow> rows = mergeUploadDownload.apply();
 
-		PCollection<TableRow> timedRows = addLocalTime.apply(mergedIspdRows);
+		// === add ISPs
+		rows = new AddISPsPipeline(pipe).apply(rows);
+
+		// === add server locations and mlab site info
+		rows = new AddMlabSitesInfoPipeline(pipe).apply(rows);
 		
+		// === merge ASNs
+		rows = new MergeASNsPipeline(pipe).apply(rows);
 		
-		// ==== add location names
-		AddLocationPipeline addLocations = new AddLocationPipeline(pipe);
-		addLocations
-			.setWriteData(true)
-			.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
-			.setOutputTable((String) downloadsConfig.get("withISPTable"))
-			.setWriteDisposition(
-					com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
-			.setCreateDisposition(
-					com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
+		// === add local time
+		rows = new AddLocalTimePipeline(pipe).apply(rows);
 		
-		addLocations.apply(timedRows);
+		// === add location names
+		rows = new AddLocationPipeline(pipe).apply(rows);
 		
+		// write to the final table
+		BigQueryIOHelpers.writeTable(rows, (String) downloadsConfig.get("withISPTable"), 
+				Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")),
+				WriteDisposition.WRITE_TRUNCATE, CreateDisposition.CREATE_IF_NEEDED);
+		
+		// run the pipeline
 		DataflowPipelineJob resultsMergeAndISPs = (DataflowPipelineJob) pipe2.run();
-		resultsMergeAndISPs.waitToFinish(-1, TimeUnit.MINUTES, 
-				new MonitoringUtil.PrintHandler(System.out));
-		LOG.info("Merge + ISPs job completed, with status: " + 
-				resultsMergeAndISPs.getState().toString());
+		
+		// wait for the pipeline to finish
+		resultsMergeAndISPs.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+		
+		LOG.info("Merge + ISPs job completed, with status: " + resultsMergeAndISPs.getState().toString());
 	}
 }

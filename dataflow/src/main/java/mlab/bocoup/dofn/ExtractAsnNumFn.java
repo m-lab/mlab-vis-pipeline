@@ -19,7 +19,6 @@ public class ExtractAsnNumFn extends DoFn<TableRow, KV<String, TableRow>> {
 	public void processElement(DoFn<TableRow, KV<String, TableRow>>.ProcessContext c) throws Exception {
 		TableRow row = c.element();
 		String asnNum = (String) row.get("asn_number");
-		
 
 		if (asnNum != null) {
 			c.output(KV.of(asnNum, row));

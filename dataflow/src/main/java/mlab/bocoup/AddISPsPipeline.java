@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
@@ -32,50 +31,24 @@ import mlab.bocoup.util.Schema;
  * @author pbeshai
  *
  */
-public class AddISPsPipeline {
+public class AddISPsPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddISPsPipeline.class);
+	private static final String MAXMIND_ISPS_TABLE = "mlab-oti:bocoup.maxmind_asn";
 
+	// for running main()
 	private static final String INPUT_TABLE = "mlab-oti:bocoup.jim_test";
 	private static final String OUTPUT_TABLE = "mlab-oti:bocoup.jim_test_out";
-
-	private static final String MAXMIND_ISPS_TABLE = "mlab-oti:bocoup.maxmind_asn";
-	//private static final String SERVER_ISPS_TABLE = "mlab-oti:bocoup.mlab_sites";
-
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
-
-	private Pipeline pipeline;
-	private String inputTable = INPUT_TABLE;
-	private String outputTable = OUTPUT_TABLE;
+	
 	private String maxmindIspsTable = MAXMIND_ISPS_TABLE;
-	private boolean writeData = false;
-	private TableSchema outputSchema;
-	private BigQueryIO.Write.WriteDisposition writeDisposition = BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE;
-	private BigQueryIO.Write.CreateDisposition createDisposition = BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED;
-
 	/**
 	 * Create a new pipeline.
 	 * @param p The Dataflow pipeline to build on
 	 */
 	public AddISPsPipeline(Pipeline p) {
-		this.pipeline = p;
+		super(p);
 	}
 
-	/**
-	 * Initial read of the source data table from BigQuery.
-	 *
-	 * @param p The Dataflow Pipeline
-	 * @return The PCollection representing the data from BigQuery
-	 */
-	public PCollection<TableRow> loadByIpData() {
-		// read in the by IP data from `by_ip_day_base`
-		PCollection<TableRow> byIpData = this.pipeline.apply(
-				BigQueryIO.Read
-				.named("Read " + this.inputTable)
-				.from(this.inputTable));
-
-		return byIpData;
-	}
-	
 	/**
 	 * Adds in ISP information for the client.
 	 *
@@ -118,26 +91,6 @@ public class AddISPsPipeline {
 
 
 	/**
-	 * Write the modified rows to a destination table in BigQuery
-	 *
-	 * @param byIpData The PCollection of rows with ISP information added to them already
-	 * @param outputTable The identifier for the table to write to (e.g. `bocoup.my_table`)
-	 * @param outputTableSchema The schema describing the output table
-	 */
-	public void writeByIpData(PCollection<TableRow> byIpData) {
-		// Write the changes to `by_ip_day`
-
-
-		byIpData.apply(
-				BigQueryIO.Write
-				.named("Write to " + this.outputTable)
-				.to(this.outputTable)
-				.withSchema(this.outputSchema)
-				.withWriteDisposition(this.writeDisposition)
-				.withCreateDisposition(this.createDisposition));
-	}
-
-	/**
 	 * Adds necessary configuration to a Pipeline for adding ISPs to work.
 	 *
 	 * @param p The pipeline being used
@@ -158,17 +111,8 @@ public class AddISPsPipeline {
 	 *
 	 * @return The PCollection with ISPs added
 	 */
-	public PCollection<TableRow> apply(PCollection<TableRow> byIpData) {
-		this.preparePipeline();
-
-		// read in the data from the table unless it has been provided
-		PCollection<TableRow> data;
-		if (byIpData != null) {
-			data = byIpData;
-		} else {
-			data = this.loadByIpData();
-		}
-		
+	@Override
+	protected PCollection<TableRow> applyInner(PCollection<TableRow> data) {
 		// Read in the MaxMind ISP data
 		PCollection<TableRow> maxMindAsn = this.pipeline.apply(
 				BigQueryIO.Read
@@ -188,57 +132,8 @@ public class AddISPsPipeline {
 		data = this.addServerISPs(data, maxMindAsnView);
 		data = this.addClientISPs(data, maxMindAsnView);
 
-		if (this.writeData) {
-			// write the processed data to a table
-			this.writeByIpData(data);
-		}
-
 		return data;
 	}
-
-	/**
-	 * Add in the steps to add ISP information to a given pipeline. Reads data from a
-	 * BigQuery table to begin with. Writes the data to a table if writeData field is
-	 * true.
-	 *
-	 * @return The PCollection with ISPs added
-	 */
-	public PCollection<TableRow> apply() {
-		return this.apply(null);
-	}
-
-	public Pipeline getPipeline() {
-		return pipeline;
-	}
-
-
-	public AddISPsPipeline setPipeline(Pipeline pipeline) {
-		this.pipeline = pipeline;
-		return this;
-	}
-
-
-	public String getInputTable() {
-		return inputTable;
-	}
-
-
-	public AddISPsPipeline setInputTable(String inputTable) {
-		this.inputTable = inputTable;
-		return this;
-	}
-
-
-	public String getOutputTable() {
-		return outputTable;
-	}
-
-
-	public AddISPsPipeline setOutputTable(String outputTable) {
-		this.outputTable = outputTable;
-		return this;
-	}
-
 
 	public String getMaxmindIspsTable() {
 		return maxmindIspsTable;
@@ -250,48 +145,6 @@ public class AddISPsPipeline {
 		return this;
 	}
 	
-
-	public TableSchema getOutputSchema() {
-		return outputSchema;
-	}
-
-
-	public AddISPsPipeline setOutputSchema(TableSchema outputSchema) {
-		this.outputSchema = outputSchema;
-		return this;
-	}
-
-
-	public BigQueryIO.Write.WriteDisposition getWriteDisposition() {
-		return writeDisposition;
-	}
-
-
-	public AddISPsPipeline setWriteDisposition(BigQueryIO.Write.WriteDisposition writeDisposition) {
-		this.writeDisposition = writeDisposition;
-		return this;
-	}
-
-
-	public BigQueryIO.Write.CreateDisposition getCreateDisposition() {
-		return createDisposition;
-	}
-
-
-	public AddISPsPipeline setCreateDisposition(BigQueryIO.Write.CreateDisposition createDisposition) {
-		this.createDisposition = createDisposition;
-		return this;
-	}
-
-	public boolean getWriteData() {
-		return writeData;
-	}
-
-
-	public AddISPsPipeline setWriteData(boolean writeData) {
-		this.writeData = writeData;
-		return this;
-	}
 
 	/**
 	 * The main program: start the pipeline, add in ISP information and write it to a table.
@@ -307,6 +160,7 @@ public class AddISPsPipeline {
 		AddISPsPipeline addISPs = new AddISPsPipeline(p);
 		addISPs
 			.setWriteData(true)
+			.setInputTable(INPUT_TABLE)
 			.setOutputTable(OUTPUT_TABLE)
 			.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
 			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)

@@ -134,8 +134,11 @@ public class MergeUploadDownloadPipeline {
 		Pipeline pipe = Pipeline.create(options);
 
 		MergeUploadDownloadPipeline mudP = new MergeUploadDownloadPipeline(pipe);
-		mudP.setQueryFile(queryFile).setDownloadTable(downloadTable).setOutputSchema(Schema.fromJSONFile(outputSchema))
-				.setOutputTable(outputTable).setUploadTable(uploadTable);
+		mudP.setQueryFile(queryFile)
+			.setDownloadTable(downloadTable)
+			.setOutputSchema(Schema.fromJSONFile(outputSchema))
+			.setOutputTable(outputTable)
+			.setUploadTable(uploadTable);
 
 		mudP.apply();
 		DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();

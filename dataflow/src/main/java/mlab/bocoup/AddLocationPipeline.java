@@ -50,11 +50,11 @@ public class AddLocationPipeline extends BasePipeline {
 					.from(REGION_CODE_TABLE));
 		
 		PCollection<KV<String, TableRow>> countryKeys = 
-				countryCodes.apply(ParDo.named("find country keys")
+				countryCodes.apply(ParDo.named("Extract Country Keys")
 						.of(new ExtractCountryCodeFn()));
 		
 		PCollection<KV<String, TableRow>> regionKeys = 
-				regionCodes.apply(ParDo.named("find region keys")
+				regionCodes.apply(ParDo.named("Extract Region Keys")
 						.of(new ExtractRegionCodeFn()));
 		
 		

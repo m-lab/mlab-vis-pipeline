@@ -50,7 +50,7 @@ public class AddLocalTimePipeline extends BasePipeline {
 		
 		// build lookup map
 		PCollection<KV<String, TableRow>> zonekeys = 
-				timezones.apply(ParDo.named("find key")
+				timezones.apply(ParDo.named("Extract Timezone Key")
 						.of(new ExtractZoneKeynameFn()));
 		
 		PCollection<KV<String, Iterable<TableRow>>> groupedZones = zonekeys.apply(

@@ -185,7 +185,7 @@ public class HistoricPipeline {
 					.setCreateDisposition(
 							com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED);
 
-			PCollection<TableRow> infodRows = addISPs.apply(ispdRows);
+			PCollection<TableRow> infodRows = addMlabSitesInfo.apply(ispdRows);
 			
 			// ==== add local time
 			AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(pipe);

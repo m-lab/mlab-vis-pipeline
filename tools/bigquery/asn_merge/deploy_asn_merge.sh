@@ -8,7 +8,7 @@ tableName=bocoup.asn_merge
 tableSchema=$basedir/../../../dataflow/data/bigquery/asn_merge/schemas/asn_merge.json
 outputFile=$basedir/output/asn_merge.csv
 
-echo "Processing mlab_sites CSV"
+echo "Processing asn_merge CSV"
 python $basedir/process_asn_merge.py
 
 echo "Removing $tableName from BigQuery"

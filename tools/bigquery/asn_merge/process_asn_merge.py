@@ -1,3 +1,7 @@
+"""
+Tool to create the CSV used for the asn_merge table in BigQuery.
+It reads in asn_merge.json and converts it to CSV format.
+"""
 import os
 import json
 import csv
@@ -23,6 +27,9 @@ def read_json(filename):
     return data
 
 def write_csv(filename, data_list):
+    """
+    Write the CSV file to disk
+    """
     with open(filename, 'w') as csvfile:
         header = data_list[0].keys()
         writer = csv.DictWriter(csvfile, fieldnames=header)
@@ -31,9 +38,12 @@ def write_csv(filename, data_list):
             writer.writerow(row)
 
 def convert_to_rows(entry):
+    """
+    Expand an entry to multiple rows in the table, appending `x` to the end of the ASN.
+    """
     asns = sorted(entry["asns"])
     # master_asn = ','.join(asns)
-    master_asn = asns[0] + "+"
+    master_asn = asns[0] + "x"
     new_name = None
 
     if "name" in entry:

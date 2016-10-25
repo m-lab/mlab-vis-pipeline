@@ -146,8 +146,6 @@ public class BaseIPMatchingFn extends DoFn<TableRow, TableRow> {
 		Object value = mlabSite.get(readKey);
 		if (value != null && !(value instanceof String && ((String) value).length() == 0)) {
 			dataRow.set(setKey,  value);
-		} else {
-			System.out.println("skipping writing " + setKey);
 		}
 	}
 	

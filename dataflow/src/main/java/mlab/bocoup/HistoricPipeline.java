@@ -148,7 +148,7 @@ public class HistoricPipeline {
 			optionsMergeAndISP.setAppName("HistoricPipeline-MergeAndISP");
 			Pipeline pipe = Pipeline.create(optionsMergeAndISP);
 			
-			// ==== merge upload and download into a single set of rows (outputs a table and also gives the rows back)
+			// === merge upload and download into a single set of rows (outputs a table and also gives the rows back)
 			MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(pipe);
 
 			mergeUploadDownload.setDownloadTable((String) downloadsConfig.get("outputTable"))
@@ -159,19 +159,19 @@ public class HistoricPipeline {
 
 			PCollection<TableRow> rows = mergeUploadDownload.apply();
 
-			// ==== add ISPs
+			// === add ISPs
 			rows = new AddISPsPipeline(pipe).apply(rows);
 
-			// ==== add server locations and mlab site info
+			// === add server locations and mlab site info
 			rows = new AddMlabSitesInfoPipeline(pipe).apply(rows);
 			
-			// ==== merge ASNs
+			// === merge ASNs
 			rows = new MergeASNsPipeline(pipe).apply(rows);
 			
-			// ==== add local time
+			// === add local time
 			rows = new AddLocalTimePipeline(pipe).apply(rows);
 			
-			// ==== add location names
+			// === add location names
 			rows = new AddLocationPipeline(pipe).apply(rows);
 			
 			// write to the final table

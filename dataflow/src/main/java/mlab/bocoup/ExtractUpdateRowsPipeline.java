@@ -277,10 +277,10 @@ public class ExtractUpdateRowsPipeline {
 	/**
 	 * Main run, to get update tables for a specific date range.
 	 * To execute run with parameters:
-	 * 
-	 * --runner com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner 
-	 * --numWorkers=2 --timePeriod="day" -project=mlab-oti --stagingLocation="gs://bocoup"
-	 * 
+	 *
+	 * --runner com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner
+	 * --timePeriod="day" -project=mlab-oti --stagingLocation="gs://bocoup"
+	 *
 	 * @param args
 	 * @throws Exception
 	 */

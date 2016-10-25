@@ -71,7 +71,7 @@ public class HistoricPipeline {
 	 * Main program. Run with --timePeriod equal to "day", "hour" or "sample".
 	 * 
 	 * Full runtime arguments example:
-	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --numWorkers=5 
+	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner 
 	 * --timePeriod="sample" --project=mlab-oti --stagingLocation="gs://bocoup"
 	 * 
 	 * @param args

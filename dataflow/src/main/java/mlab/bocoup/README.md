@@ -12,7 +12,7 @@ See files under `data/batch-runs/historic` for more information.
 
 To run, execute as a java application with the following arguments:
 
-`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --numWorkers=5 --timePeriod="sample" --project=mlab-oti --stagingLocation="gs://bocoup"`
+`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --timePeriod="sample" --project=mlab-oti --stagingLocation="gs://bocoup"`
 
 Notes:
 * `timePeriod` can be "day", "hour" or "sample".
@@ -29,7 +29,7 @@ See files under `data/batch-runs/daily` for more information.
 
 To run, execute as a java application with the following arguments:
 
-`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --numWorkers=3 --timePeriod="hour" --project=mlab-oti --stagingLocation="gs://bocoup"`
+`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --timePeriod="hour" --project=mlab-oti --stagingLocation="gs://bocoup"`
 
 Notes:
 * `timePeriod` can be "day" or "hour".
@@ -46,7 +46,7 @@ It is used by the `UpdatePipeline`.
 
 To run, execute as a java application with the following arguments:
 
-`--runner com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --numWorkers=2 --timePeriod="hour" -project=mlab-oti --stagingLocation="gs://bocoup"`
+`--runner com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --timePeriod="hour" -project=mlab-oti --stagingLocation="gs://bocoup"`
 
 Notes:
 * `timePeriod` can be "day" or "hour".
@@ -64,7 +64,7 @@ can run in its own thread.
 
 To run, execute as a java application with the following arguments:
 
-`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --numWorkers=5 --configfile="./data/batch-runs/historic/sample_download_base.json" --project=mlab-oti --stagingLocation="gs://bocoup"`
+`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --configfile="./data/batch-runs/historic/sample_download_base.json" --project=mlab-oti --stagingLocation="gs://bocoup"`
 
 ### MergeUploadsDownloadPipeline
 

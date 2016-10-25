@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.PipelineResult.State;
+import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
@@ -19,6 +20,7 @@ import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.bocoup.pipelineopts.HistoricPipelineOptions;
+import mlab.bocoup.util.BigQueryIOHelpers;
 import mlab.bocoup.util.Schema;
 
 public class HistoricPipeline {
@@ -158,30 +160,25 @@ public class HistoricPipeline {
 			PCollection<TableRow> mergedRows = mudP.apply();
 
 			// ==== add ISPs
-			AddISPsPipeline addISPs = new AddISPsPipeline(pipe).setWriteData(false);
-			PCollection<TableRow> ispdRows = addISPs.apply(mergedRows);
+			PCollection<TableRow> ispdRows = new AddISPsPipeline(pipe).apply(mergedRows);
 
 			// ==== add server locations and mlab site info
-			AddMlabSitesInfoPipeline addMlabSitesInfo = new AddMlabSitesInfoPipeline(pipe).setWriteData(false);
-			PCollection<TableRow> infodRows = addMlabSitesInfo.apply(ispdRows);
+			PCollection<TableRow> infodRows = new AddMlabSitesInfoPipeline(pipe).apply(ispdRows);
 			
 			// ==== merge ASNs
-			MergeASNsPipeline mergeAsns = new MergeASNsPipeline(pipe).setWriteData(false);
-			PCollection<TableRow> mergedAsnsRows = mergeAsns.apply(infodRows);
+			PCollection<TableRow> mergedAsnsRows = new MergeASNsPipeline(pipe).apply(infodRows);
 			
 			// ==== add local time
-			AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(pipe).setWriteData(false);
-			PCollection<TableRow> timedRows = addLocalTime.apply(mergedAsnsRows);
+			PCollection<TableRow> timedRows = new AddLocalTimePipeline(pipe).apply(mergedAsnsRows);
 			
 			// ==== add location names (also outputs the final table)
-			AddLocationPipeline addLocations = new AddLocationPipeline(pipe);
-			addLocations.setWriteData(true)
-				.setOutputSchema(Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")))
-				.setOutputTable((String) downloadsConfig.get("withISPTable"))
-				.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
-				.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
+			PCollection<TableRow> locationNamedRows = new AddLocationPipeline(pipe).apply(timedRows);
 			
-			addLocations.apply(timedRows);
+			
+			// write to the final table
+			BigQueryIOHelpers.writeTable(locationNamedRows, (String) downloadsConfig.get("withISPTable"), 
+					Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")),
+					WriteDisposition.WRITE_TRUNCATE, CreateDisposition.CREATE_IF_NEEDED);
 			
 			// kick off the pipeline
 			DataflowPipelineJob resultsMergeAndISPs = (DataflowPipelineJob) pipe.run();

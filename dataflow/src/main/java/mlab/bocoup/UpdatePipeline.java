@@ -84,7 +84,7 @@ public class UpdatePipeline {
 		// ==== add local time
 		PCollection<TableRow> timedRows = new AddLocalTimePipeline(pipe).apply(mergedAsnsRows);
 		
-		// ==== add location names (also outputs the final table)
+		// ==== add location names
 		PCollection<TableRow> locationNamedRows = new AddLocationPipeline(pipe).apply(timedRows);
 		
 		// write to the final table

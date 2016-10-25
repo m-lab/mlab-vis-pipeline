@@ -67,16 +67,16 @@ public class MergeASNsPipeline extends BasePipeline {
 				.from(this.mergeAsnTable));
 
 		PCollection<KV<String, TableRow>> mergeAsnKeys = 
-				mergeAsn.apply(ParDo.named("find region keys")
+				mergeAsn.apply(ParDo.named("Extract ASN from " + this.mergeAsnTable)
 						.of(new ExtractAsnNumFn()));
 
 		PCollectionView<Map<String, TableRow>> mergeAsnMap = mergeAsnKeys.apply(View.asMap());
 
 
-		// Use the side-loaded MaxMind ISP data to get client ISPs
+		// Use the side-loaded Merge ASN table to merge the ASNs for clients and servers
 		PCollection<TableRow> byIpDataWithISPs = data.apply(
 				ParDo
-				.named("Add Client ISPs (side input)")
+				.named("Merge ASNs")
 				.withSideInputs(mergeAsnMap)
 				.of(new MergeAsnsFn(mergeAsnMap)));
 

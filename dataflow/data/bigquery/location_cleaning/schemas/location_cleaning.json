@@ -1,0 +1,17 @@
+[
+    {
+        "name": "location_key",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "new_city",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "new_region_code",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    }
+]

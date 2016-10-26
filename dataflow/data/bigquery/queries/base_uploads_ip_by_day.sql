@@ -53,6 +53,7 @@ WHERE
   AND web100_log_entry.snap.Duration IS NOT NULL
   AND connection_spec.data_direction IS NOT NULL
   AND project = 0
+  AND blacklist_flags = 0
   AND connection_spec.data_direction = 0
   AND web100_log_entry.snap.HCThruOctetsReceived >= 8192
   AND (web100_log_entry.snap.State == 1

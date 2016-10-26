@@ -35,7 +35,7 @@ FROM
   rand() as random
   FROM {0}
   WHERE client_continent_code = "NA"
-  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
   AND download_speed_mbps > 0
   AND upload_speed_mbps > 0
   AND client_latitude != 0.0
@@ -70,7 +70,7 @@ FROM
   rand() as random
   FROM {0}
   WHERE client_continent_code = "SA"
-  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
   AND download_speed_mbps > 0
   AND upload_speed_mbps > 0
   AND client_latitude != 0.0
@@ -105,7 +105,7 @@ FROM
   rand() as random
   FROM {0}
   WHERE client_continent_code = "EU"
-  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
   AND download_speed_mbps > 0
   AND upload_speed_mbps > 0
   AND client_latitude != 0.0
@@ -140,7 +140,7 @@ FROM
   rand() as random
   FROM {0}
   WHERE client_continent_code = "OC"
-  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
   AND download_speed_mbps > 0
   AND upload_speed_mbps > 0
   AND client_latitude != 0.0
@@ -175,7 +175,7 @@ FROM
   rand() as random
   FROM {0}
   WHERE client_continent_code = "AS"
-  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
   AND download_speed_mbps > 0
   AND upload_speed_mbps > 0
   AND client_latitude != 0.0
@@ -210,7 +210,7 @@ FROM
   rand() as random
   FROM {0}
   WHERE client_continent_code = "AF"
-  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, "MONTH")
+  AND local_test_date >= DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, "MONTH")
   AND download_speed_mbps > 0
   AND upload_speed_mbps > 0
   AND client_latitude != 0.0

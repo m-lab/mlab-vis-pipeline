@@ -86,7 +86,7 @@ SELECT
   SUM(web100_log_entry.snap.SndLimTimeCwnd) as sum_lim_time_cwnd,
   SUM(web100_log_entry.snap.SndLimTimeSnd) as sum_lim_time_snd
 FROM
-  [ndtbocoup.ndt]
+  [plx.google:m_lab.ndt.all]
 WHERE
   -- Limit to within a time region
   USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(web100_log_entry.log_time * INTEGER(POW(10, 6)))) >= "{0}"

@@ -9,7 +9,7 @@
      "2010-05-01T00:00:00Z"
   ],
 
-  "lastDateFromTable": "[mlab-oti:ndtbocoup.ndt]",
+  "lastDateFromTable": "[mlab-oti:plx.google:m_lab.ndt.all]",
 
   "mergeTable": "bocoup_test.base_merged_ip_by_day",
   "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",

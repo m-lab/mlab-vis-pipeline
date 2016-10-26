@@ -44,7 +44,7 @@ SELECT
   nth(51, quantiles(8 * (web100_log_entry.snap.HCThruOctetsReceived /
          web100_log_entry.snap.Duration), 101)) AS upload_speed_mbps
 FROM
-  [ndtbocoup.ndt]
+  [plx.google:m_lab.ndt.all]
 WHERE
   -- Limit to within a time region
   USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(web100_log_entry.log_time * INTEGER(POW(10, 6)))) >= "{0}"

@@ -22,13 +22,13 @@ def read_json(filename):
     return data
 
 
-def main(project_id, instance_id, config_dir, remove_tables):
+def main(project_id, instance_id, config_dir, remove_tables, pattern):
     '''
     main
     '''
     print(config_dir)
 
-    config_files = glob.glob(config_dir + "/*.json")
+    config_files = glob.glob(config_dir + "/" + pattern)
     client = bigtable.Client(project=project_id, admin=True)
     instance = client.instance(instance_id)
 
@@ -73,6 +73,10 @@ if __name__ == '__main__':
         help='Directory of Bigtable config files')
 
     parser.add_argument(
+        '--pattern',
+        help='Config file pattern', default="*.json")
+
+    parser.add_argument(
         '--remove',
         help='Destroy existing tables',
         action='store_true',
@@ -90,4 +94,4 @@ if __name__ == '__main__':
     if(not args.configs):
         print('--configs required. Provide config file directory')
     else:
-        main(args.project_id, args.instance_id, args.configs, args.remove)
+        main(args.project_id, args.instance_id, args.configs, args.remove, args.pattern)

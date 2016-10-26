@@ -322,16 +322,16 @@ AGGREGATIONS = {
 }
 
 TIME_RANGES = [
-    "last_month",
-    # "last_three_months",
+    # "last_month",
+    "last_three_months",
     "last_six_months",
     "last_year"
 ]
 
 
 TEST_DATE_COMPARISONS =  {
-    "last_month" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, \"MONTH\")",
-    # "last_three_months" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, \"MONTH\")",
+    # "last_month" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, \"MONTH\")",
+    "last_three_months" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -3, \"MONTH\")",
     "last_six_months" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -6, \"MONTH\")",
     "last_year" : "DATE_ADD(USEC_TO_TIMESTAMP(NOW()), -1, \"YEAR\")"
 }

@@ -96,6 +96,7 @@ WHERE
   AND web100_log_entry.snap.SndLimTimeCwnd IS NOT NULL
   AND web100_log_entry.snap.SndLimTimeRwin IS NOT NULL
   AND project = 0
+  AND blacklist_flags = 0
   AND web100_log_entry.is_last_entry = True
   AND connection_spec.data_direction = 1
   AND web100_log_entry.snap.CongSignals > 0

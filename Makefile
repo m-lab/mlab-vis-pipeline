@@ -22,9 +22,10 @@ timezones:
 
 #-- Bigtable tasks:
 
-bigtable-configs:
-	./tools/bigtable/create_bigtable_configs.py && \
-	./tools/bigtable/create_bigtable_search_configs.py
+bigtable_configs:
+	./tools/bigtable/create_bigtable_time_configs.py && \
+	./tools/bigtable/create_bigtable_search_configs.py && \
+	./tools/bigtable/create_bigtable_premade_configs.py
 
 clean_temp_datasets:
 	./tools/bigquery/cleanup/remove_temp_bigquery_tables.py

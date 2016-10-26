@@ -39,8 +39,6 @@ public class CleanLocationFn extends DoFn<TableRow, TableRow> {
 			
 			dataRow.set("client_city", location.get("new_city"));
 			dataRow.set("client_region_code", location.get("new_region_code"));
-			System.out.println(location.get("new_region_code"));
-			System.out.println(location.get("new_region_code") == null);
 		}
 		
 		c.output(dataRow);	

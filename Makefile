@@ -14,6 +14,9 @@ maxmind:
 location:
 	cd ./tools/bigquery/location && ./deploy_location.sh
 
+location_cleaning:
+	cd ./tools/bigquery/location_cleaning && ./deploy_location_cleaning.sh
+
 timezones:
 	cd ./tools/bigquery/timezones && ./deploy_timezones.sh
 

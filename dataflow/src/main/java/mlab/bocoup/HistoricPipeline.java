@@ -170,6 +170,9 @@ public class HistoricPipeline {
 			
 			// === add local time
 			rows = new AddLocalTimePipeline(pipe).apply(rows);
+
+			// === clean locations (important to do before resolving location names)
+			rows = new LocationCleaningPipeline(pipe).apply(rows);
 			
 			// === add location names
 			rows = new AddLocationPipeline(pipe).apply(rows);

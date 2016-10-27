@@ -20,6 +20,12 @@ location_cleaning:
 timezones:
 	cd ./tools/bigquery/timezones && ./deploy_timezones.sh
 
+mlab_sites:
+	cd ./tools/bigquery/mlab-sites && ./deploy_sites_table.sh
+
+bigquery: asn_merge sites maxmind location location_cleaning timezones mlab_sites
+	echo 'DONE'
+
 #-- Bigtable tasks:
 
 bigtable_configs:

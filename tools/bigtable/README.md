@@ -27,7 +27,7 @@ The script requires 3 inputs.
 The first two have default values, so you can run with:
 
 ```
-./init_bigtable_tables.py --configs ../dataflow/data/bigtable/
+./init_bigtable_tables.py --configs ../../dataflow/data/bigtable/
 ```
 
 The script reads the bigtable config files and creates a new table for

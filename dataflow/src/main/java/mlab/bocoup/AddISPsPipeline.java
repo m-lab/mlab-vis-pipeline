@@ -61,7 +61,7 @@ public class AddISPsPipeline extends BasePipeline {
 		// Use the side-loaded MaxMind ISP data to get server ISPs
 		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
 				ParDo
-				.named("Add Server ISPs (side input)")
+				.named("Add Server ISPs")
 				.withSideInputs(maxMindAsnView)
 				.of(new AddISPsFn(maxMindAsnView, "server_ip_family", "server_ip_base64", "min_ip_hex",
 						"max_ip_hex", "min_ip_hex", "max_ip_hex", "server_asn_name", "server_asn_number",
@@ -81,7 +81,7 @@ public class AddISPsPipeline extends BasePipeline {
 		// Use the side-loaded MaxMind ISP data to get client ISPs
 		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
 				ParDo
-				.named("Add Client ISPs (side input)")
+				.named("Add Client ISPs")
 				.withSideInputs(maxMindAsnView)
 				.of(new AddISPsFn(maxMindAsnView, "client_ip_family", "client_ip_base64", "min_ip_hex",
 						"max_ip_hex", "min_ip_hex", "max_ip_hex", "client_asn_name", "client_asn_number",

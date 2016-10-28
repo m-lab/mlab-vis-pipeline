@@ -63,7 +63,7 @@ public class AddMlabSitesInfoPipeline extends BasePipeline {
 		// Use the side-loaded MaxMind ISP data to get server ISPs
 		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
 				ParDo
-				.named("Add MLab Site Info (side input)")
+				.named("Add MLab Sites Info")
 				.withSideInputs(mlabSitesView)
 				.of(new AddMlabSitesInfoFn(mlabSitesView)));
 		return byIpDataWithISPs;

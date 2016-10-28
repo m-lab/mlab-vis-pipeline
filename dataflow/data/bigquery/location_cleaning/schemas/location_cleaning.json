@@ -12,6 +12,6 @@
     {
         "name": "new_region_code",
         "type": "STRING",
-        "mode": "NULLABLE"
+        "mode": "REQUIRED"
     }
 ]

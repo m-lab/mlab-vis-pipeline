@@ -32,7 +32,7 @@ public class CleanLocationFnTest {
 	private static final String[] LOCATION_CLEANING_COLUMNS = { "location_key", "new_city", "new_region_code" };
 	private static final String[] LOCATION_CLEANING_DATA = {
 			"nausnynewyorkcity	New York	NY",
-			"eugbh9london	London	null"
+			"eugbh9london	London	EN"
 	};
 
 	// For side loading the location cleaning table
@@ -141,7 +141,7 @@ public class CleanLocationFnTest {
 		assertEquals("NA", (String) output.get(0).get("client_continent_code"));
 		
 		assertEquals("London", (String) output.get(1).get("client_city"));
-		assertEquals(null, (String) output.get(1).get("client_region_code"));
+		assertEquals("EN", (String) output.get(1).get("client_region_code"));
 		assertEquals("GB", (String) output.get(1).get("client_country_code"));
 		assertEquals("EU", (String) output.get(1).get("client_continent_code"));
 		

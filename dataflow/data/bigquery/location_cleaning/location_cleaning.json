@@ -6,13 +6,5 @@
     "city": "New York City",
     "new_city": "New York",
     "new_region_code": "NY"
-  },
-  {
-    "continent_code": "EU",
-    "country_code": "GB",
-    "region_code": "H9",
-    "city": "London",
-    "new_city": "London",
-    "new_region_code": null
   }
 ]

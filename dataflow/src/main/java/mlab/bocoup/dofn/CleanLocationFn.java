@@ -37,8 +37,16 @@ public class CleanLocationFn extends DoFn<TableRow, TableRow> {
 			dataRow = dataRow.clone();
 			TableRow location = locationMap.get(locationKey);
 			
-			dataRow.set("client_city", location.get("new_city"));
-			dataRow.set("client_region_code", location.get("new_region_code"));
+			// note we cannot have null cities or regions, so enforce that here.
+			String newCity = (String) location.get("new_city");
+			if (newCity != null) {
+				dataRow.set("client_city", newCity);
+			}
+			
+			String newRegionCode = (String) location.get("new_region_code");
+			if (newRegionCode != null) {
+				dataRow.set("client_region_code", newRegionCode);
+			}
 		}
 		
 		c.output(dataRow);	

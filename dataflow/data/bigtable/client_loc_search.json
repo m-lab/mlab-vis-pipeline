@@ -5,6 +5,12 @@
       "type": "string", 
       "name": "reverse_location_key", 
       "family": "meta"
+    }, 
+    {
+      "length": 10, 
+      "type": "string", 
+      "name": "type", 
+      "family": "meta"
     }
   ], 
   "bigquery_queryfile": "./data/bigtable/queries/client_loc_search.sql", 
@@ -16,6 +22,12 @@
       "length": 60, 
       "type": "string", 
       "name": "reverse_location_key", 
+      "family": "meta"
+    }, 
+    {
+      "length": 10, 
+      "type": "string", 
+      "name": "type", 
       "family": "meta"
     }, 
     {

@@ -246,7 +246,8 @@ AGGREGATIONS = {
             "client_continent_code"
         ],
         "key_fields" : [
-            {"name" : "reverse_location_key", "family" : "meta", "type": "string", "length" : 60}
+            {"name" : "reverse_location_key", "family" : "meta", "type": "string", "length" : 60},
+            {"name" : "type", "family" : "meta", "type": "string", "length" : 10}
         ],
 
         "fields": [

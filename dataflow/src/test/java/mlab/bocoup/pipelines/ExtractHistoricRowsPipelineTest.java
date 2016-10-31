@@ -37,7 +37,7 @@ public class ExtractHistoricRowsPipelineTest {
 	@Test
 	public void testGetDateRange() {
 		try {
-			String [] timestamps = ehrp.getDateRange(config);
+			String [] timestamps = ehrp.getDatesAuto(config);
 			String startTime = timestamps[0];
 			String endTime = timestamps[1];
 			

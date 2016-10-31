@@ -16,4 +16,21 @@ public interface HistoricPipelineOptions extends PipelineOptions, BigQueryOption
 	@Default.Integer(1)
 	int getSkipNDTRead();
 	void setSkipNDTRead(int skipNDTRead);
+	
+	@Description("Do not actually execute the pipeline")
+	@Default.Integer(0)
+	int getTest();
+	void setTest(int test);
+	
+	
+	@Description("Start date of historic pipeline. format: YYYY-MM-DD")
+	@Default.String("2009-01-01")
+	String getStartDate();
+	void setStartDate(String startDate);
+	
+	@Description("End date of historic pipeline. format: YYYY-MM-DD")
+	@Default.String("2016-10-01")
+	String getEndDate();
+	void setEndDate(String endDate);
+	
 }

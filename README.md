@@ -14,10 +14,6 @@ location data etc.)
 The dataflow pipelines have been developed using Eclipse. You can see more
 about the pipelines in the nested README files.
 
-You can run linting on the python code in `tools/` by calling:
-
-`make lint`
-
 # Running the tools
 
 It is easiest to run the various tools via `make`.
@@ -27,7 +23,7 @@ See the `Makefile` for the available commands
 
 It is easiest to run the pipelines from eclipse.
 You do not need to use the Dataflow running, instead setup the appropriate
-arguments via the commandline. The pipelines README has more information
+arguments via the command line. The pipelines README has more information
 about the requirement arguments for each pipeline.
 
 ## Running the pipelines remotely

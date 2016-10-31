@@ -91,79 +91,79 @@ public class HistoricPipeline {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-	    PipelineOptionsFactory.register(HistoricPipelineOptions.class);
+		PipelineOptionsFactory.register(HistoricPipelineOptions.class);
 		HistoricPipelineOptions options = PipelineOptionsFactory.fromArgs(args)
 				.withValidation()
 				.as(HistoricPipelineOptions.class);
-		
+
 		String timePeriod = options.getTimePeriod();
 		int skipNDTRead = options.getSkipNDTRead();
-		
+
 		int test = options.getTest();
 		Boolean shouldExecute = true;
 		if (test == 1) {
 			shouldExecute = false;
 		}
-		
+
 	    
 	    // the downloads and uploads pipelines are blocking, so in order to make them
 	    // only blocking within their own run routines, we are extracting them
 	    // into their own threads, that will then rejoin when they are complete.
 	    // this allows these two to run in parallel.
 
-	    boolean next = true;
-	    if (skipNDTRead != 1) {
+		boolean next = true;
+		if (skipNDTRead != 1) {
 			// === get downloads for timePeriod
-	    	options.setAppName("HistoricPipeline-Download");
-	    	
-	    	ExtractHistoricRowsPipeline ehrPDL = new ExtractHistoricRowsPipeline(options);
-	    	Thread dlPipeThread = new Thread(ehrPDL);
-	    	String downloadsConfigFile = getRunnerConfigFilename(timePeriod, "downloads");
-	    	
-	    	// we want to avoid having to have the dates in the config file. 
-	    	String [] dates = getDates(options);
+			options.setAppName("HistoricPipeline-Download");
 
-	    	
+			ExtractHistoricRowsPipeline ehrPDL = new ExtractHistoricRowsPipeline(options);
+			Thread dlPipeThread = new Thread(ehrPDL);
+			String downloadsConfigFile = getRunnerConfigFilename(timePeriod, "downloads");
+
+			// we want to avoid having to have the dates in the config file. 
+			String [] dates = getDates(options);
+
+
 	    	LOG.info("Downloads configuration: " + downloadsConfigFile);
 	    	ehrPDL.setConfigurationFile(downloadsConfigFile)
 	    		.setDates(dates)
 	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
 	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND)
 	    		.shouldExecute(shouldExecute);
-	    	
+
 	    	//=== get uploads for timePeriod
 	    	// set up big query IO options (it doesn't seem to let us share the download ones)
 	    	HistoricPipelineOptions optionsUl = options.cloneAs(HistoricPipelineOptions.class);
 	    	optionsUl.setAppName("HistoricPipeline-Upload");
-	    	
-	    	
-	    
+
+
+
 	    	ExtractHistoricRowsPipeline ehrPUL = new ExtractHistoricRowsPipeline(optionsUl);
 	    	Thread ulPipeThread = new Thread(ehrPUL);
 	    	String uploadsConfigFile = getRunnerConfigFilename(timePeriod, "uploads");
-	    	
-	    
+
+
 	    	LOG.info("Uploads configuration: " + uploadsConfigFile);
 	    	ehrPUL.setConfigurationFile(uploadsConfigFile)
 	    		.setDates(dates)
 	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
 	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND)
 	    		.shouldExecute(shouldExecute);
-	     	
-	    	 
-	    	
+
+
+
 	    	// start the two threads
 	    	LOG.info("Starting upload/download threads");
-		    dlPipeThread.start();
-		    ulPipeThread.start();
-		    	
-		    // wait for the two threads to finish
-		    LOG.info("Joining upload/download threads");
-		    dlPipeThread.join();
-			ulPipeThread.join();
-			    
-			next = ehrPUL.getState() == State.DONE && ehrPDL.getState() == State.DONE;
-	    		
+	    	dlPipeThread.start();
+	    	ulPipeThread.start();
+
+	    	// wait for the two threads to finish
+	    	LOG.info("Joining upload/download threads");
+	    	dlPipeThread.join();
+	    	ulPipeThread.join();
+
+	    	next = ehrPUL.getState() == State.DONE && ehrPDL.getState() == State.DONE;
+
 	    	
 	    }
 	    

@@ -46,6 +46,8 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	private Pipeline pipeline;
 	private boolean runPipeline = false;
 	
+	private String[] dates;
+	
 	public ExtractHistoricRowsPipeline(Pipeline p, BigQueryOptions options) {
 		this.pipeline = p;
 		this.options = options;
@@ -103,7 +105,12 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 		return this.runPipeline;
 	}
 	
-	public String[] getDateRange(JSONObject config) throws IOException {
+	public ExtractHistoricRowsPipeline setDates(String [] dates) {
+		this.dates = dates;
+		return this;
+	}
+	
+	public String[] getDatesAuto(JSONObject config) throws IOException {
 		String dateRangeQuery = "SELECT STRING(max(web100_log_entry.log_time)) as max_test_date, " +
 				"STRING(min(web100_log_entry.log_time)) as min_test_date " + 
 				"FROM " + (String) config.get("lastDateFromTable");
@@ -119,6 +126,18 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 		      }
 		}
 		return timestamps;
+	}
+	
+	public String[] getDatesFromConfig() {
+		JSONArray dates = (JSONArray) this.configurationObject.get("dates");
+		Object [] dateRanges;
+		dateRanges = dates.toArray();
+		
+		String [] dateRangesStr = new String[2];
+		dateRangesStr[0] = (String) dateRanges[0];
+		dateRangesStr[1] = (String) dateRanges[1];
+		
+		return dateRangesStr;
 	}
 	
 	/**
@@ -141,7 +160,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 		String queryFile = (String) this.configurationObject.get("queryFile");
 		TableSchema tableSchema = Schema.fromJSONFile((String) this.configurationObject.get("schemaFile"));
 		String outputTableName =  (String) this.configurationObject.get("outputTable");
-		JSONArray dates = (JSONArray) this.configurationObject.get("dates");
+		String [] dates = this.dates;
 		
 		QueryBuilder qb;
 		
@@ -150,23 +169,26 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 			// if no dates are specified in the config file, auto detect the range we have
 			// and work with that. Otherwise, use that dates array. Note that it should have two
 			// values which will be the full range of our data.
-			Object [] dateRanges;
-			String [] dateRangesStr = new String[2];
+			
+			
 			if (dates == null) {
-				dateRanges = getDateRange(this.configurationObject);
-				LOG.info("Working with table date ranges");
+				LOG.info(">>> Dates not provided on command line. Looking for them in config");
+				dates = this.getDatesFromConfig();
+				
 			} else {
-				dateRanges = dates.toArray();
-				LOG.info("Working with config date ranges");
+				LOG.info(">>> Running with dates from the command line.");
 			}
 			
-			dateRangesStr[0] = (String) dateRanges[0];
-			dateRangesStr[1] = (String) dateRanges[1];
+			if (dates == null) {
+				LOG.info(">>> Dates not in config. Attempting to generate automatically.");
+				dates = getDatesAuto(this.configurationObject);
+				
+			}
 			
 			
-			LOG.info(">>> Kicking off pipeline for dates: " + dateRangesStr[0] + " " + dateRangesStr[1]);
+			LOG.info(">>> Kicking off pipeline for dates: " + dates[0] + " " + dates[1]);
 			LOG.info("Setup - Query file: " + queryFile);
-			qb = new QueryBuilder(queryFile, dateRanges);
+			qb = new QueryBuilder(queryFile, dates);
 			try {
 				LOG.info("Setup - Table Schema: " + tableSchema.toPrettyString());
 			} catch (IOException e) {

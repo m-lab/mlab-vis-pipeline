@@ -4,11 +4,6 @@
   "schemaFile": "./data/bigquery/schemas/base_downloads_ip.json",
   "outputTable": "bocoup_test.base_downloads_ip_by_day",
 
-  "dates": [
-     "2010-01-01T00:00:00Z",
-     "2010-05-01T00:00:00Z"
-  ],
-
   "lastDateFromTable": "[mlab-oti:plx.google:m_lab.ndt.all]",
 
   "mergeTable": "bocoup_test.base_merged_ip_by_day",

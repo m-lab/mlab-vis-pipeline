@@ -27,8 +27,9 @@ if [ -z "${ENDDATE}" ]; then
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DATAFLOW_DIR="${DIR}/dataflow"
 JAR_BASEDIR="${DIR}/dataflow/dist"
-JAR_FILE="${JAR_BASEDIR}/MLabPipeline.jar"
+JAR_FILE="${JAR_BASEDIR}/HistoricPipeline.jar"
 
 if [ ! -f $JAR_FILE ]; then
   echo "JAR File not found at: ${JAR_FILE}"
@@ -39,17 +40,20 @@ fi
 echo "End date: ${ENDDATE}"
 echo "STARTING PIPELINE"
 
+echo "moving into dir: ${DATAFLOW_DIR}"
+cd ${DATAFLOW_DIR}
+
 echo "Running historic pipeline for DAY"
 java -cp ${JAR_FILE} mlab.bocoup.HistoricPipeline \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --timePeriod="day" --project=mlab-oti --stagingLocation="gs://bocoup" \
-  --skipNDTRead=0 --endDate=${ENDDATE}
+  --skipNDTRead=0 --endDate=${ENDDATE} --test=1
 
 echo "Running historic pipeline for HOUR"
 java -cp ${JAR_FILE} mlab.bocoup.HistoricPipeline \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --timePeriod="hour" --project=mlab-oti --stagingLocation="gs://bocoup" \
-  --skipNDTRead=0 --endDate=${ENDDATE}
+  --skipNDTRead=0 --endDate=${ENDDATE} --test=1
 
 echo "Running Bigtable Transfer Pipeline"
 java -cp ${JAR_FILE} mlab.bocoup.BigtableTransferPipeline \

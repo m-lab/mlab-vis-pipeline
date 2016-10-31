@@ -35,6 +35,3 @@ bigtable_configs:
 
 clean_temp_datasets:
 	./tools/bigquery/cleanup/remove_temp_bigquery_tables.py
-
-jar:
-	jar cf ./dataflow/dist/MLabPipeline.jar dataflow/

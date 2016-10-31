@@ -16,7 +16,6 @@ for a short time range.
 will likely require date ranges.
 * `schemaFile` - the table schema for the resulting rows.
 * `outputTable` - the table into which the new rows are written.
-* `dates` - an array of dates: the start date is in the first position and end date in the second.
 * `mergeTable` - the table into which the upload and download rows will be merged
 * `mergeTableSchema` - the schema of the new merged table
 * `withISPTable` - the table into which the rows will be moved when they are joined

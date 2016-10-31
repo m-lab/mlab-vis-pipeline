@@ -47,13 +47,16 @@ echo "Running historic pipeline for DAY"
 java -cp ${JAR_FILE} mlab.bocoup.HistoricPipeline \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --timePeriod="day" --project=mlab-oti --stagingLocation="gs://bocoup" \
-  --skipNDTRead=0 --endDate=${ENDDATE} --test=1
+  --skipNDTRead=0 --endDate=${ENDDATE} &
 
 echo "Running historic pipeline for HOUR"
 java -cp ${JAR_FILE} mlab.bocoup.HistoricPipeline \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --timePeriod="hour" --project=mlab-oti --stagingLocation="gs://bocoup" \
-  --skipNDTRead=0 --endDate=${ENDDATE} --test=1
+  --skipNDTRead=0 --endDate=${ENDDATE} &
+
+# wait for these to complete.
+wait
 
 echo "Running Bigtable Transfer Pipeline"
 java -cp ${JAR_FILE} mlab.bocoup.BigtableTransferPipeline \

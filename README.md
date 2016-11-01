@@ -32,3 +32,25 @@ Since some of the pipelines take a very long time to run, it's best to run them
 on a remote machine. We use a google cloud instance to do so. Make sure that
 the public keys of all required parties have been added via the google console.
 Details are explained in a Google Document entitled "Running Pipelines".
+
+
+# Building the executable JAR
+
+To build the executable JAR, run:
+
+```
+mvn package
+```
+
+This produces `target/mlab-vis-pipeline.jar` that includes all dependencies inside of it. To run it, you can do something like:
+
+```
+java -jar target/mlab-vis-pipeline.jar \
+  --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
+  --timePeriod="day" \
+  --project=mlab-oti \
+  --stagingLocation="gs://bocoup" \
+  --skipNDTRead=0 \
+  --endDate="2016-10-15" \
+  --test=1
+```

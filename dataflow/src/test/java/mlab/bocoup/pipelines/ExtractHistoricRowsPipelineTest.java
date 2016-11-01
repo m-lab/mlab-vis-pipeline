@@ -23,9 +23,8 @@ public class ExtractHistoricRowsPipelineTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		
 		config = new JSONObject();
-		config.put("lastDateFrom", "[mlab-oti:ndtforbocoup.ndt]");
+		config.put("lastDateFromTable", "[mlab-oti:ndtforbocoup.ndt]");
 		config.put("projectId", "mlab-oti");
 		ehrp = new ExtractHistoricRowsPipeline(null);
 	}
@@ -34,23 +33,25 @@ public class ExtractHistoricRowsPipelineTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void testGetDateRange() {
-		try {
-			String [] timestamps = ehrp.getDatesAuto(config);
-			String startTime = timestamps[0];
-			String endTime = timestamps[1];
-			
-			// verify we can parse the dates
-			dateFormatter.parse(startTime);
-			dateFormatter.parse(endTime);
-			System.out.println(timestamps[0] + " - " + timestamps[1]);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			System.out.println("Can't parse date: " + e.getMessage());
-			assertFalse(false);
-		}
-	}
+	// this test is currently disabled since we are not using this feature currently
+	// and the table it relies on is not permanent.
+//	@Test
+//	public void testGetDateRange() {
+//		try {
+//			String [] timestamps = ehrp.getDatesAuto(config);
+//			String startTime = timestamps[0];
+//			String endTime = timestamps[1];
+//			
+//			// verify we can parse the dates
+//			dateFormatter.parse(startTime);
+//			dateFormatter.parse(endTime);
+//			System.out.println(timestamps[0] + " - " + timestamps[1]);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} catch (ParseException e) {
+//			System.out.println("Can't parse date: " + e.getMessage());
+//			assertFalse(false);
+//		}
+//	}
 
 }

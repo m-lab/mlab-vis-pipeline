@@ -18,6 +18,8 @@ import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.bocoup.dofn.TableRowToHBase;
+import mlab.bocoup.pipelineopts.BigtableTransferPipelineOptions;
+import mlab.bocoup.pipelineopts.HistoricPipelineOptions;
 import mlab.bocoup.query.QueryBuilder;
 import mlab.bocoup.util.bigtable.BigtableConfig;
 
@@ -279,12 +281,15 @@ public class BigtableTransferPipeline {
 	 * 
 	 * @param args
 	 */
-	public static void runAll(String[] args, String configPrefix, String configSuffix) {
-		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
-				.as(BigQueryOptions.class);
+	public static void runAll(BigtableTransferPipelineOptions options) {
 		
 		Pipeline pipe = Pipeline.create(options);
 		BigtableTransferPipeline transferPipeline = new BigtableTransferPipeline(pipe);
+		
+		int test = options.getTest();
+		
+		String configPrefix = options.getConfigPrefix();
+		String configSuffix = options.getConfigSuffix();
 		
 		try {
 			transferPipeline.applyAll(BIGTABLE_CONFIG_DIR, configPrefix, configSuffix);
@@ -293,7 +298,9 @@ public class BigtableTransferPipeline {
 			e.printStackTrace();
 		}
 		
-		pipe.run();
+		if (test != 1) {
+			pipe.run();
+		}
 	}
 	
 	/**
@@ -327,7 +334,12 @@ public class BigtableTransferPipeline {
 	 */
 	public static void main(String[] args) {
 		
-		BigtableTransferPipeline.runAll(args, "", ".json");
+		PipelineOptionsFactory.register(BigtableTransferPipelineOptions.class);
+		BigtableTransferPipelineOptions options = PipelineOptionsFactory.fromArgs(args)
+				.withValidation()
+				.as(BigtableTransferPipelineOptions.class);
+		
+		BigtableTransferPipeline.runAll(options);
 		
 		//BigtableTransferPipeline.runOne(args, DEFAULT_BIGTABLE_CONFIG_FILE);
 		

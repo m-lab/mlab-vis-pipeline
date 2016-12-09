@@ -8,8 +8,8 @@ import json
 import os
 import sqlparse
 
-BIGQUERY_DATE_TABLE = "[mlab-oti:bocoup_prod.all_ip_by_day]"
-BIGQUERY_HOUR_TABLE = "[mlab-oti:bocoup_prod.all_ip_by_hour]"
+BIGQUERY_DATE_TABLE = "[mlab-staging-151118:bocoup_prod.all_ip_by_day]"
+BIGQUERY_HOUR_TABLE = "[mlab-staging-151118:bocoup_prod.all_ip_by_hour]"
 
 QUERY_BASEDIR = os.path.join("..", "..", "dataflow", "data", "bigtable", "queries")
 CONFIG_QUERY_BASEDIR = os.path.join(".", "data", "bigtable", "queries")

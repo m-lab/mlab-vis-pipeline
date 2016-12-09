@@ -8,7 +8,7 @@ import time
 from gcloud import bigtable
 from gcloud.bigtable import happybase
 
-DEFAULT_PROJECT_ID = 'mlab-oti'
+DEFAULT_PROJECT_ID = 'mlab-staging-151118'
 DEFAULT_INSTANCE_ID = 'mlab-ndt-agg'
 
 def read_json(filename):

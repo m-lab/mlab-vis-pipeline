@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 """
 Tool for creating the data for the maxmind_asn table in BigQuery based on
 MaxMind GeoIPASNum input files.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: UTF-8 -*-
 """
 A tool for processing time zone data that can then be used to

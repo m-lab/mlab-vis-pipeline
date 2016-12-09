@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 '''
 Cleans up remaining temp_**** datasets as a result of our pipeline
 from the mlab-oti project

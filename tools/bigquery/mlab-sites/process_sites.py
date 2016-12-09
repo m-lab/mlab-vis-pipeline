@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: UTF-8 -*-
 """
 A tool for adding IP ranges as ints to the MLab Sites csv, exported from:

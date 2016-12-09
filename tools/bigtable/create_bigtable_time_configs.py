@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 '''
 Create configs and query files for bigtable tables that have time
 as the end parameter.

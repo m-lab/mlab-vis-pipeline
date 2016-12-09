@@ -2,7 +2,7 @@
 
 basedir=`dirname $0`
 
-tableName=bocoup.mlab_sites
+tableName=data_viz.mlab_sites
 tableSchema=$basedir/../../../dataflow/data/bigquery/mlab-sites/schemas/mlab_sites_schema.json
 
 

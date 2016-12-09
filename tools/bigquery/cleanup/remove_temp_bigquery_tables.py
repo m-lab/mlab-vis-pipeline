@@ -10,7 +10,7 @@ from googleapiclient.discovery import build
 
 from googleapiclient.errors import HttpError
 
-PROJECT_ID = 'mlab-oti'
+PROJECT_ID = 'mlab-staging-151118'
 
 # Grab the application's default credentials from the environment.
 CREDENTIALS = GoogleCredentials.get_application_default()

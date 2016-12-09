@@ -6,7 +6,7 @@ ipv4File=$basedir/../../../dataflow/data/bigquery/asn/GeoIPASNum2.csv
 ipv6File=$basedir/../../../dataflow/data/bigquery/asn/GeoIPASNum2v6.csv
 asnNameFile=$basedir/../../../dataflow/data/bigquery/asn/asn_name_map.csv
 
-tableName=bocoup.maxmind_asn
+tableName=data_viz.maxmind_asn
 tableSchema=$basedir/../../../dataflow/data/bigquery/asn/schemas/maxmind_asn_schema.json
 
 # This outputs the ./output/maxmind_asn.csv

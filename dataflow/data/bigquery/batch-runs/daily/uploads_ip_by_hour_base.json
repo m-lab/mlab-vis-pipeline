@@ -1,14 +1,14 @@
 {
   "queryFile": "./data/bigquery/queries/base_uploads_ip_by_hour.sql",
   "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
-  "outputTable": "mlab_viz_prod.update_uploads_ip_by_hour",
+  "outputTable": "data_viz_prod.update_uploads_ip_by_hour",
 
-  "lastDateFrom": "mlab_viz_prod.all_ip_by_hour",
+  "lastDateFrom": "data_viz_prod.all_ip_by_hour",
   "dateColumn": "test_date",
 
-  "mergeTable": "mlab_viz_prod.update_all_ip_by_hour",
+  "mergeTable": "data_viz_prod.update_all_ip_by_hour",
   "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
 
-  "withISPTable": "mlab_viz_prod.all_ip_by_hour",
+  "withISPTable": "data_viz_prod.all_ip_by_hour",
   "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
 }

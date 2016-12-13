@@ -1,14 +1,14 @@
 {
   "queryFile": "./data/bigquery/queries/base_uploads_ip_by_day.sql",
   "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
-  "outputTable": "mlab_viz_prod.update_uploads_ip_by_day",
+  "outputTable": "data_viz_prod.update_uploads_ip_by_day",
 
-  "lastDateFrom": "mlab_viz_prod.all_ip_by_day",
+  "lastDateFrom": "data_viz_prod.all_ip_by_day",
   "dateColumn": "test_date",
 
-  "mergeTable": "mlab_viz_prod.update_all_ip_by_day",
+  "mergeTable": "data_viz_prod.update_all_ip_by_day",
   "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
 
-  "withISPTable": "mlab_viz_prod.all_ip_by_day",
+  "withISPTable": "data_viz_prod.all_ip_by_day",
   "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
 }

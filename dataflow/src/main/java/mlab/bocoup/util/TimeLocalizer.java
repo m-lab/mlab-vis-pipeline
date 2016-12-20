@@ -29,8 +29,8 @@ public class TimeLocalizer {
 	// rows shape: "zone_id","abbreviation","time_start","gmt_offset","dst"
 	private static final String TIMEZONE_FILE = "./data/bigquery/timezonedb/merged_timezone.csv";
 
-	private static String PROJECT_ID = "mlab-staging-151118";
-	private static String BQ_TIMEZONE_TABLE = "bocoup.localtime_timezones";
+	private static String PROJECT_ID = "mlab-staging";
+	private static String BQ_TIMEZONE_TABLE = "data_viz.localtime_timezones";
 	private static String[] TIMEZONE_FIELDS = {"zone_name", "timezone_name", "time_start", "gmt_offset_seconds", "dst_flag"};
 
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(Formatters.TIMESTAMP2);
@@ -42,14 +42,14 @@ public class TimeLocalizer {
 	public static final boolean LOCAL_MODE = false;
 	public static final boolean BQ_MODE = true;
 	private static boolean mode = LOCAL_MODE;
-	
+
 	public TimeLocalizer setMode(boolean mode) {
 		this.mode = mode;
 		return this;
 	}
-	
+
 	private void buildMaps(List<String[]> timezones) {
-		
+
 		// build a map from timezones, from ID to the rows relevant to it.
 		Iterator<String[]> timezoneLinesIterator = timezones.iterator();
 
@@ -65,11 +65,11 @@ public class TimeLocalizer {
 				rows.add(entries);
 				timezoneMap.put(zoneName, rows);
 			}
-		
+
 		}
-		
+
 	}
-	
+
 	/**
 	 * @private
 	 * Instantiates zone and timezone maps.
@@ -82,14 +82,14 @@ public class TimeLocalizer {
 
 			// build a map from timezones, key is timezone name, value is ID
 			List<String[]> timezoneLines = timezoneReader.readAll();
-			
+
 			buildMaps(timezoneLines);
 
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Converts iterators into arrays of strings for postprocessing.
 	 * @param zoneIterator
@@ -97,10 +97,10 @@ public class TimeLocalizer {
 	 */
 	private void handleBQIterators(Iterator<TableRow> timezoneIterator) {
 		List<String[]> timezonesStringRows = new ArrayList<String[]>();
-		
+
 		while (timezoneIterator.hasNext()) {
 			TableRow row = timezoneIterator.next();
-			
+
 			String[] strRow = new String[TIMEZONE_FIELDS.length];
 			int fieldIdx = 0;
 			for (TableCell cell : row.getF()) {
@@ -108,11 +108,11 @@ public class TimeLocalizer {
 		     }
 			timezonesStringRows.add(strRow);
 		}
-		
+
 		LOG.info("Setup reference timezone tables. Timezone count: " + timezonesStringRows.size());
 		buildMaps(timezonesStringRows);
 	}
-	
+
 	/**
 	 * Initializes zone information from big query tables.
 	 * @throws IOException
@@ -123,7 +123,7 @@ public class TimeLocalizer {
 		List<TableRow> timezones = bqj.executePaginatedQuery(getTimezonesQuery);
 		handleBQIterators(timezones.iterator());
 	}
-	
+
 	/**
 	 * @constructor
 	 * Default constructor. Call to initialize, followed by setMode and setup.
@@ -150,7 +150,7 @@ public class TimeLocalizer {
 		private String timezone;
 		private String zone;
 		private int offset;
-		
+
 		public LocalTimeDetails(String timestamp, String timezone, String location, int offset) {
 			this.setTimestamp(timestamp);
 			this.setTimezone(timezone);
@@ -181,7 +181,7 @@ public class TimeLocalizer {
 		public void setTimestamp(String timestamp) {
 			this.timestamp = timestamp;
 		}
-		
+
 		public int getOffset() {
 			return offset;
 		}
@@ -189,12 +189,12 @@ public class TimeLocalizer {
 		public void setOffset(int offset) {
 			this.offset = offset;
 		}
-		
+
 		public String toString() {
 			return this.getTimestamp() + " " + this.getTimezone() + " " + this.getZone() + " ("+this.getOffset()+")";
 		}
 	}
-	
+
 	/**
 	 * Returns the timezone associated with latitude and longitude
 	 * @param lat
@@ -230,7 +230,7 @@ public class TimeLocalizer {
 		long timeStart = 0;
 		while (tzRowsIterator.hasNext()) {
 			row = tzRowsIterator.next();
-			
+
 			if (Long.valueOf(row[2]) > (date.getTime() / 1000)) {
 				break;
 			}
@@ -240,7 +240,7 @@ public class TimeLocalizer {
 		int hours = gmtOffset / 60 / 60;
 		cal.setTime(date);
 		cal.add(Calendar.HOUR_OF_DAY, hours);
-		
+
 		return new LocalTimeDetails(dateOutputFormatter.format(cal.getTime()), row[1], tz, hours);
 	}
 }

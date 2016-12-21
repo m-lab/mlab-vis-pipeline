@@ -24,19 +24,19 @@ import mlab.bocoup.dofn.ExtractZoneKeynameFn;
 import mlab.bocoup.util.Schema;
 public class AddLocalTimePipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddLocalTimePipeline.class);
-	
+
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-oti:bocoup.zz_base_by_day_with_isp_test"; //"mlab-oti:bocoup_prod.base_all_ip_by_day_with_isps";
-	private static final String OUTPUT_TABLE = "mlab-oti:bocoup.zz_base_by_day_with_isp_test_localized"; // "mlab-oti:bocoup_prod.base_all_ip_by_day_with_isps_localized";
+	private static final String INPUT_TABLE = "mlab-staging:data_viz.zz_base_by_day_with_isp_test"; //"mlab-staging:data_viz_prod.base_all_ip_by_day_with_isps";
+	private static final String OUTPUT_TABLE = "mlab-staging:data_viz.zz_base_by_day_with_isp_test_localized"; // "mlab-staging:data_viz_prod.base_all_ip_by_day_with_isps_localized";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	// zones data
-	private static String BQ_TIMEZONE_TABLE = "mlab-oti:bocoup.localtime_timezones";
-	
+	private static String BQ_TIMEZONE_TABLE = "mlab-staging:data_viz.localtime_timezones";
+
 	public AddLocalTimePipeline(Pipeline p) {
 		super(p);
 	}
-	
+
 	/**
 	 * Add local time, time zone, zone name and GMT offset to table.
 	 * @param utcOnlyTestRows
@@ -47,35 +47,35 @@ public class AddLocalTimePipeline extends BasePipeline {
 			BigQueryIO.Read
 				.named("Read " + BQ_TIMEZONE_TABLE)
 				.from(BQ_TIMEZONE_TABLE));
-		
+
 		// build lookup map
-		PCollection<KV<String, TableRow>> zonekeys = 
+		PCollection<KV<String, TableRow>> zonekeys =
 				timezones.apply(ParDo.named("Extract Timezone Key")
 						.of(new ExtractZoneKeynameFn()));
-		
+
 		PCollection<KV<String, Iterable<TableRow>>> groupedZones = zonekeys.apply(
 				    GroupByKey.<String, TableRow>create());
-		
+
 		PCollectionView<Map<String, Iterable<TableRow>>> groupedZonesMap = groupedZones.apply(View.asMap());
-		
+
 		// resolve time
 		PCollection<TableRow> withLocaltimeData = data.apply(
 				ParDo
 					.named("Add local time")
 					.withSideInputs(groupedZonesMap)
 					.of(new AddLocalTimeFn(groupedZonesMap)));
-		
+
 		return withLocaltimeData;
 	}
-		
+
 	public static void main(String [] args) throws ClassNotFoundException {
 		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
 				.as(BigQueryOptions.class);
 		options.setAppName("AddLocalTime");
-		
+
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
-		
+
 		AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(p);
 		addLocalTime
 			.setWriteData(true)
@@ -84,11 +84,11 @@ public class AddLocalTimePipeline extends BasePipeline {
 			.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
 			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
-		
+
 		addLocalTime.apply();
-		
+
 		p.run();
 	}
 
-	
+
 }

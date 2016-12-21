@@ -25,13 +25,13 @@ import mlab.bocoup.util.Schema;
 public class MergeASNsPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(MergeASNsPipeline.class);
 
-	private static final String MERGE_ASN_TABLE = "mlab-oti:bocoup.asn_merge";
+	private static final String MERGE_ASN_TABLE = "mlab-staging:data_viz.asn_merge";
 
 	//	for running main()
-	private static final String INPUT_TABLE = "mlab-oti:bocoup.tmp_jim_input";
-	private static final String OUTPUT_TABLE = "mlab-oti:bocoup.tmp_jim_input";
+	private static final String INPUT_TABLE = "mlab-staging:data_viz.tmp_jim_input";
+	private static final String OUTPUT_TABLE = "mlab-staging:data_viz.tmp_jim_input";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
-	
+
 	private String mergeAsnTable = MERGE_ASN_TABLE;
 
 	/**
@@ -49,7 +49,7 @@ public class MergeASNsPipeline extends BasePipeline {
 	 */
 	public PCollection<TableRow> applyInner(PCollection<TableRow> data) {
 		// add in ISPs
-		data = this.mergeASNs(data);		
+		data = this.mergeASNs(data);
 		return data;
 	}
 
@@ -66,7 +66,7 @@ public class MergeASNsPipeline extends BasePipeline {
 				.named("Read " + this.mergeAsnTable)
 				.from(this.mergeAsnTable));
 
-		PCollection<KV<String, TableRow>> mergeAsnKeys = 
+		PCollection<KV<String, TableRow>> mergeAsnKeys =
 				mergeAsn.apply(ParDo.named("Extract ASN from " + this.mergeAsnTable)
 						.of(new ExtractAsnNumFn()));
 

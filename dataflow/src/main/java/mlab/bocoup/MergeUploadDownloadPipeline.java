@@ -115,7 +115,7 @@ public class MergeUploadDownloadPipeline {
 
 	/**
 	 * The main program, merges two upload and download tables.
-	 * 
+	 *
 	 * @param args
 	 * @throws IOException
 	 * @throws ParseException
@@ -125,9 +125,9 @@ public class MergeUploadDownloadPipeline {
 
 		String queryFile = "./data/bigquery/queries/merge_upload_download.sql";
 		String outputSchema = "./data/bigquery/schemas/merged_all_ip.json";
-		String downloadTable = "[mlab-oti:bocoup.base_downloads_ip_by_day]";
-		String uploadTable = "[mlab-oti:bocoup.base_uploads_ip_by_day]";
-		String outputTable = "bocoup.base_all_ip_by_day";
+		String downloadTable = "[mlab-staging:data_viz.base_downloads_ip_by_day]";
+		String uploadTable = "[mlab-staging:data_viz.base_uploads_ip_by_day]";
+		String outputTable = "data_viz.base_all_ip_by_day";
 
 		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(BigQueryOptions.class);
 

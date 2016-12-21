@@ -48,8 +48,8 @@ This produces `target/mlab-vis-pipeline.jar` that includes all dependencies insi
 java -jar target/mlab-vis-pipeline.jar \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --timePeriod="day" \
-  --project=mlab-oti \
-  --stagingLocation="gs://bocoup" \
+  --project=mlab-staging \
+  --stagingLocation="gs://mlab-data-viz" \
   --skipNDTRead=0 \
   --endDate="2016-10-15" \
   --test=1

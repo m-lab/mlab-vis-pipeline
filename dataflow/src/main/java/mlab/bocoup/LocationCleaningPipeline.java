@@ -24,18 +24,18 @@ import mlab.bocoup.util.Schema;
 
 public class LocationCleaningPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(LocationCleaningPipeline.class);
-	
-	private static final String LOCATION_CLEANING_TABLE = "bocoup.location_cleaning";
-	
+
+	private static final String LOCATION_CLEANING_TABLE = "data_viz.location_cleaning";
+
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-oti:bocoup.test_location_clean_input";
-	private static final String OUTPUT_TABLE = "mlab-oti:bocoup.test_location_clean_output";
+	private static final String INPUT_TABLE = "mlab-staging:data_viz.test_location_clean_input";
+	private static final String OUTPUT_TABLE = "mlab-staging:data_viz.test_location_clean_output";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
-	
+
 	public LocationCleaningPipeline(Pipeline p) {
 		super(p);
 	}
-	
+
 	/**
 	 * Reads in the location_cleaning table as a side input and runs CleanLocationFn with it to replace
 	 * cities and region codes for locations that match.
@@ -45,31 +45,31 @@ public class LocationCleaningPipeline extends BasePipeline {
 			BigQueryIO.Read
 				.named("Read " + LOCATION_CLEANING_TABLE)
 				.from(LOCATION_CLEANING_TABLE));
-		
-		PCollection<KV<String, TableRow>> locationKeys = 
+
+		PCollection<KV<String, TableRow>> locationKeys =
 				locationCleaning.apply(ParDo.named("Extract Location Keys")
 						.of(new ExtractLocationKeyFn()));
-		
+
 		PCollectionView<Map<String, TableRow>> locationMap = locationKeys.apply(View.asMap());
-		
+
 		// resolve locations
 		PCollection<TableRow> withLocations = data.apply(
 			ParDo
 				.named("Clean locations")
 				.withSideInputs(locationMap)
 				.of(new CleanLocationFn(locationMap)));
-		
+
 		return withLocations;
 	}
-	
+
 	public static void main(String [] args) throws ClassNotFoundException {
 		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
 				.as(BigQueryOptions.class);
 		options.setAppName("LocationCleaning");
-		
+
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
-		
+
 		LocationCleaningPipeline addLocations = new LocationCleaningPipeline(p);
 		addLocations
 			.setWriteData(true)
@@ -78,9 +78,9 @@ public class LocationCleaningPipeline extends BasePipeline {
 			.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
 			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
-		
+
 		addLocations.apply();
-		
+
 		p.run();
 	}
 }

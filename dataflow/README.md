@@ -21,7 +21,7 @@ Example command line execution of pipeline:
 ```
 java -cp pipeline.jar mlab.bocoup.HistoricPipeline \
     --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-    --timePeriod="day" --project=mlab-oti --stagingLocation="gs://bocoup" --skipNDTRead=0
+    --timePeriod="day" --project=mlab-staging --stagingLocation="gs://mlab-data-viz" --skipNDTRead=0
 ```
 
 Notes:
@@ -50,7 +50,7 @@ See files under `data/batch-runs/daily` for more information.
 
 To run, execute as a java application with the following arguments:
 
-`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --timePeriod="hour" --project=mlab-oti --stagingLocation="gs://bocoup"`
+`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --timePeriod="hour" --project=mlab-staging --stagingLocation="gs://mlab-data-viz"`
 
 Notes:
 * `timePeriod` can be "day" or "hour".
@@ -68,7 +68,7 @@ can run in its own thread.
 
 To run, execute as a java application with the following arguments:
 
-`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --configfile="./data/batch-runs/historic/sample_download_base.json" --project=mlab-oti --stagingLocation="gs://bocoup"`
+`--runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --configfile="./data/batch-runs/historic/sample_download_base.json" --project=mlab-staging --stagingLocation="gs://mlab-data-viz"`
 
 
 ### ExtractUpdateRowsPipeline
@@ -82,7 +82,7 @@ It is used by the `UpdatePipeline`.
 
 To run, execute as a java application with the following arguments:
 
-`--runner com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --timePeriod="hour" -project=mlab-oti --stagingLocation="gs://bocoup"`
+`--runner com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner --timePeriod="hour" -project=mlab-staging --stagingLocation="gs://mlab-data-viz"`
 
 Notes:
 * `timePeriod` can be "day" or "hour".
@@ -135,4 +135,4 @@ This pipeline:
 
 This pipeline:
 
-* Combines multiple ASNs and provides sane ISP names for a few common ASNs. 
+* Combines multiple ASNs and provides sane ISP names for a few common ASNs.

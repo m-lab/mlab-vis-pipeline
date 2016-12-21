@@ -53,13 +53,13 @@ cd ${DATAFLOW_DIR}
 echo "Running historic pipeline for DAY"
 java -jar ${JAR_FILE} \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-  --timePeriod="day" --project=mlab-oti --stagingLocation="gs://bocoup" \
+  --timePeriod="day" --project=mlab-staging --stagingLocation="gs://mlab-data-viz" \
   --skipNDTRead=0 --endDate=${ENDDATE} --test=${TEST} &
 
 echo "Running historic pipeline for HOUR"
 java -jar ${JAR_FILE} \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-  --timePeriod="hour" --project=mlab-oti --stagingLocation="gs://bocoup" \
+  --timePeriod="hour" --project=mlab-staging --stagingLocation="gs://mlab-data-viz" \
   --skipNDTRead=0 --endDate=${ENDDATE} --test=${TEST} &
 
 # wait for these to complete.
@@ -68,4 +68,4 @@ wait
 echo "Running Bigtable Transfer Pipeline"
 java -cp ${JAR_FILE} mlab.bocoup.BigtableTransferPipeline \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-  --project=mlab-oti --stagingLocation="gs://bocoup" --test=${TEST}
+  --project=mlab-staging --stagingLocation="gs://mlab-data-viz" --test=${TEST}

@@ -1,139 +1,139 @@
 {
   "row_keys": [
     {
-      "length": 50, 
-      "type": "string", 
-      "name": "client_location_key", 
+      "length": 50,
+      "type": "string",
+      "name": "client_location_key",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 10, 
-      "type": "string", 
-      "name": "date", 
+      "length": 10,
+      "type": "string",
+      "name": "date",
       "family": "meta"
     }
-  ], 
-  "bigquery_queryfile": "./data/bigtable/queries/client_loc_by_year.sql", 
-  "bigtable_table_name": "client_loc_by_year", 
-  "frequency": "year", 
-  "key": "client_loc", 
-  "bigquery_table": "[mlab-staging-151118:bocoup_prod.all_ip_by_day]", 
+  ],
+  "bigquery_queryfile": "./data/bigtable/queries/client_loc_by_year.sql",
+  "bigtable_table_name": "client_loc_by_year",
+  "frequency": "year",
+  "key": "client_loc",
+  "bigquery_table": "[mlab-staging:data_viz_prod.all_ip_by_day]",
   "columns": [
     {
-      "type": "double", 
-      "name": "download_speed_mbps_median", 
+      "type": "double",
+      "name": "download_speed_mbps_median",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "upload_speed_mbps_median", 
+      "type": "double",
+      "name": "upload_speed_mbps_median",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "download_speed_mbps_avg", 
+      "type": "double",
+      "name": "download_speed_mbps_avg",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "upload_speed_mbps_avg", 
+      "type": "double",
+      "name": "upload_speed_mbps_avg",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "download_speed_mbps_min", 
+      "type": "double",
+      "name": "download_speed_mbps_min",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "upload_speed_mbps_min", 
+      "type": "double",
+      "name": "upload_speed_mbps_min",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "download_speed_mbps_max", 
+      "type": "double",
+      "name": "download_speed_mbps_max",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "upload_speed_mbps_max", 
+      "type": "double",
+      "name": "upload_speed_mbps_max",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "download_speed_mbps_stddev", 
+      "type": "double",
+      "name": "download_speed_mbps_stddev",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "upload_speed_mbps_stddev", 
+      "type": "double",
+      "name": "upload_speed_mbps_stddev",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "rtt_avg", 
+      "type": "double",
+      "name": "rtt_avg",
       "family": "data"
-    }, 
+    },
     {
-      "type": "double", 
-      "name": "retransmit_avg", 
+      "type": "double",
+      "name": "retransmit_avg",
       "family": "data"
-    }, 
+    },
     {
-      "type": "integer", 
-      "name": "count", 
+      "type": "integer",
+      "name": "count",
       "family": "data"
-    }, 
+    },
     {
-      "length": 50, 
-      "type": "string", 
-      "name": "client_location_key", 
+      "length": 50,
+      "type": "string",
+      "name": "client_location_key",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "string", 
-      "name": "client_continent", 
+      "type": "string",
+      "name": "client_continent",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "string", 
-      "name": "client_continent_code", 
+      "type": "string",
+      "name": "client_continent_code",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "string", 
-      "name": "client_country", 
+      "type": "string",
+      "name": "client_country",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "string", 
-      "name": "client_country_code", 
+      "type": "string",
+      "name": "client_country_code",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "string", 
-      "name": "client_region", 
+      "type": "string",
+      "name": "client_region",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "string", 
-      "name": "client_region_code", 
+      "type": "string",
+      "name": "client_region_code",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "string", 
-      "name": "client_city", 
+      "type": "string",
+      "name": "client_city",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 10, 
-      "type": "string", 
-      "name": "date", 
+      "length": 10,
+      "type": "string",
+      "name": "date",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "string", 
-      "name": "type", 
+      "type": "string",
+      "name": "type",
       "family": "meta"
     }
   ]

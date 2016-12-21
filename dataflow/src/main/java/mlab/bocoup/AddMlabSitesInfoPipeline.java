@@ -26,7 +26,7 @@ import mlab.bocoup.util.Schema;
 /**
  * Pipeline for overriding server locations based on the data provided from
  * https://mlab-ns.appspot.com/admin/sites
- * 
+ *
  * Adds in mlab site ID, lat, long, city, region, country, continent
  *
  * @author pbeshai
@@ -34,11 +34,11 @@ import mlab.bocoup.util.Schema;
  */
 public class AddMlabSitesInfoPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddMlabSitesInfoPipeline.class);
-	private static final String MLAB_SITES_TABLE = "mlab-oti:bocoup.mlab_sites";
+	private static final String MLAB_SITES_TABLE = "mlab-staging:data_viz.mlab_sites";
 
 	//for running main()
-	private static final String INPUT_TABLE = "mlab-oti:bocoup.peter_test";
-	private static final String OUTPUT_TABLE = "mlab-oti:bocoup.peter_test_out";
+	private static final String INPUT_TABLE = "mlab-staging:data_viz.peter_test";
+	private static final String OUTPUT_TABLE = "mlab-staging:data_viz.peter_test_out";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	private String mlabSitesTable = MLAB_SITES_TABLE;
@@ -92,7 +92,7 @@ public class AddMlabSitesInfoPipeline extends BasePipeline {
 	 * @return The PCollection with MLab site info added
 	 */
 	@Override
-	public PCollection<TableRow> applyInner(PCollection<TableRow> data) {   
+	public PCollection<TableRow> applyInner(PCollection<TableRow> data) {
 		// Read in the MaxMind ISP data
 		PCollection<TableRow> mlabSites = this.pipeline.apply(
 				BigQueryIO.Read

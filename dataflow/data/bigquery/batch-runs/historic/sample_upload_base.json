@@ -1,10 +1,10 @@
 {
-  "projectId": "mlab-staging-151118",
+  "projectId": "mlab-staging",
   "queryFile": "./data/bigquery/queries/base_uploads_ip_by_day.sql",
   "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
   "outputTable": "data_viz_test.base_uploads_ip_by_day",
 
-  "lastDateFromTable": "[mlab-staging-151118:plx.google:m_lab.ndt.all]",
+  "lastDateFromTable": "[mlab-staging:plx.google:m_lab.ndt.all]",
 
   "mergeTable": "data_viz_test.base_merged_ip_by_day",
   "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",

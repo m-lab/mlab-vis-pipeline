@@ -1,103 +1,103 @@
 {
   "row_keys": [
     {
-      "length": 60, 
-      "type": "string", 
-      "name": "reverse_location_key", 
+      "length": 60,
+      "type": "string",
+      "name": "reverse_location_key",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 10, 
-      "type": "string", 
-      "name": "type", 
+      "length": 10,
+      "type": "string",
+      "name": "type",
       "family": "meta"
     }
-  ], 
-  "bigquery_queryfile": "./data/bigtable/queries/client_loc_search.sql", 
-  "bigtable_table_name": "client_loc_search", 
-  "key": "client_loc_search", 
-  "bigquery_table": "[mlab-staging-151118:bocoup_prod.all_ip_by_day]", 
+  ],
+  "bigquery_queryfile": "./data/bigtable/queries/client_loc_search.sql",
+  "bigtable_table_name": "client_loc_search",
+  "key": "client_loc_search",
+  "bigquery_table": "[mlab-staging:data_viz_prod.all_ip_by_day]",
   "columns": [
     {
-      "length": 60, 
-      "type": "string", 
-      "name": "reverse_location_key", 
+      "length": 60,
+      "type": "string",
+      "name": "reverse_location_key",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 10, 
-      "type": "string", 
-      "name": "type", 
+      "length": 10,
+      "type": "string",
+      "name": "type",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "integer", 
-      "name": "test_count", 
+      "type": "integer",
+      "name": "test_count",
       "family": "meta"
-    }, 
+    },
     {
-      "type": "integer", 
-      "name": "last_three_month_test_count", 
+      "type": "integer",
+      "name": "last_three_month_test_count",
       "family": "data"
-    }, 
+    },
     {
-      "length": 40, 
-      "type": "string", 
-      "name": "location", 
+      "length": 40,
+      "type": "string",
+      "name": "location",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 40, 
-      "type": "string", 
-      "name": "type", 
+      "length": 40,
+      "type": "string",
+      "name": "type",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 40, 
-      "type": "string", 
-      "name": "client_region", 
+      "length": 40,
+      "type": "string",
+      "name": "client_region",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 40, 
-      "type": "string", 
-      "name": "client_region_code", 
+      "length": 40,
+      "type": "string",
+      "name": "client_region_code",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 40, 
-      "type": "string", 
-      "name": "client_country", 
+      "length": 40,
+      "type": "string",
+      "name": "client_country",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 40, 
-      "type": "string", 
-      "name": "client_country_code", 
+      "length": 40,
+      "type": "string",
+      "name": "client_country_code",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 40, 
-      "type": "string", 
-      "name": "client_continent", 
+      "length": 40,
+      "type": "string",
+      "name": "client_continent",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 40, 
-      "type": "string", 
-      "name": "client_continent_code", 
+      "length": 40,
+      "type": "string",
+      "name": "client_continent_code",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 50, 
-      "type": "string", 
-      "name": "client_city", 
+      "length": 50,
+      "type": "string",
+      "name": "client_city",
       "family": "meta"
-    }, 
+    },
     {
-      "length": 60, 
-      "type": "string", 
-      "name": "location_key", 
+      "length": 60,
+      "type": "string",
+      "name": "location_key",
       "family": "meta"
     }
   ]

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 '''
 Cleans up remaining temp_**** datasets as a result of our pipeline
-from the mlab-oti project
+from the mlab-staging project
 '''
 import pprint
 
@@ -10,7 +10,7 @@ from googleapiclient.discovery import build
 
 from googleapiclient.errors import HttpError
 
-PROJECT_ID = 'mlab-staging-151118'
+PROJECT_ID = 'mlab-staging'
 
 # Grab the application's default credentials from the environment.
 CREDENTIALS = GoogleCredentials.get_application_default()

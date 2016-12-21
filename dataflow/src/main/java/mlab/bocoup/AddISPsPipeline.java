@@ -33,13 +33,13 @@ import mlab.bocoup.util.Schema;
  */
 public class AddISPsPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddISPsPipeline.class);
-	private static final String MAXMIND_ISPS_TABLE = "mlab-oti:bocoup.maxmind_asn";
+	private static final String MAXMIND_ISPS_TABLE = "mlab-staging:data_viz.maxmind_asn";
 
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-oti:bocoup.jim_test";
-	private static final String OUTPUT_TABLE = "mlab-oti:bocoup.jim_test_out";
+	private static final String INPUT_TABLE = "mlab-staging:data_viz.jim_test";
+	private static final String OUTPUT_TABLE = "mlab-staging:data_viz.jim_test_out";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
-	
+
 	private String maxmindIspsTable = MAXMIND_ISPS_TABLE;
 	/**
 	 * Create a new pipeline.
@@ -68,7 +68,7 @@ public class AddISPsPipeline extends BasePipeline {
 						"asn_name", "asn_number")));
 		return byIpDataWithISPs;
 	}
-	
+
 	/**
 	 * Adds in ISP information for the client.
 	 *
@@ -77,7 +77,7 @@ public class AddISPsPipeline extends BasePipeline {
 	 * @return A PCollection of rows with ISP information added to them
 	 */
 	public PCollection<TableRow> addClientISPs(PCollection<TableRow> byIpData, PCollectionView<NavigableMap<String, TableRow>> maxMindAsnView) {
-		
+
 		// Use the side-loaded MaxMind ISP data to get client ISPs
 		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
 				ParDo
@@ -144,7 +144,7 @@ public class AddISPsPipeline extends BasePipeline {
 		this.maxmindIspsTable = clientIspsTable;
 		return this;
 	}
-	
+
 
 	/**
 	 * The main program: start the pipeline, add in ISP information and write it to a table.

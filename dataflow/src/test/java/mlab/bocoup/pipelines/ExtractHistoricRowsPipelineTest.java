@@ -17,15 +17,15 @@ import mlab.bocoup.util.Formatters;
 public class ExtractHistoricRowsPipelineTest {
 
 	private JSONObject config;
-	private String projectId = "mlab-oti";
+	private String projectId = "mlab-staging";
 	private ExtractHistoricRowsPipeline ehrp;
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(Formatters.TIMESTAMP2);
-	
+
 	@Before
 	public void setUp() throws Exception {
 		config = new JSONObject();
-		config.put("lastDateFromTable", "[mlab-oti:ndtforbocoup.ndt]");
-		config.put("projectId", "mlab-oti");
+		config.put("lastDateFromTable", "[mlab-staging:ndtfordataviz.ndt]");
+		config.put("projectId", "mlab-staging");
 		ehrp = new ExtractHistoricRowsPipeline(null);
 	}
 
@@ -41,7 +41,7 @@ public class ExtractHistoricRowsPipelineTest {
 //			String [] timestamps = ehrp.getDatesAuto(config);
 //			String startTime = timestamps[0];
 //			String endTime = timestamps[1];
-//			
+//
 //			// verify we can parse the dates
 //			dateFormatter.parse(startTime);
 //			dateFormatter.parse(endTime);

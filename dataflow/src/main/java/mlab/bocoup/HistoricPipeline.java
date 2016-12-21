@@ -24,16 +24,16 @@ import mlab.bocoup.util.BigQueryIOHelpers;
 import mlab.bocoup.util.Schema;
 
 public class HistoricPipeline {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(HistoricPipeline.class);
-	
+
 	private static String DOWNLOADS_BY_DAY = "./data/bigquery/batch-runs/historic/downloads_ip_by_day_base.json";
 	private static String DOWNLOADS_BY_HOUR = "./data/bigquery/batch-runs/historic/downloads_ip_by_hour_base.json";
 	private static String UPLOADS_BY_DAY = "./data/bigquery/batch-runs/historic/uploads_ip_by_day_base.json";
 	private static String UPLOADS_BY_HOUR = "./data/bigquery/batch-runs/historic/uploads_ip_by_hour_base.json";
 	private static String DOWNLOADS_SAMPLE = "./data/bigquery/batch-runs/historic/sample_download_base.json";
 	private static String UPLOADS_SAMPLE = "./data/bigquery/batch-runs/historic/sample_upload_base.json";
-	
+
 	private static String getRunnerConfigFilename(String timePeriod, String type) {
 		if (type.equals("downloads")) {
 			if (timePeriod.equals("hour")) {
@@ -51,7 +51,7 @@ public class HistoricPipeline {
 			} else if (timePeriod.equals("sample")){
 				return UPLOADS_SAMPLE;
 			}
-		} 
+		}
 		return null;
 	}
 	/**
@@ -68,25 +68,25 @@ public class HistoricPipeline {
 		String fileName = getRunnerConfigFilename(timePeriod, type);
 		return  (JSONObject) jp.parse(new FileReader(fileName));
 	}
-	
+
 	private static String[] getDates(HistoricPipelineOptions options) {
-		
+
 		String [] dates = new String[2];
 		String timeSuffix = "T00:00:00Z";
-		
+
 		dates[0] = options.getStartDate() + timeSuffix;
 		dates[1] = options.getEndDate() + timeSuffix;
-		
+
 		return dates;
 	}
-	
+
 	/**
 	 * Main program. Run with --timePeriod equal to "day", "hour" or "sample".
-	 * 
+	 *
 	 * Full runtime arguments example:
-	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner 
-	 * --timePeriod="sample" --project=mlab-oti --stagingLocation="gs://bocoup"
-	 * 
+	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner
+	 * --timePeriod="sample" --project=mlab-staging --stagingLocation="gs://mlab-data-viz"
+	 *
 	 * @param args
 	 * @throws Exception
 	 */
@@ -105,7 +105,7 @@ public class HistoricPipeline {
 			shouldExecute = false;
 		}
 
-	    
+
 	    // the downloads and uploads pipelines are blocking, so in order to make them
 	    // only blocking within their own run routines, we are extracting them
 	    // into their own threads, that will then rejoin when they are complete.
@@ -120,7 +120,7 @@ public class HistoricPipeline {
 			Thread dlPipeThread = new Thread(ehrPDL);
 			String downloadsConfigFile = getRunnerConfigFilename(timePeriod, "downloads");
 
-			// we want to avoid having to have the dates in the config file. 
+			// we want to avoid having to have the dates in the config file.
 			String [] dates = getDates(options);
 
 
@@ -164,12 +164,12 @@ public class HistoricPipeline {
 
 	    	next = ehrPUL.getState() == State.DONE && ehrPDL.getState() == State.DONE;
 
-	    	
+
 	    }
-	    
+
 	    // when both pipelines are done, proceed to merge, add ISP and local time information.
 	    if (next) {
-	    
+
 			// ==== get tables merged (a pipeline for merge + ISPs)
 			JSONObject downloadsConfig = getRunnerConfig(timePeriod, "downloads");
 			JSONObject uploadsConfig = getRunnerConfig(timePeriod, "uploads");
@@ -178,7 +178,7 @@ public class HistoricPipeline {
 			HistoricPipelineOptions optionsMergeAndISP = options.cloneAs(HistoricPipelineOptions.class);
 			optionsMergeAndISP.setAppName("HistoricPipeline-MergeAndISP");
 			Pipeline pipe = Pipeline.create(optionsMergeAndISP);
-			
+
 			// === merge upload and download into a single set of rows (outputs a table and also gives the rows back)
 			MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(pipe);
 
@@ -195,35 +195,35 @@ public class HistoricPipeline {
 
 			// === add server locations and mlab site info
 			rows = new AddMlabSitesInfoPipeline(pipe).apply(rows);
-			
+
 			// === merge ASNs
 			rows = new MergeASNsPipeline(pipe).apply(rows);
-			
+
 			// === add local time
 			rows = new AddLocalTimePipeline(pipe).apply(rows);
 
 			// === clean locations (important to do before resolving location names)
 			rows = new LocationCleaningPipeline(pipe).apply(rows);
-			
+
 			// === add location names
 			rows = new AddLocationPipeline(pipe).apply(rows);
-			
+
 			// write to the final table
-			BigQueryIOHelpers.writeTable(rows, (String) downloadsConfig.get("withISPTable"), 
+			BigQueryIOHelpers.writeTable(rows, (String) downloadsConfig.get("withISPTable"),
 					Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")),
 					WriteDisposition.WRITE_TRUNCATE, CreateDisposition.CREATE_IF_NEEDED);
-			
+
 			if (test == 0) {
 				// kick off the pipeline
 				DataflowPipelineJob resultsMergeAndISPs = (DataflowPipelineJob) pipe.run();
-			
+
 				// wait for the pipeline to finish executing
 				resultsMergeAndISPs.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
-				
+
 				LOG.info("Merge + ISPs job completed, with status: " + resultsMergeAndISPs.getState().toString());
 			}
-			
-			
+
+
 	    } else {
 	    	LOG.error("Download or Upload pipelines failed.");
 	    }

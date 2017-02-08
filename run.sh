@@ -68,4 +68,5 @@ wait
 echo "Running Bigtable Transfer Pipeline"
 java -cp ${JAR_FILE} mlab.bocoup.BigtableTransferPipeline \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-  --project=mlab-staging --stagingLocation="gs://mlab-data-viz" --test=${TEST}
+  --project=mlab-staging --stagingLocation="gs://mlab-data-viz" --test=${TEST} \
+  --diskSizeGb=15

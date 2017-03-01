@@ -121,6 +121,8 @@ public class HistoricPipeline {
 			String downloadsConfigFile = getRunnerConfigFilename(timePeriod, "downloads");
 
 			// we want to avoid having to have the dates in the config file. 
+			// NOTE: doing this means that you *must* supply dates via the command line options,
+			// as the defaults will be returned from this function otherwise.
 			String [] dates = getDates(options);
 
 
@@ -163,8 +165,6 @@ public class HistoricPipeline {
 	    	ulPipeThread.join();
 
 	    	next = ehrPUL.getState() == State.DONE && ehrPDL.getState() == State.DONE;
-
-	    	
 	    }
 	    
 	    // when both pipelines are done, proceed to merge, add ISP and local time information.

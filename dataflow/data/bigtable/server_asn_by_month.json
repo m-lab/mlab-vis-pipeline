@@ -17,7 +17,7 @@
   "bigtable_table_name": "server_asn_by_month", 
   "frequency": "month", 
   "key": "server_asn", 
-  "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]", 
+  "bigquery_table": "[mlab-sandbox:data_viz.all_ip_by_day]", 
   "columns": [
     {
       "type": "double", 

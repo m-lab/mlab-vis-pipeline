@@ -6,13 +6,18 @@ convert a time and lat/lng coordinates to a local time.
 """
 from __future__ import print_function
 
+import os
 import csv
 from datetime import datetime
 import calendar
 
-ZONES_FILE = "./dataflow/data/bigquery/timezonedb/zone.csv"
-TIMEZONES_FILE = "./dataflow/data/bigquery/timezonedb/timezone.csv"
-MERGED_TIMEZONE_FILE = "./dataflow/data/bigquery/timezonedb/merged_timezone.csv"
+CUR_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
+TIMEZONE_DIR = os.path.join(CUR_DIR, "..", "..", "..", "dataflow", "data", "bigquery", "timezonedb")
+
+
+ZONES_FILE = os.path.join(TIMEZONE_DIR, "zone.csv")
+TIMEZONES_FILE = os.path.join(TIMEZONE_DIR, "timezone.csv")
+MERGED_TIMEZONE_FILE = os.path.join(TIMEZONE_DIR, "merged_timezone.csv")
 
 dt = datetime(2008, 1, 1)
 lower_bound = calendar.timegm(dt.utctimetuple())

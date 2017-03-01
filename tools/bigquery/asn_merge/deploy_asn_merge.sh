@@ -3,7 +3,7 @@
 basedir=`dirname $0`
 
 
-tableName=bocoup.asn_merge
+tableName=data_viz_helpers.asn_merge
 
 tableSchema=$basedir/../../../dataflow/data/bigquery/asn_merge/schemas/asn_merge.json
 outputFile=$basedir/output/asn_merge.csv

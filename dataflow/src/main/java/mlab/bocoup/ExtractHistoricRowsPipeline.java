@@ -170,7 +170,6 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 			// and work with that. Otherwise, use that dates array. Note that it should have two
 			// values which will be the full range of our data.
 			
-			
 			if (dates == null) {
 				LOG.info(">>> Dates not provided on command line. Looking for them in config");
 				dates = this.getDatesFromConfig();
@@ -201,13 +200,16 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 				this.pipeline = Pipeline.create(this.options);
 			}
 			
+			// DataFlow doesn't show names with / in it
+			String normalizedQueryFile = queryFile.replaceAll("/", "__");
+			
 			PCollection<TableRow> rows = this.pipeline.apply(
 					BigQueryIO.Read
-					.named("Running query " + queryFile)
+					.named("Running query " + normalizedQueryFile)
 					.fromQuery(qb.getQuery()));
 			
 			rows.apply(BigQueryIO.Write
-					.named("write table for " + queryFile)
+					.named("Write " + outputTableName)
 					.to(outputTableName)
 					.withSchema(tableSchema)
 					.withCreateDisposition(this.createDisposition)

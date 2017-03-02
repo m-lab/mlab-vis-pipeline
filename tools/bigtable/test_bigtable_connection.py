@@ -13,6 +13,8 @@ def main(project_id, instance_id):
 
     connection = happybase.Connection(instance=instance)
     all_tables = connection.tables()
+    print "There are {} tables for project {} on instance {}".format(len(all_tables), project_id, instance_id)
+    for table in all_tables: print table
 
 
 if __name__ == '__main__':

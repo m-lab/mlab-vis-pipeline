@@ -29,7 +29,7 @@ public class TimeLocalizer {
 	// rows shape: "zone_id","abbreviation","time_start","gmt_offset","dst"
 	private static final String TIMEZONE_FILE = "./data/bigquery/timezonedb/merged_timezone.csv";
 
-	private static String PROJECT_ID = "mlab-sandbox";
+	private static String PROJECT_ID = "mlab-oti";
 	private static String BQ_TIMEZONE_TABLE = "data_viz_helpers.localtime_timezones";
 	private static String[] TIMEZONE_FIELDS = {"zone_name", "timezone_name", "time_start", "gmt_offset_seconds", "dst_flag"};
 

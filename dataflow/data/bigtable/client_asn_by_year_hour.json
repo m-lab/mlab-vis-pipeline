@@ -23,7 +23,7 @@
   "bigtable_table_name": "client_asn_by_year_hour", 
   "frequency": "year_hour", 
   "key": "client_asn", 
-  "bigquery_table": "[mlab-sandbox:data_viz.all_ip_by_hour]", 
+  "bigquery_table": "[mlab-oti:data_viz.all_ip_by_hour]", 
   "columns": [
     {
       "type": "double", 

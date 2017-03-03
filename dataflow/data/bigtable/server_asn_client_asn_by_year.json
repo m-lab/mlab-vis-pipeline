@@ -23,7 +23,7 @@
   "bigtable_table_name": "server_asn_client_asn_by_year", 
   "frequency": "year", 
   "key": "server_asn_client_asn", 
-  "bigquery_table": "[mlab-sandbox:data_viz.all_ip_by_day]", 
+  "bigquery_table": "[mlab-oti:data_viz.all_ip_by_day]", 
   "columns": [
     {
       "type": "double", 

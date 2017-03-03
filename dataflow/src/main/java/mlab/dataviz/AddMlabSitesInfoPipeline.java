@@ -34,11 +34,11 @@ import mlab.dataviz.util.Schema;
  */
 public class AddMlabSitesInfoPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddMlabSitesInfoPipeline.class);
-	private static final String MLAB_SITES_TABLE = "mlab-sandbox:data_viz_helpers.mlab_sites";
+	private static final String MLAB_SITES_TABLE = "mlab-oti:data_viz_helpers.mlab_sites";
 
 	//for running main()
-	private static final String INPUT_TABLE = "mlab-sandbox:data_viz_testing.peter_test";
-	private static final String OUTPUT_TABLE = "mlab-sandbox:data_viz_testing.peter_test_out";
+	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.peter_test";
+	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.peter_test_out";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	private String mlabSitesTable = MLAB_SITES_TABLE;

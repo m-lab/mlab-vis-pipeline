@@ -85,7 +85,7 @@ public class HistoricPipeline {
 	 *
 	 * Full runtime arguments example:
 	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner
-	 * --timePeriod="sample" --project=mlab-sandbox --stagingLocation="gs://mlab-data-viz-sandbox"
+	 * --timePeriod="sample" --project=mlab-oti --stagingLocation="gs://mlab-data-viz-sandbox"
 	 *
 	 * @param args
 	 * @throws Exception

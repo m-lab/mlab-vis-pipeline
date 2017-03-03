@@ -29,7 +29,7 @@
   "bigtable_table_name": "client_asn_client_loc_by_day_hour", 
   "frequency": "day_hour", 
   "key": "client_asn_client_loc", 
-  "bigquery_table": "[mlab-sandbox:data_viz.all_ip_by_hour]", 
+  "bigquery_table": "[mlab-oti:data_viz.all_ip_by_hour]", 
   "columns": [
     {
       "type": "double", 

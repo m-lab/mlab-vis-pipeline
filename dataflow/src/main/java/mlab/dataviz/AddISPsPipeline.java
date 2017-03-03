@@ -33,11 +33,11 @@ import mlab.dataviz.util.Schema;
  */
 public class AddISPsPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddISPsPipeline.class);
-	private static final String MAXMIND_ISPS_TABLE = "mlab-sandbox:data_viz_helpers.maxmind_asn";
+	private static final String MAXMIND_ISPS_TABLE = "mlab-oti:data_viz_helpers.maxmind_asn";
 
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-sandbox:data_viz_testing.jim_test";
-	private static final String OUTPUT_TABLE = "mlab-sandbox:data_viz_testing.jim_test_out";
+	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.jim_test";
+	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.jim_test_out";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	private String maxmindIspsTable = MAXMIND_ISPS_TABLE;

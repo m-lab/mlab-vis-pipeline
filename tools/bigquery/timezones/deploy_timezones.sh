@@ -1,14 +1,16 @@
 #!/bin/bash
+basedir=`dirname $0`
+timezoneDir=$basedir/../../../dataflow/data/bigquery/timezonedb
 
 echo "Creating timezone tables"
 
 echo "Processing timezones csvs CSV"
-python ./tools/timezones/process_timezones.py
+python $basedir/process_timezones.py
 
-echo "Adding bocoup.localtime_timezones to BigQuery"
+echo "Adding data_viz_helpers.localtime_timezones to BigQuery"
 bq load --allow_quoted_newlines --skip_leading_rows=1 --source_format=CSV \
-  bocoup.localtime_timezones  \
-  ./dataflow/data/bigquery/timezonedb/merged_timezone.csv \
-  ./dataflow/data/bigquery/timezonedb/schemas/merged_timezone.json
+  data_viz_helpers.localtime_timezones  \
+  $timezoneDir/merged_timezone.csv \
+  $timezoneDir/schemas/merged_timezone.json
 
 echo "Done."

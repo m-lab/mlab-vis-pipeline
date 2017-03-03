@@ -4,8 +4,8 @@ import argparse
 from gcloud import bigtable
 from gcloud.bigtable import happybase
 
-DEFAULT_PROJECT_ID = 'mlab-oti'
-DEFAULT_INSTANCE_ID = 'mlab-ndt-agg'
+DEFAULT_PROJECT_ID = 'mlab-sandbox'
+DEFAULT_INSTANCE_ID = 'mlab-data-viz'
 
 def main(project_id, instance_id):
     client = bigtable.Client(project=project_id, admin=True)
@@ -13,6 +13,8 @@ def main(project_id, instance_id):
 
     connection = happybase.Connection(instance=instance)
     all_tables = connection.tables()
+    print "There are {} tables for project {} on instance {}".format(len(all_tables), project_id, instance_id)
+    for table in all_tables: print table
 
 
 if __name__ == '__main__':

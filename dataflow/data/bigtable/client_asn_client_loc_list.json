@@ -16,7 +16,7 @@
   "bigquery_queryfile": "./data/bigtable/queries/client_asn_client_loc_list.sql", 
   "bigtable_table_name": "client_asn_client_loc_list", 
   "key": "client_asn_client_loc_list", 
-  "bigquery_table": "[mlab-oti:bocoup_prod.all_ip_by_day]", 
+  "bigquery_table": "[mlab-sandbox:data_viz.all_ip_by_day]", 
   "columns": [
     {
       "length": 15, 

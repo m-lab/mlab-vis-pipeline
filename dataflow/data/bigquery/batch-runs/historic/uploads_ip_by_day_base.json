@@ -1,14 +1,14 @@
 {
-  "projectId": "mlab-oti",
+  "projectId": "mlab-sandbox",
   "queryFile": "./data/bigquery/queries/base_uploads_ip_by_day.sql",
   "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
-  "outputTable": "bocoup_prod.base_uploads_ip_by_day",
+  "outputTable": "data_viz.base_uploads_ip_by_day",
 
-  "lastDateFromTable": "[mlab-oti:plx.google:m_lab.ndt.all]",
+  "lastDateFromTable": "[plx.google:m_lab.ndt.all]",
 
-  "mergeTable": "bocoup_prod.base_merged_ip_by_day",
+  "mergeTable": "data_viz.base_merged_ip_by_day",
   "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
 
-  "withISPTable": "bocoup_prod.all_ip_by_day",
+  "withISPTable": "data_viz.all_ip_by_day",
   "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
 }

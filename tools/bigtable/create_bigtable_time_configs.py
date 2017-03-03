@@ -8,15 +8,14 @@ import json
 import os
 import sqlparse
 
-BIGQUERY_DATE_TABLE = "[mlab-oti:bocoup_prod.all_ip_by_day]"
-BIGQUERY_HOUR_TABLE = "[mlab-oti:bocoup_prod.all_ip_by_hour]"
+BIGQUERY_DATE_TABLE = "[mlab-sandbox:data_viz.all_ip_by_day]"
+BIGQUERY_HOUR_TABLE = "[mlab-sandbox:data_viz.all_ip_by_hour]"
 
-QUERY_BASEDIR = os.path.join("..", "..", "dataflow", "data", "bigtable", "queries")
+CUR_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
+QUERY_BASEDIR = os.path.join(CUR_DIR, "..", "..", "dataflow", "data", "bigtable", "queries")
 CONFIG_QUERY_BASEDIR = os.path.join(".", "data", "bigtable", "queries")
 
-TEMPLATE_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                            "templates"))
-
+TEMPLATE_DIR = os.path.join(CUR_DIR, "templates")
 DATE_CONFIG_TEMPLATE_FILENAME = os.path.join(TEMPLATE_DIR, "time_config_template.json")
 
 

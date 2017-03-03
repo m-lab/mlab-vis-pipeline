@@ -26,12 +26,12 @@ public class AddLocalTimePipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddLocalTimePipeline.class);
 
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-sandbox:data_viz_testing.zz_base_by_day_with_isp_test"; //"mlab-sandbox:data_viz.base_all_ip_by_day_with_isps";
-	private static final String OUTPUT_TABLE = "mlab-sandbox:data_viz_testing.zz_base_by_day_with_isp_test_localized"; // "mlab-sandbox:data_viz.base_all_ip_by_day_with_isps_localized";
+	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.zz_base_by_day_with_isp_test"; //"mlab-oti:data_viz.base_all_ip_by_day_with_isps";
+	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.zz_base_by_day_with_isp_test_localized"; // "mlab-oti:data_viz.base_all_ip_by_day_with_isps_localized";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	// zones data
-	private static String BQ_TIMEZONE_TABLE = "mlab-sandbox:data_viz_helpers.localtime_timezones";
+	private static String BQ_TIMEZONE_TABLE = "mlab-oti:data_viz_helpers.localtime_timezones";
 
 	public AddLocalTimePipeline(Pipeline p) {
 		super(p);

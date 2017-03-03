@@ -25,11 +25,11 @@ import mlab.dataviz.util.Schema;
 public class MergeASNsPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(MergeASNsPipeline.class);
 
-	private static final String MERGE_ASN_TABLE = "mlab-sandbox:data_viz_helpers.asn_merge";
+	private static final String MERGE_ASN_TABLE = "mlab-oti:data_viz_helpers.asn_merge";
 
 	//	for running main()
-	private static final String INPUT_TABLE = "mlab-sandbox:data_viz_testing.tmp_jim_input";
-	private static final String OUTPUT_TABLE = "mlab-sandbox:data_viz_testing.tmp_jim_input";
+	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.tmp_jim_input";
+	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.tmp_jim_input";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	private String mergeAsnTable = MERGE_ASN_TABLE;

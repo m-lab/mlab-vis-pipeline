@@ -28,8 +28,8 @@ public class LocationCleaningPipeline extends BasePipeline {
 	private static final String LOCATION_CLEANING_TABLE = "data_viz_helpers.location_cleaning";
 
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-sandbox:data_viz_testing.test_location_clean_input";
-	private static final String OUTPUT_TABLE = "mlab-sandbox:data_viz_testing.test_location_clean_output";
+	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.test_location_clean_input";
+	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.test_location_clean_output";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	public LocationCleaningPipeline(Pipeline p) {

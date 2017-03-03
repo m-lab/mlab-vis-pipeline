@@ -4,8 +4,8 @@ import argparse
 from gcloud import bigtable
 from gcloud.bigtable import happybase
 
-DEFAULT_PROJECT_ID = 'mlab-sandbox'
-DEFAULT_INSTANCE_ID = 'mlab-data-viz'
+DEFAULT_PROJECT_ID = 'mlab-oti'
+DEFAULT_INSTANCE_ID = 'mlab-data-viz-prod'
 
 def main(project_id, instance_id):
     client = bigtable.Client(project=project_id, admin=True)

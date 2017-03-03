@@ -32,8 +32,8 @@ public class BigtableTransferPipeline {
 	private static final String DEFAULT_BIGTABLE_CONFIG_FILE = "./data/bigtable/client_loc_search.json";
 	private static final String BIGTABLE_CONFIG_DIR = "./data/bigtable/";
 
-	private static final String DEFAULT_PROJECT_ID = "mlab-sandbox";
-	private static final String DEFAULT_INSTANCE_ID = "mlab-data-viz";
+	private static final String DEFAULT_PROJECT_ID = "mlab-oti";
+	private static final String DEFAULT_INSTANCE_ID = "mlab-data-viz-prod";
 
 
 	private Pipeline pipeline;

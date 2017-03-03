@@ -279,7 +279,7 @@ public class ExtractUpdateRowsPipeline {
 	 * To execute run with parameters:
 	 *
 	 * --runner com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner
-	 * --timePeriod="day" -project=mlab-sandbox --stagingLocation="gs://mlab-data-viz-sandbox"
+	 * --timePeriod="day" -project=mlab-oti --stagingLocation="gs://mlab-data-viz-sandbox"
 	 *
 	 * @param args
 	 * @throws Exception

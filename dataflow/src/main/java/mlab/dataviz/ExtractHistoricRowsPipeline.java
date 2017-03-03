@@ -314,7 +314,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	 * Run this as a regular Java application with the following arguments:
 	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner
 	 * --configfile="./data/bigquery/batch-runs/historic/uploads_ip_by_day_base.json"
-	 * --project=mlab-sandbox
+	 * --project=mlab-oti
 	 * --stagingLocation="gs://mlab-data-viz-sandbox"
 	 *
 	 * @param args

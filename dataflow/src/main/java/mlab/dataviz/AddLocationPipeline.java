@@ -30,8 +30,8 @@ public class AddLocationPipeline extends BasePipeline {
 	private static final String REGION_CODE_TABLE = "data_viz_helpers.location_region_codes";
 
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-sandbox:data_viz_testing.zz4_all_isp_by_day";
-	private static final String OUTPUT_TABLE = "mlab-sandbox:data_viz_testing.zz4_all_ip_by_day_with_locations";
+	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.zz4_all_isp_by_day";
+	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.zz4_all_ip_by_day_with_locations";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	public AddLocationPipeline(Pipeline p) {

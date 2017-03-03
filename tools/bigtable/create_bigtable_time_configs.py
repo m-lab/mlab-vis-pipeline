@@ -8,8 +8,8 @@ import json
 import os
 import sqlparse
 
-BIGQUERY_DATE_TABLE = "[mlab-sandbox:data_viz.all_ip_by_day]"
-BIGQUERY_HOUR_TABLE = "[mlab-sandbox:data_viz.all_ip_by_hour]"
+BIGQUERY_DATE_TABLE = "[mlab-oti:data_viz.all_ip_by_day]"
+BIGQUERY_HOUR_TABLE = "[mlab-oti:data_viz.all_ip_by_hour]"
 
 CUR_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
 QUERY_BASEDIR = os.path.join(CUR_DIR, "..", "..", "dataflow", "data", "bigtable", "queries")

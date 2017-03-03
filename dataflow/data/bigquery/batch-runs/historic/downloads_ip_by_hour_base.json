@@ -1,5 +1,5 @@
 {
-  "projectId": "mlab-sandbox",
+  "projectId": "mlab-oti",
   "queryFile": "./data/bigquery/queries/base_downloads_ip_by_hour.sql",
   "schemaFile": "./data/bigquery/schemas/base_downloads_ip.json",
   "outputTable": "data_viz.base_downloads_ip_by_hour",

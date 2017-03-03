@@ -9,7 +9,7 @@ from gcloud import bigtable
 from gcloud.bigtable import happybase
 
 DEFAULT_PROJECT_ID = 'mlab-sandbox'
-DEFAULT_INSTANCE_ID = 'mlab-ndt-agg'
+DEFAULT_INSTANCE_ID = 'mlab-data-viz'
 COLUMN_FAMILIES = {'data': dict(), 'meta': dict()}
 
 def read_json(filename):

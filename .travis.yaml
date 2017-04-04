@@ -1,0 +1,18 @@
+language: python
+python:
+  - "2.7"
+notifications:
+  email:
+    recipients:
+      - alerts@measurementlab.net
+env:
+  - GAE_PROJECT="mlab-oti"
+  - STARTDATE, ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT})
+before_install:
+  - sudo apt-get --assume-yes install maven
+  - sudo apt-get --assume-yes install default-jdk
+install:
+  - pip install -r test_requirements.txt
+script:
+  - mvn -Dmaven.test.skip=true dataflow/package
+  - run.sh -s ${STARTDATE} -e ${ENDDATE}

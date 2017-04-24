@@ -10,7 +10,7 @@ usage() { echo "Usage: $0 -e <YYYY-MM-DD> [-t]" 1>&2; exit 1; }
 ENDDATE=""
 TEST=0
 
-while getopts ":ste:" opt; do
+while getopts ":set:" opt; do
   case $opt in
     s)
       STARTDATE=${OPTARG}

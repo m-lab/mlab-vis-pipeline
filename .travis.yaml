@@ -7,7 +7,7 @@ notifications:
       - alerts@measurementlab.net
 env:
   - GAE_PROJECT="mlab-oti"
-  - STARTDATE, ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT})
+  - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT})
 before_install:
   - sudo apt-get --assume-yes install maven
   - sudo apt-get --assume-yes install default-jdk

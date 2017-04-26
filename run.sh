@@ -9,8 +9,11 @@ usage() { echo "Usage: $0 -e <YYYY-MM-DD> [-t]" 1>&2; exit 1; }
 ENDDATE=""
 TEST=0
 
-while getopts ":te:" opt; do
-  case $opt in
+while getopts ":ste:" opt; do
+   case $opt in
+    s)
+      STARTDATE=${OPTARG}
+      ;;
     e)
       ENDDATE=${OPTARG}
       ;;
@@ -54,13 +57,13 @@ echo "Running historic pipeline for DAY"
 java -jar ${JAR_FILE} \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --timePeriod="day" --project=mlab-staging --stagingLocation="gs://mlab-data-viz" \
-  --skipNDTRead=0 --endDate=${ENDDATE} --test=${TEST} &
+  --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} &
 
 echo "Running historic pipeline for HOUR"
 java -jar ${JAR_FILE} \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --timePeriod="hour" --project=mlab-staging --stagingLocation="gs://mlab-data-viz" \
-  --skipNDTRead=0 --endDate=${ENDDATE} --test=${TEST} &
+  --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} &
 
 # wait for these to complete.
 wait

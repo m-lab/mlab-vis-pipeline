@@ -16,7 +16,8 @@ before_install:
 install:
   - pip install -r requirements.txt
 script:
+  - java -version
   - cd dataflow/
-  - mvn -X -Dmaven.test.skip=true package
+  - mvn -Dmaven.test.skip=true package
   - cd ../
   - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t

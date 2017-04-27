@@ -1,13 +1,16 @@
-language: python
+dist: trusty
+language: java
 python:
   - "2.7"
 # notifications:
 #   email:
 #     recipients:
 #       - alerts@measurementlab.net
+# addons:
+#   packages:
+#     - maven
+#     - default-jdk
 before_install:
-  - sudo apt-get --assume-yes install maven=3.3.3
-  - sudo apt-get --assume-yes install default-jdk
   - openssl aes-256-cbc -K $encrypted_64ef2f7ab707_key -iv $encrypted_64ef2f7ab707_iv -in viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json.enc -out viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json -d
 install:
   - pip install -r requirements.txt

@@ -12,10 +12,7 @@ env:
 before_install:
   - sudo apt-get --assume-yes install maven
   - sudo apt-get --assume-yes install default-jdk
-  - openssl aes-256-cbc -K $encrypted_64ef2f7ab707_key -iv \
-        $encrypted_64ef2f7ab707_iv -in \
-        viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json.enc \
-        -out viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json -d
+  - openssl aes-256-cbc -K $encrypted_64ef2f7ab707_key -iv $encrypted_64ef2f7ab707_iv -in viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json.enc -out viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json -d
 install:
   - pip install -r requirements.txt
 script:

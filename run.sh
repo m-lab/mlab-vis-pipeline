@@ -2,14 +2,16 @@
 
 # Run all parts of the pipeline with a provided end date.
 # options:
+#    -s <YYYY-MM-DD>: start date to run pipeline from.
 #    -e <YYYY-MM-DD>: end date to run pipeline to.
 #    -t : to do a test run (doesn't start dataflow)
 
-usage() { echo "Usage: $0 -e <YYYY-MM-DD> [-t]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 -s <YYYY-MM-DD> -e <YYYY-MM-DD> [-t]" 1>&2; exit 1; }
+STARTDATE=""
 ENDDATE=""
 TEST=0
 
-while getopts ":ste:" opt; do
+while getopts "s:e:t" opt; do
    case $opt in
     s)
       STARTDATE=${OPTARG}
@@ -32,9 +34,10 @@ while getopts ":ste:" opt; do
   esac
 done
 
-if [ -z "${ENDDATE}" ]; then
+if [ -z "${ENDDATE}" ] || [ -z "${STARTDATE}" ]; then
   usage
 fi
+
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DATAFLOW_DIR="${DIR}/dataflow"
@@ -46,7 +49,7 @@ if [ ! -f $JAR_FILE ]; then
   exit 1;
 fi
 
-
+echo "Start date: ${STARTDATE}"
 echo "End date: ${ENDDATE}"
 echo "STARTING PIPELINE"
 

@@ -28,7 +28,6 @@ def _find_last_date_from_response(response):
             return day['date']
 
 
-
 def _make_request(start_date, end_date, project_id):
     """Makes get request from data API and returns the response.
 
@@ -46,16 +45,15 @@ def _make_request(start_date, end_date, project_id):
     response = requests.get(api_url).json()
     return response
 
-def find_time_range(project_id, delta=10):
+def find_start_date(project_id, end_date, delta=10):
     """Finds the time range to query the API with. End date is always the
     current day and start date is the last day that returns no data.
 
     Args:
         delta: Size in days of the time delta from current date. Default is 10.
     Returns:
-        A tuple of the start and end date. Date format is YYYY-MM-DD
+        Start date in the format YYYY-MM-DD
     """
-    end_date=datetime.date.today()
     start_date=end_date - datetime.timedelta(days=delta)
 
     # Base case, went all the way back to the beginning of M-Lab
@@ -66,9 +64,9 @@ def find_time_range(project_id, delta=10):
     last_date = _find_last_date_from_response(response)
 
     if not last_date:
-        return find_time_range(project_id, delta=delta+10)
+        return find_start_date(project_id, end_date, delta=delta+10)
 
-    return str(start_date), str(end_date)
+    return str(start_date)
 
 def parse_command_line(cli_args=None):
     """Parses command-line arguments.
@@ -76,22 +74,37 @@ def parse_command_line(cli_args=None):
     Args:
       cli_args: Optional array of strings to parse. Uses sys.argv by default.
     Returns:
-      Google Cloud project id
+      Google Cloud project id and either 'start' or 'end'
     """
     if cli_args is None:
         cli_args = sys.argv[1:]
 
     # Parse the command line
     parser = argparse.ArgumentParser()
-    parser.add_argument('--project', default='mlab-oti', nargs=1)
+    parser.add_argument('--project', default='mlab-staging', nargs=1)
+    parser.add_argument('--start')
+    parser.add_argument('--end')
     args = parser.parse_args(cli_args)
 
-    return args.project[0]
+    # Exactly of 'start' or 'end' should be True
+    if args.start and args.end:
+        raise Exception('Only one of --start or --end should be specified.')
+    if args.start:
+        return args.project[0], 'start'
+    if args.end:
+        return args.project[0], 'end'
+
+    raise Exception('One of --start or --end needs to be specified.')
 
 def main():
-    project_id = parse_command_line()
-    print find_time_range(project_id)
+    project_id, which_date = parse_command_line()
+    end_date = datetime.date.today()
 
+    if which_date == 'end':
+        print end_date
+        return
+
+    print find_start_date(project_id, end_date)
 
 if __name__ == '__main__':
     main()

@@ -4,7 +4,7 @@
 # options:
 #    -s <YYYY-MM-DD>: start date to run pipeline from.
 #    -e <YYYY-MM-DD>: end date to run pipeline to.
-#    -t : to do a test run (doesn't start dataflow)
+#    -t: to do a test run (doesn't start dataflow)
 
 usage() { echo "Usage: $0 -s <YYYY-MM-DD> -e <YYYY-MM-DD> [-t]" 1>&2; exit 1; }
 STARTDATE=""

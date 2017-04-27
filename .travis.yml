@@ -17,6 +17,6 @@ install:
   - pip install -r requirements.txt
 script:
   - cd dataflow/
-  - mvn -Dmaven.test.skip=true package
+  - mvn -X -Dmaven.test.skip=true package
   - cd ../
   - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t

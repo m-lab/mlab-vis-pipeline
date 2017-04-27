@@ -5,19 +5,20 @@ python:
 #   email:
 #     recipients:
 #       - alerts@measurementlab.net
-env:
-  - GAE_PROJECT="mlab-staging"
-  - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --start=True)
-  - ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --end=True)
 before_install:
   - sudo apt-get --assume-yes install maven
   - sudo apt-get --assume-yes install default-jdk
   - openssl aes-256-cbc -K $encrypted_64ef2f7ab707_key -iv $encrypted_64ef2f7ab707_iv -in viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json.enc -out viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json -d
 install:
   - pip install -r requirements.txt
+  - pip install requests
 script:
+  - GAE_PROJECT="mlab-staging"
+  - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --start=True)
+  - ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --end=True)
   - java -version
+  - mvn -version
   - cd dataflow/
-  - mvn -Dmaven.test.skip=true package
+  # - mvn -Dmaven.test.skip=true package
   - cd ../
   - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t

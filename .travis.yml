@@ -5,7 +5,7 @@ python:
 notifications:
   email:
     recipients:
-      - fernanda.lavalle8@gmail.com
+      - alerts@measurementlab.net
 env:
   - GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json"
 before_install:
@@ -21,4 +21,4 @@ script:
   - echo $GOOGLE_APPLICATION_CREDENTIALS
   - mvn -Dmaven.test.skip=true package
   - cd ../
-  - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t
+  - ./run.sh -s ${STARTDATE} -e ${ENDDATE}

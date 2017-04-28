@@ -1,4 +1,4 @@
-# dist: trusty
+dist: trusty
 language: java
 python:
   - "2.7"

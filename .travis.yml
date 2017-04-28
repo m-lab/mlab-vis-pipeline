@@ -6,10 +6,6 @@ python:
 #   email:
 #     recipients:
 #       - alerts@measurementlab.net
-# addons:
-#   packages:
-#     - maven
-#     - default-jdk
 before_install:
   - openssl aes-256-cbc -K $encrypted_64ef2f7ab707_key -iv $encrypted_64ef2f7ab707_iv -in viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json.enc -out viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json -d
 install:
@@ -19,8 +15,8 @@ script:
   - GAE_PROJECT="mlab-staging"
   - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --start=True)
   - ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --end=True)
-  - java -version
-  - mvn -version
+  - echo ${STARTDATE}
+  - echo ${ENDDATE}
   - cd dataflow/
   - mvn -Dmaven.test.skip=true package
   - cd ../

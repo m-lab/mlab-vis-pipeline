@@ -58,7 +58,7 @@ def find_start_date(project_id, end_date, delta=10):
 
     # Base case, went all the way back to the beginning of M-Lab
     if start_date <= datetime.date(year=2009, month=1, day=1):
-        return str(datetime.date(year=2009, month=1, day=1)), str(end_date)
+        return str(datetime.date(year=2009, month=1, day=1))
 
     response = _make_request(start_date, end_date, project_id)
     last_date = _find_last_date_from_response(response)

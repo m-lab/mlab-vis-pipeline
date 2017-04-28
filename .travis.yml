@@ -15,9 +15,7 @@ script:
   - GAE_PROJECT="mlab-staging"
   - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --start=True)
   - ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --end=True)
-  - echo ${STARTDATE}
-  - echo ${ENDDATE}
   - cd dataflow/
-  # - mvn -Dmaven.test.skip=true package
+  - mvn -Dmaven.test.skip=true package
   - cd ../
   - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t

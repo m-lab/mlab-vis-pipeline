@@ -6,7 +6,7 @@ table into a series of bigtable tables used by the RESTful API.
 There are two main components in this repo:
 
 1. `dataflow` - The pipelines constructed using Google's Dataflow. Written in Java
-2. `tools` - Python files for preparing data that we join with (like maxmind,
+2. `tools` -- Python files for preparing data that we join with (like maxmind,
 location data etc.)
 
 # Development

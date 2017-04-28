@@ -1,4 +1,4 @@
-dist: trusty
+# dist: trusty
 language: java
 python:
   - "2.7"
@@ -22,6 +22,6 @@ script:
   - java -version
   - mvn -version
   - cd dataflow/
-  # - mvn -Dmaven.test.skip=true package
+  - mvn -Dmaven.test.skip=true package
   - cd ../
   - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t

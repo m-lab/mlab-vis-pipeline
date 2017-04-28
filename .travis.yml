@@ -7,7 +7,7 @@ notifications:
     recipients:
       - fernanda.lavalle8@gmail.com
 env:
-  - GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json
+  - GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json"
 before_install:
   - openssl aes-256-cbc -K $encrypted_64ef2f7ab707_key -iv $encrypted_64ef2f7ab707_iv -in viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json.enc -out viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json -d
 install:

@@ -17,6 +17,7 @@ script:
   - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --start=True)
   - ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --end=True)
   - cd dataflow/
-  - mvn -Dmaven.test.skip=true package
-  - cd ../
-  - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t
+  - echo GOOGLE_APPLICATION_CREDENTIALS
+  # - mvn -Dmaven.test.skip=true package
+  # - cd ../
+  # - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t

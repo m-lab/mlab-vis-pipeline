@@ -74,7 +74,7 @@ def parse_command_line(cli_args=None):
     Args:
       cli_args: Optional array of strings to parse. Uses sys.argv by default.
     Returns:
-      Google Cloud project id and either 'start' or 'end'
+      Google Cloud project id and either 'start' or 'end'.
     """
     if cli_args is None:
         cli_args = sys.argv[1:]

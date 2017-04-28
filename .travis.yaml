@@ -1,4 +1,5 @@
-language: python
+dist: trusty
+language: java
 python:
   - "2.7"
 notifications:
@@ -6,13 +7,18 @@ notifications:
     recipients:
       - alerts@measurementlab.net
 env:
-  - GAE_PROJECT="mlab-oti"
-  - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT})
+  - GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json"
 before_install:
-  - sudo apt-get --assume-yes install maven
-  - sudo apt-get --assume-yes install default-jdk
+  - openssl aes-256-cbc -K $encrypted_64ef2f7ab707_key -iv $encrypted_64ef2f7ab707_iv -in viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json.enc -out viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json -d
 install:
-  - pip install -r test_requirements.txt
+  - pip install -r requirements.txt
+  - pip install requests
 script:
-  - mvn -Dmaven.test.skip=true dataflow/package
-  - run.sh -s ${STARTDATE} -e ${ENDDATE}
+  - GAE_PROJECT="mlab-oti"
+  - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --start=True)
+  - ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --end=True)
+  - cd dataflow/
+  - echo $GOOGLE_APPLICATION_CREDENTIALS
+  - mvn -Dmaven.test.skip=true package
+  - cd ../
+  - ./run.sh -s ${STARTDATE} -e ${ENDDATE}

@@ -2,10 +2,10 @@ dist: trusty
 language: java
 python:
   - "2.7"
-# notifications:
-#   email:
-#     recipients:
-#       - alerts@measurementlab.net
+notifications:
+  email:
+    recipients:
+      - fernanda.lavalle8@gmail.com
 before_install:
   - openssl aes-256-cbc -K $encrypted_64ef2f7ab707_key -iv $encrypted_64ef2f7ab707_iv -in viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json.enc -out viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json -d
 install:

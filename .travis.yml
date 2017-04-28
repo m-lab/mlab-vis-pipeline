@@ -6,18 +6,19 @@ notifications:
   email:
     recipients:
       - fernanda.lavalle8@gmail.com
+env:
+  - GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json
+  - GAE_PROJECT="mlab-staging"
 before_install:
   - openssl aes-256-cbc -K $encrypted_64ef2f7ab707_key -iv $encrypted_64ef2f7ab707_iv -in viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json.enc -out viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json -d
 install:
   - pip install -r requirements.txt
   - pip install requests
 script:
-  - GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/viz-staging-bigtable-service@mlab-staging.iam.gserviceaccount.com-creds.json
-  # - GAE_PROJECT="mlab-staging"
-  # - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --start=True)
-  # - ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --end=True)
-  # - cd dataflow/
+  - STARTDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --start=True)
+  - ENDDATE=$(python update_cron_date.py --project=${GAE_PROJECT} --end=True)
+  - cd dataflow/
   - echo $GOOGLE_APPLICATION_CREDENTIALS
-  # - mvn -Dmaven.test.skip=true package
-  # - cd ../
-  # - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t
+  - mvn -Dmaven.test.skip=true package
+  - cd ../
+  - ./run.sh -s ${STARTDATE} -e ${ENDDATE} -t

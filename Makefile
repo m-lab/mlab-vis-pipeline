@@ -2,11 +2,9 @@ lint:
 	pylint --rcfile tools/.pylintrc tools/**/**.py
 
 #-- Bigquery tasks:
+
 asn_merge:
 	cd ./tools/bigquery/asn_merge && ./deploy_asn_merge.sh
-
-sites:
-	cd ./tools/bigquery/mlab-sites && ./deploy_sites_table.sh
 
 maxmind:
 	cd ./tools/bigquery/maxmind && ./deploy_maxmind_asn.sh
@@ -23,7 +21,7 @@ timezones:
 mlab_sites:
 	cd ./tools/bigquery/mlab-sites && ./deploy_sites_table.sh
 
-bigquery: asn_merge sites maxmind location location_cleaning timezones mlab_sites
+bigquery: asn_merge maxmind location location_cleaning timezones mlab_sites
 	echo 'DONE'
 
 #-- Bigtable tasks:

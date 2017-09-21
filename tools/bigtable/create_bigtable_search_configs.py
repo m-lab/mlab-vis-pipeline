@@ -5,14 +5,15 @@
 import os
 import copy
 import sqlparse
-from search_table_utils import *
-
-from create_bigtable_time_configs import \
-    read_text, save_text, read_json, save_json, \
+from tools.bigtable.search_table_utils import concat, lower, replace, \
+    list_fields, field_name, all_table_fields, join_on_fields, \
+    timed_list_fields, output_bin_string
+from tools.utils import read_json, save_json, save_text, read_text
+from tools.bigtable.create_bigtable_time_configs import \
     get_query_relative_filename, get_query_full_filename, \
     BIGQUERY_DATE_TABLE, CONFIG_DIR
-from configurations.search_tables import AGGREGATIONS, LOCATION_LEVELS, \
-    TIME_RANGES, TEST_DATE_COMPARISONS, SPEED_HISTOGRAM_BINS
+from tools.bigtable.configurations.search_tables import AGGREGATIONS, \
+    LOCATION_LEVELS, TIME_RANGES, TEST_DATE_COMPARISONS, SPEED_HISTOGRAM_BINS
 
 # -- Templates:
 # Location lists:
@@ -45,7 +46,10 @@ LOCATION_LEFTJOIN_TEMPLATE = os.path.join(
 
 
 def build_location(agg_key):
-    print(agg_key)
+    '''
+    Build location sql and json files for a specific aggregate key
+    '''
+    print agg_key
     build_location_sql(agg_key)
     build_location_json(agg_key)
 
@@ -53,7 +57,6 @@ def build_location_sql(agg_key):
     '''
     Builds sql query for a location based list
     '''
-
     subset_template = read_text(LOCATION_SUBSELECT_TEMPLATE)
     leftjoin_template = read_text(LOCATION_LEFTJOIN_TEMPLATE)
 
@@ -66,8 +69,6 @@ def build_location_sql(agg_key):
     query_str += "\nWHERE last_year_test_count > 60"
 
     save_text(get_query_full_filename(agg_config["table_name"]), query_str)
-
-
 
 def build_base_query_string(agg_config):
     '''
@@ -102,9 +103,11 @@ def build_base_query_string(agg_config):
     return query_str
 
 def build_location_key_string(location_level, key_name):
-    # build internal key
-    # Not sure why, but the location type can be of different
-    # type values, so we have to handle that here.
+    '''
+    build internal key
+    Not sure why, but the location type can be of different
+    type values, so we have to handle that here.
+    '''
 
     keys = location_level['keys']
 
@@ -128,7 +131,11 @@ def build_location_key_string(location_level, key_name):
 
     return key_str
 
-def build_left_join(leftjoin_template, time_comparison, location_level, agg_config, binned_fields):
+def build_left_join(leftjoin_template, time_comparison, location_level,
+                    agg_config, binned_fields):
+    '''
+    Build left join
+    '''
     join_fields = location_level["fields"] + agg_config['extra_fields']
     left_join = leftjoin_template.format(
 
@@ -153,14 +160,19 @@ def build_left_join(leftjoin_template, time_comparison, location_level, agg_conf
     return left_join
 
 
-def build_location_sub_queries(agg_config, subselect_template, leftjoin_template):
-    # handle sub queries
+def build_location_sub_queries(agg_config, subselect_template,
+                               leftjoin_template):
+
+    '''
+    Build location sub queries
+    '''
     subqueries = []
     for location_level in LOCATION_LEVELS:
 
         location_key_name = agg_config['key_name']
 
-        location_key_str = build_location_key_string(location_level, location_key_name)
+        location_key_str = build_location_key_string(
+            location_level, location_key_name)
 
         left_joins = ""
 
@@ -172,7 +184,9 @@ def build_location_sub_queries(agg_config, subselect_template, leftjoin_template
             for field in agg_config["binned_fields"]:
                 binned_fields.append(output_bin_string(field, field['bins']))
 
-            left_join = build_left_join(leftjoin_template, time_comparison, location_level, agg_config, binned_fields)
+            left_join = build_left_join(leftjoin_template, time_comparison,
+                                        location_level, agg_config,
+                                        binned_fields)
             left_joins += left_join
 
 
@@ -183,9 +197,10 @@ def build_location_sub_queries(agg_config, subselect_template, leftjoin_template
             for field in agg_config["binned_fields"]:
                 name = field_name(field)
                 binned_timed_fields.append("{0}.{1}_bins as {0}_{1}_bins"
-                    .format(time_comparison, name))
+                                           .format(time_comparison, name))
                 groupby_binned_timed_fields.append("{0}_{1}_bins"
-                    .format(time_comparison, name))
+                                                   .format(
+                                                       time_comparison, name))
 
         subquery = "(SELECT "
         subquery += " {0},\n".format(location_key_str)
@@ -207,7 +222,8 @@ def build_location_sub_queries(agg_config, subselect_template, leftjoin_template
                 all_table_fields(join_fields),
 
                 # 3 - timed data fields
-                all_table_fields(agg_config["timed_fields"], TIME_RANGES, True) +
+                all_table_fields(
+                    agg_config["timed_fields"], TIME_RANGES, True) +
                 ",\n" + ", \n".join(binned_timed_fields),
 
                 # 4 - left joins
@@ -256,7 +272,7 @@ def setup_base_json(config_name, config):
 
     # big query table name
     json_struct["bigtable_table_name"] = config["table_name"]
-    json_struct["bigquery_table"] =  BIGQUERY_DATE_TABLE
+    json_struct["bigquery_table"] = BIGQUERY_DATE_TABLE
 
     # key field
     # For tables with no time aggregation,
@@ -325,6 +341,9 @@ def build_location_client_asn_number_list_json():
 # Location List
 # ###############
 def build_location_list():
+    '''
+    Build location list sql and json
+    '''
     print("client_loc_list")
     build_location_list_sql()
     build_location_list_json()
@@ -438,7 +457,8 @@ def build_location_list_sql():
                 "",
 
                 # 7 - group by
-                list_fields(config["key_fields"]) + ",\n" +
+                list_fields(
+                    config["key_fields"]) + ",\n" +
                     list_fields(location_level["fields"]) + ",\n" +
                     list_fields(config["timed_fields"], TIME_RANGES)
             )
@@ -461,15 +481,15 @@ def build_location_list_sql():
         key_str = "\"info\""
 
 
-        if len(key_str) == 0:
+        if not key_str:
             key_str = "\"\""
 
         key_str += " as {0}".format(config["key_fields"][0]["name"])
 
         child_str += " as {0}".format(config["key_fields"][1]["name"])
 
-
-        where_field = " AND ".join(["LENGTH(all.{0}) > 0".format(field) for field in location_level["fields"]])
+        where_field = " AND ".join(["LENGTH(all.{0}) > 0".format(field)
+                                    for field in location_level["fields"]])
 
         where_field = "WHERE " + where_field
 
@@ -520,28 +540,33 @@ def build_location_list_sql():
                 where_field,
 
                 # 7 - group by
-                list_fields(config["key_fields"]) + ",\n" +
-                    list_fields(location_level["fields"]) + ",\n" +
-                        list_fields(config["timed_fields"], TIME_RANGES)
+                list_fields(
+                    config["key_fields"]) + ",\n" +
+                list_fields(location_level["fields"]) + ",\n" +
+                list_fields(config["timed_fields"], TIME_RANGES)
             )
         )
 
     query_str += ", \n".join(subqueries)
-
     save_text(get_query_full_filename(config["table_name"]),
-            sqlparse.format(query_str, strip_whitespace=False, reindent=True))
+              sqlparse.format(query_str, strip_whitespace=False, reindent=True))
 
 ####
 # Location search table sql and json:
 # location_search
 ###
 def build_location_search():
-    print("location_search")
+    '''
+    Build location search
+    '''
+    print "location_search"
     build_location_search_sql()
     build_location_search_json()
 
 def build_location_search_json():
-
+    '''
+    Build location search json
+    '''
     config = AGGREGATIONS["client_loc_search"]
     json_struct = setup_base_json("client_loc_search", config)
 
@@ -549,6 +574,9 @@ def build_location_search_json():
     save_json(config_filepath, json_struct)
 
 def build_location_key(field_names, name):
+    '''
+    Build location key
+    '''
     # build initial sql
     key_str = replace(
         lower(
@@ -557,6 +585,9 @@ def build_location_key(field_names, name):
     return key_str
 
 def build_location_search_sql():
+    '''
+    Build location search sql
+    '''
     # read template
     join_template = read_text(LOCATION_SEARCH_JOIN_TEMPLATE)
     config = AGGREGATIONS["client_loc_search"]
@@ -565,7 +596,7 @@ def build_location_search_sql():
     key_str = replace(
         lower(
             concat(config["key_columns"])),
-            " ", "") + " as {0}".format(config["key_name"])
+        " ", "") + " as {0}".format(config["key_name"])
 
     # build list of fields
     fields = list_fields(config["fields"])
@@ -612,7 +643,7 @@ def build_location_search_sql():
     '''
 
     save_text(get_query_full_filename(config["table_name"]),
-            sqlparse.format(query_str, strip_whitespace=False, reindent=True))
+              sqlparse.format(query_str, strip_whitespace=False, reindent=True))
 
 def main():
     '''

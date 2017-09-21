@@ -1,97 +1,80 @@
 #!/usr/bin/env python
 
 import argparse
-import json
 import glob
-import sys
 import time
-from gcloud import bigtable
-from gcloud.bigtable import happybase
+from tools.bigtable.bigtable_utils import init_pool
+from tools.utils import read_json
 
-DEFAULT_PROJECT_ID = 'mlab-oti'
-DEFAULT_INSTANCE_ID = 'mlab-data-viz-prod'
 COLUMN_FAMILIES = {'data': dict(), 'meta': dict()}
 
-def read_json(filename):
+def main(config_dir, remove_tables, pattern):
     '''
-    read json
+    Create big tables based on configuration directory
     '''
-    data = {}
-    with open(filename) as data_file:
-        data = json.load(data_file)
-    return data
 
+    connection_pool = None
 
-def main(project_id, instance_id, config_dir, remove_tables, pattern):
-    '''
-    main
-    '''
-    print(config_dir)
-
+    print config_dir
     config_files = glob.glob(config_dir + "/" + pattern)
-    client = bigtable.Client(project=project_id, admin=True)
-    instance = client.instance(instance_id)
 
-    connection = happybase.Connection(instance=instance)
+    connection_pool = init_pool()
 
-    for config_file in config_files:
+    with connection_pool.connection(timeout=5) as connection:
+        for config_file in config_files:
+            config = read_json(config_file)
 
-        config = read_json(config_file)
+            table_id = config['bigtable_table_name']
+            if remove_tables:
+                print 'REMOVING ' + table_id + ' bigtable table'
+                try:
+                    connection.delete_table(table_id)
+                except Exception as err:
+                    print err
+                    print 'NO TABLE FOUND TO DELETE'
 
-        table_id = config['bigtable_table_name']
-        if remove_tables:
-            print('REMOVING ' + table_id + ' bigtable table')
+            print 'CREATING ' + table_id + ' bigtable table'
+
             try:
-                connection.delete_table(table_id)
+                connection.create_table(table_id, COLUMN_FAMILIES)
             except Exception as err:
                 print err
-                print('NO TABLE FOUND TO DELETE')
+                print 'TABLE EXISTS'
 
-        print('CREATING ' + table_id + ' bigtable table')
+            time.sleep(2)
+        connection.close()
 
-        try:
-            connection.create_table(table_id, COLUMN_FAMILIES)
-        except Exception as err:
-            print(err)
-            print('TABLE EXISTS')
-
-        time.sleep(2)
-
-    connection.close()
-
-
+    print 'Tables created'
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
+    PARSER = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--project_id', help='Your Cloud Platform project ID.', default=DEFAULT_PROJECT_ID)
-    parser.add_argument(
-        '--instance_id', help='ID of the Cloud Bigtable instance to connect to.', default=DEFAULT_INSTANCE_ID)
-    parser.add_argument(
+
+    PARSER.add_argument(
         '--configs',
         help='Directory of Bigtable config files')
 
-    parser.add_argument(
+    PARSER.add_argument(
         '--pattern',
         help='Config file pattern', default="*.json")
 
-    parser.add_argument(
+    PARSER.add_argument(
         '--remove',
         help='Destroy existing tables',
         action='store_true',
         dest='remove')
 
-    parser.add_argument(
+    PARSER.add_argument(
         '--no-remove',
         help='Do not attempt to destroy existing tables',
         action='store_false',
         dest='remove')
 
-    parser.set_defaults(remove=False)
+    PARSER.set_defaults(remove=False)
 
-    args = parser.parse_args()
-    if(not args.configs):
+    ARGS = PARSER.parse_args()
+    if(not ARGS.configs):
         print('--configs required. Provide config file directory')
     else:
-        main(args.project_id, args.instance_id, args.configs, args.remove, args.pattern)
+        main(ARGS.configs, ARGS.remove, ARGS.pattern)

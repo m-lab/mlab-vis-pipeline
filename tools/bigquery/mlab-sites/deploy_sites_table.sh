@@ -5,7 +5,6 @@ basedir=`dirname $0`
 tableName=data_viz_helpers.mlab_sites
 tableSchema=$basedir/../../../dataflow/data/bigquery/mlab-sites/schemas/mlab_sites_schema.json
 
-
 echo "Processing mlab_sites CSV"
 python process_sites.py
 

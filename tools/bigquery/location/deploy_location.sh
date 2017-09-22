@@ -2,7 +2,6 @@
 basedir=`dirname $0`
 locationDir=$basedir/../../../dataflow/data/bigquery/location
 
-
 echo "Creating location tables"
 
 echo "Add data_viz_helpers.location_country_codes"

@@ -12,6 +12,10 @@ location data etc.)
 
 # Setting up a new environment
 
+Note that you must have the appropriate service account credentials json file
+to access the bigtable instance. Store that file somewhere on your system
+outside of this application root.
+
 ## Setup Bigtable
 
 The dataflow pipeline will create bigtable tables. In order for the pipeline to
@@ -26,23 +30,18 @@ file to point to that instance.
 root of this app run the following:
 
 ```
-KEY_FILE=<cred file path> ./tools/bigtable/setup_tables.sh production|staging|sandbox
+API_MODE=sandbox|staging|production \
+KEY_FILE=<cred file path> \
+make setup_bigtable
 ```
-
-This will create the required config files that describe all the tables that
-need to be created, and then create them in bigtable.
-
-Note that you must have the appropriate credentials json file to access
-the bigtable instance. Store that file somewhere on your system outside of this
-application.
 
 ## Setup Bigquery
 
-Some helper tables are necessary for the pipeline.
-To run them, run: `make bigquery`.
-You will need to ensure you have the appropriate project selected for the
-environment you are pushing these tables to.
+Some helper tables are necessary for the pipeline. To create them, run:
 
+```
+KEY_FILE=<path to cred file> make setup_bigquery
+```
 
 # Development setup
 

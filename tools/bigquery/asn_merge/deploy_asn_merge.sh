@@ -1,7 +1,5 @@
 #!/bin/bash
-
 basedir=`dirname $0`
-
 
 tableName=data_viz_helpers.asn_merge
 

@@ -2,7 +2,6 @@
 
 basedir=`dirname $0`
 
-
 tableName=data_viz_helpers.location_cleaning
 
 tableSchema=$basedir/../../../dataflow/data/bigquery/location_cleaning/schemas/location_cleaning.json

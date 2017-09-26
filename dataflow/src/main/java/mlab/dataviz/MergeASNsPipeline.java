@@ -20,26 +20,31 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 import mlab.dataviz.dofn.ExtractAsnNumFn;
 import mlab.dataviz.dofn.MergeAsnsFn;
+import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
+import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.Schema;
 
 public class MergeASNsPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(MergeASNsPipeline.class);
 
-	private static final String MERGE_ASN_TABLE = "mlab-oti:data_viz_helpers.asn_merge";
+	private static final String MERGE_ASN_TABLE = "data_viz_helpers.asn_merge";
 
 	//	for running main()
-	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.tmp_jim_input";
-	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.tmp_jim_input";
+	private static final String INPUT_TABLE = "data_viz_testing.merge_asn_test";
+	private static final String OUTPUT_TABLE = "data_viz_testing.merge_asn_test_output";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
-	private String mergeAsnTable = MERGE_ASN_TABLE;
+	private String mergeAsnTable;
+	private BQTableUtils bqUtils;
 
 	/**
 	 * Create a new pipeline.
 	 * @param p The Dataflow pipeline to build on
 	 */
-	public MergeASNsPipeline(Pipeline p) {
+	public MergeASNsPipeline(Pipeline p, BQTableUtils bqUtils) {
 		super(p);
+		this.bqUtils = bqUtils;
+		this.setMergeASNTable(MERGE_ASN_TABLE);
 	}
 
 
@@ -54,6 +59,21 @@ public class MergeASNsPipeline extends BasePipeline {
 	}
 
 	/**
+	 * Get the merge ASN table name
+	 * @return
+	 */
+	public String getMergeASNTable() {
+		return this.mergeAsnTable;
+	}
+	
+	/**
+	 * Set the table name used for the merge ASN table.
+	 * @param mergeASNTable String name
+	 */
+	public void setMergeASNTable(String mergeASNTable) {
+		this.mergeAsnTable = this.bqUtils.wrapTable(mergeASNTable);
+	}
+	/**
 	 * Merge ASNs information for the client ASN.
 	 *
 	 * @param data The PCollection representing the rows to have ISP information added to them
@@ -63,11 +83,11 @@ public class MergeASNsPipeline extends BasePipeline {
 		// Read in the MaxMind ISP data
 		PCollection<TableRow> mergeAsn = this.pipeline.apply(
 				BigQueryIO.Read
-				.named("Read " + this.mergeAsnTable)
-				.from(this.mergeAsnTable));
+				.named("Read " + this.getMergeASNTable())
+				.from(this.getMergeASNTable()));
 
 		PCollection<KV<String, TableRow>> mergeAsnKeys =
-				mergeAsn.apply(ParDo.named("Extract ASN from " + this.mergeAsnTable)
+				mergeAsn.apply(ParDo.named("Extract ASN from " + this.getMergeASNTable())
 						.of(new ExtractAsnNumFn()));
 
 		PCollectionView<Map<String, TableRow>> mergeAsnMap = mergeAsnKeys.apply(View.asMap());
@@ -94,11 +114,14 @@ public class MergeASNsPipeline extends BasePipeline {
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
 
-		MergeASNsPipeline mergeASNs = new MergeASNsPipeline(p);
+		HistoricPipelineOptions optionsMergeASN = options.cloneAs(HistoricPipelineOptions.class);
+		BQTableUtils bqTableUtils = new BQTableUtils(optionsMergeASN);
+		
+		MergeASNsPipeline mergeASNs = new MergeASNsPipeline(p, bqTableUtils);
 		mergeASNs
 		.setWriteData(true)
-		.setInputTable(INPUT_TABLE)
-		.setOutputTable(OUTPUT_TABLE)
+		.setInputTable(bqTableUtils.wrapTable(INPUT_TABLE))
+		.setOutputTable(bqTableUtils.wrapTable(OUTPUT_TABLE))
 		.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
 		.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);

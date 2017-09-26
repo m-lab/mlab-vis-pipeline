@@ -7,7 +7,6 @@ import os
 #pylint: disable=no-name-in-module, relative-import
 from google.cloud import bigtable
 from google.cloud import happybase
-from google.cloud.bigtable.row_filters import FamilyNameRegexFilter
 from google.oauth2 import service_account
 
 def init_pool():

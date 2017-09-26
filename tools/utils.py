@@ -1,7 +1,7 @@
 '''
 General utilities shared between bigtable and bigquery tools
 '''
-
+import csv
 import json
 def read_json(filename):
     '''
@@ -36,3 +36,15 @@ def save_text(filename, text):
     '''
     with open(filename, 'w') as out_file:
         out_file.write(text)
+
+
+def write_csv(filename, data_list):
+    '''
+    Write the CSV file to disk
+    '''
+    with open(filename, 'w') as csvfile:
+        header = data_list[0].keys()
+        writer = csv.DictWriter(csvfile, fieldnames=header)
+        writer.writeheader()
+        for row in data_list:
+            writer.writerow(row)

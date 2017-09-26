@@ -20,22 +20,46 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 import mlab.dataviz.dofn.CleanLocationFn;
 import mlab.dataviz.dofn.ExtractLocationKeyFn;
+import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
+import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.Schema;
 
 public class LocationCleaningPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(LocationCleaningPipeline.class);
 
+	// default table name
 	private static final String LOCATION_CLEANING_TABLE = "data_viz_helpers.location_cleaning";
 
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.test_location_clean_input";
-	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.test_location_clean_output";
+	private static final String INPUT_TABLE = "data_viz_testing.test_location_clean_input";
+	private static final String OUTPUT_TABLE = "data_viz_testing.test_location_clean_output";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
-	public LocationCleaningPipeline(Pipeline p) {
+	private BQTableUtils bqUtils;
+	private String locationCleaningTable;
+
+	public LocationCleaningPipeline(Pipeline p, BQTableUtils bqUtils) {
 		super(p);
+		this.bqUtils = bqUtils;
+		this.setLocationCleaningTable(LOCATION_CLEANING_TABLE);
 	}
 
+	/**
+	 * Get the table name to write to
+	 * @return String
+	 */
+	public String getLocationCleaningTable() {
+		return this.locationCleaningTable;
+	}
+	
+	/**
+	 * Set the location table name
+	 * @param locationCleaningTable
+	 */
+	public void setLocationCleaningTable(String locationCleaningTable) {
+		this.locationCleaningTable = this.bqUtils.wrapTable(locationCleaningTable);
+	}
+	
 	/**
 	 * Reads in the location_cleaning table as a side input and runs CleanLocationFn with it to replace
 	 * cities and region codes for locations that match.
@@ -43,8 +67,8 @@ public class LocationCleaningPipeline extends BasePipeline {
 	public PCollection<TableRow> applyInner(PCollection<TableRow> data) {
 		PCollection<TableRow> locationCleaning = this.pipeline.apply(
 			BigQueryIO.Read
-				.named("Read " + LOCATION_CLEANING_TABLE)
-				.from(LOCATION_CLEANING_TABLE));
+				.named("Read " + this.getLocationCleaningTable())
+				.from(this.getLocationCleaningTable()));
 
 		PCollection<KV<String, TableRow>> locationKeys =
 				locationCleaning.apply(ParDo.named("Extract Location Keys")
@@ -69,12 +93,15 @@ public class LocationCleaningPipeline extends BasePipeline {
 
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
+		
+		HistoricPipelineOptions optionsLocationClean = options.cloneAs(HistoricPipelineOptions.class);
+		BQTableUtils bqUtils = new BQTableUtils(optionsLocationClean);
 
-		LocationCleaningPipeline addLocations = new LocationCleaningPipeline(p);
+		LocationCleaningPipeline addLocations = new LocationCleaningPipeline(p, bqUtils);
 		addLocations
 			.setWriteData(true)
-			.setOutputTable(OUTPUT_TABLE)
-		    .setInputTable(INPUT_TABLE)
+			.setOutputTable(bqUtils.wrapTable(OUTPUT_TABLE))
+		    .setInputTable(bqUtils.wrapTable(INPUT_TABLE))
 			.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
 			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);

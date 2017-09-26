@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.PipelineResult.State;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
@@ -20,6 +19,7 @@ import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
+import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.BigQueryIOHelpers;
 import mlab.dataviz.util.Schema;
 
@@ -72,10 +72,9 @@ public class HistoricPipeline {
 	private static String[] getDates(HistoricPipelineOptions options) {
 
 		String [] dates = new String[2];
-		String timeSuffix = "T00:00:00Z";
 
-		dates[0] = options.getStartDate() + timeSuffix;
-		dates[1] = options.getEndDate() + timeSuffix;
+		dates[0] = options.getStartDate() + "T00:00:00Z"; // start of day
+		dates[1] = options.getEndDate() +  "T23:59:59Z";  // end of day
 
 		return dates;
 	}
@@ -85,7 +84,7 @@ public class HistoricPipeline {
 	 *
 	 * Full runtime arguments example:
 	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner
-	 * --timePeriod="sample" --project=mlab-oti --stagingLocation="gs://mlab-data-viz-sandbox"
+	 * --timePeriod="sample" --project=mlab-sandbox --stagingLocation="gs://mlab-data-viz-sandbox"
 	 *
 	 * @param args
 	 * @throws Exception
@@ -95,7 +94,7 @@ public class HistoricPipeline {
 		HistoricPipelineOptions options = PipelineOptionsFactory.fromArgs(args)
 				.withValidation()
 				.as(HistoricPipelineOptions.class);
-
+		
 		String timePeriod = options.getTimePeriod();
 		int skipNDTRead = options.getSkipNDTRead();
 
@@ -138,8 +137,6 @@ public class HistoricPipeline {
 	    	HistoricPipelineOptions optionsUl = options.cloneAs(HistoricPipelineOptions.class);
 	    	optionsUl.setAppName("HistoricPipeline-Upload");
 
-
-
 	    	ExtractHistoricRowsPipeline ehrPUL = new ExtractHistoricRowsPipeline(optionsUl);
 	    	Thread ulPipeThread = new Thread(ehrPUL);
 	    	String uploadsConfigFile = getRunnerConfigFilename(timePeriod, "uploads");
@@ -151,8 +148,6 @@ public class HistoricPipeline {
 	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
 	    		.setWriteDisposition(WriteDisposition.WRITE_APPEND)
 	    		.shouldExecute(shouldExecute);
-
-
 
 	    	// start the two threads
 	    	LOG.info("Starting upload/download threads");
@@ -178,40 +173,45 @@ public class HistoricPipeline {
 			HistoricPipelineOptions optionsMergeAndISP = options.cloneAs(HistoricPipelineOptions.class);
 			optionsMergeAndISP.setAppName("HistoricPipeline-MergeAndISP");
 			Pipeline pipe = Pipeline.create(optionsMergeAndISP);
-
+			
+			BQTableUtils bqUtils = new BQTableUtils(options);
+			
 			// === merge upload and download into a single set of rows (outputs a table and also gives the rows back)
 			MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(pipe);
 
-			mergeUploadDownload.setDownloadTable((String) downloadsConfig.get("outputTable"))
-					.setUploadTable((String) uploadsConfig.get("outputTable"))
-					.setOutputTable((String) downloadsConfig.get("mergeTable"))
+			mergeUploadDownload.setDownloadTable(bqUtils.wrapTableWithBrakets((String) downloadsConfig.get("outputTable")))
+					.setUploadTable(bqUtils.wrapTableWithBrakets((String) uploadsConfig.get("outputTable")))
+					.setOutputTable(bqUtils.wrapTable((String) downloadsConfig.get("mergeTable")))
 					.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 					.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
 
 			PCollection<TableRow> rows = mergeUploadDownload.apply();
-
+			
 			// === add ISPs
-			rows = new AddISPsPipeline(pipe).apply(rows);
+			rows = new AddISPsPipeline(pipe, bqUtils).apply(rows);
 
-			// === add server locations and mlab site info
-			rows = new AddMlabSitesInfoPipeline(pipe).apply(rows);
+			// === add server locations and m-lab site info
+			rows = new AddMlabSitesInfoPipeline(pipe, bqUtils).apply(rows);
 
 			// === merge ASNs
-			rows = new MergeASNsPipeline(pipe).apply(rows);
+			rows = new MergeASNsPipeline(pipe, bqUtils).apply(rows);
 
 			// === add local time
-			rows = new AddLocalTimePipeline(pipe).apply(rows);
+			rows = new AddLocalTimePipeline(pipe, bqUtils).apply(rows);
 
 			// === clean locations (important to do before resolving location names)
-			rows = new LocationCleaningPipeline(pipe).apply(rows);
+			rows = new LocationCleaningPipeline(pipe, bqUtils).apply(rows);
 
 			// === add location names
-			rows = new AddLocationPipeline(pipe).apply(rows);
+			rows = new AddLocationPipeline(pipe, bqUtils).apply(rows);
 
 			// write to the final table
-			BigQueryIOHelpers.writeTable(rows, (String) downloadsConfig.get("withISPTable"),
+			BigQueryIOHelpers.writeTable(
+					rows, 
+					bqUtils.wrapTable((String) downloadsConfig.get("withISPTable")),
 					Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")),
-					WriteDisposition.WRITE_TRUNCATE, CreateDisposition.CREATE_IF_NEEDED);
+					WriteDisposition.WRITE_TRUNCATE, 
+					CreateDisposition.CREATE_IF_NEEDED);
 
 			if (test == 0) {
 				// kick off the pipeline
@@ -222,8 +222,6 @@ public class HistoricPipeline {
 
 				LOG.info("Merge + ISPs job completed, with status: " + resultsMergeAndISPs.getState().toString());
 			}
-
-
 	    } else {
 	    	LOG.error("Download or Upload pipelines failed.");
 	    }

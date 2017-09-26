@@ -27,8 +27,8 @@ public class TimeLocalizerTest {
 	@BeforeClass
 	public static void setupClass() {
 		try {
-			tlLocal = new TimeLocalizer().setMode(TimeLocalizer.LOCAL_MODE).setup();
-			tlBq = new TimeLocalizer().setMode(TimeLocalizer.BQ_MODE).setup();
+			tlLocal = new TimeLocalizer("mlab-sandbox").setMode(TimeLocalizer.LOCAL_MODE).setup();
+			tlBq = new TimeLocalizer("mlab-sandbox").setMode(TimeLocalizer.BQ_MODE).setup();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

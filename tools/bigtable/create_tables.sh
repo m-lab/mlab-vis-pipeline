@@ -22,7 +22,6 @@ fi
 CONFIG_DIR=${CONFIG_DIR:-./dataflow/data/bigtable}
 
 # Initialize tables in bigtable itself
-BIGTABLE_CONFIG_DIR=bigtable_configs \
 BIGTABLE_INSTANCE=${BIGTABLE_INSTANCE} \
 PROJECT=${PROJECT} \
 API_MODE=${API_MODE} \

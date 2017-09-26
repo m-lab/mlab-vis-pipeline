@@ -16,6 +16,7 @@ import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.dataviz.pipelineopts.UpdatePipelineOptions;
+import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.BigQueryIOHelpers;
 import mlab.dataviz.util.Schema;
 
@@ -33,6 +34,8 @@ public class UpdatePipeline {
 					.withValidation()
 					.as(UpdatePipelineOptions.class);
 		
+		BQTableUtils bqUtils = new BQTableUtils(options);
+		
 	    String timePeriod = options.getTimePeriod();
 	    String projectId = options.getProject();
 	    
@@ -40,12 +43,13 @@ public class UpdatePipeline {
 	    // ====  make daily update tables
 	    UpdatePipelineOptions extractNewRowsOptions = options.cloneAs(UpdatePipelineOptions.class);
 	    extractNewRowsOptions.setAppName("UpdatePipeline-ExtractRows");
+	    
 	    Pipeline pipe = Pipeline.create(extractNewRowsOptions);
 	    ExtractUpdateRowsPipeline dup = new ExtractUpdateRowsPipeline(pipe);
-	    dup.setProjectId(projectId)
-	    	.setTimePeriod(timePeriod)
-	    	.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
-	    	.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE);
+	    		dup.setProjectId(projectId)
+	    		.setTimePeriod(timePeriod)
+	    		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
+	    		.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE);
     
 	    dup.apply();
 	    
@@ -64,7 +68,8 @@ public class UpdatePipeline {
 
 		// === merge the table (outputs a table and also returns the rows)
 		MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(pipe2);
-		mergeUploadDownload.setDownloadTable((String) downloadsConfig.get("outputTable"))
+		mergeUploadDownload.setDownloadTable(
+				(String) downloadsConfig.get("outputTable"))
 			.setUploadTable((String) uploadsConfig.get("outputTable"))
 			.setOutputTable((String) downloadsConfig.get("mergeTable"))
 			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
@@ -73,27 +78,29 @@ public class UpdatePipeline {
 		PCollection<TableRow> rows = mergeUploadDownload.apply();
 
 		// === add ISPs
-		rows = new AddISPsPipeline(pipe).apply(rows);
+		rows = new AddISPsPipeline(pipe, bqUtils).apply(rows);
 
 		// === add server locations and mlab site info
-		rows = new AddMlabSitesInfoPipeline(pipe).apply(rows);
+		rows = new AddMlabSitesInfoPipeline(pipe, bqUtils).apply(rows);
 		
 		// === merge ASNs
-		rows = new MergeASNsPipeline(pipe).apply(rows);
+		rows = new MergeASNsPipeline(pipe, bqUtils).apply(rows);
 		
 		// === add local time
-		rows = new AddLocalTimePipeline(pipe).apply(rows);
+		rows = new AddLocalTimePipeline(pipe, bqUtils).apply(rows);
 		
 		// === clean locations (important to do before resolving location names)
-		rows = new LocationCleaningPipeline(pipe).apply(rows);
+		rows = new LocationCleaningPipeline(pipe, bqUtils).apply(rows);
 					
 		// === add location names
-		rows = new AddLocationPipeline(pipe).apply(rows);
+		rows = new AddLocationPipeline(pipe, bqUtils).apply(rows);
 		
 		// write to the final table
-		BigQueryIOHelpers.writeTable(rows, (String) downloadsConfig.get("withISPTable"), 
+		BigQueryIOHelpers.writeTable(rows, 
+				bqUtils.wrapTable((String) downloadsConfig.get("withISPTable")), 
 				Schema.fromJSONFile((String) downloadsConfig.get("withISPTableSchema")),
-				WriteDisposition.WRITE_TRUNCATE, CreateDisposition.CREATE_IF_NEEDED);
+				WriteDisposition.WRITE_TRUNCATE, 
+				CreateDisposition.CREATE_IF_NEEDED);
 		
 		// run the pipeline
 		DataflowPipelineJob resultsMergeAndISPs = (DataflowPipelineJob) pipe2.run();

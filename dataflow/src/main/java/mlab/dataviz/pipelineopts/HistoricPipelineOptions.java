@@ -22,6 +22,10 @@ public interface HistoricPipelineOptions extends PipelineOptions, BigQueryOption
 	int getTest();
 	void setTest(int test);
 	
+	@Description("Which M-Lab Project")
+	@Default.String("mlab-sandbox")
+	String getProject();
+	void setProject(String project);
 	
 	@Description("Start date of historic pipeline. format: YYYY-MM-DD")
 	@Default.String("2009-01-01")

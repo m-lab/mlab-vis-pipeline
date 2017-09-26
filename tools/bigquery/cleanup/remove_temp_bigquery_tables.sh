@@ -1,5 +1,3 @@
-!/bin/bash
-
 USAGE="$0 [production|staging|sandbox]"
 
 set -e
@@ -19,9 +17,6 @@ else
   exit 1
 fi
 
-BIGTABLE_INSTANCE=${BIGTABLE_INSTANCE} \
+KEY_FILE=${KEY_FILE} \
 PROJECT=${PROJECT} \
-API_MODE=${API_MODE} \
-GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} \
-BIGTABLE_POOL_SIZE=${BIGTABLE_POOL_SIZE} \
-python -m tools.bigtable.test_bigtable_connection
+python -m tools.bigquery.cleanup.remove_temp_bigquery_tables

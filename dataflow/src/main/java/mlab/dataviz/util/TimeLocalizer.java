@@ -2,17 +2,14 @@ package mlab.dataviz.util;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +20,16 @@ import com.opencsv.CSVReader;
 
 import mlab.dataviz.query.BigQueryJob;
 
+/**
+ * Not sure if this class is currently being used...
+ */
 public class TimeLocalizer {
 	private static final Logger LOG = LoggerFactory.getLogger(TimeLocalizer.class);
 
 	// rows shape: "zone_id","abbreviation","time_start","gmt_offset","dst"
 	private static final String TIMEZONE_FILE = "./data/bigquery/timezonedb/merged_timezone.csv";
 
-	private static String PROJECT_ID = "mlab-oti";
+	private static String PROJECT_ID = "mlab-sandbox";
 	private static String BQ_TIMEZONE_TABLE = "data_viz_helpers.localtime_timezones";
 	private static String[] TIMEZONE_FIELDS = {"zone_name", "timezone_name", "time_start", "gmt_offset_seconds", "dst_flag"};
 
@@ -42,6 +42,20 @@ public class TimeLocalizer {
 	public static final boolean LOCAL_MODE = false;
 	public static final boolean BQ_MODE = true;
 	private static boolean mode = LOCAL_MODE;
+
+	private String project;
+
+	/**
+	 * @constructor
+	 * Default constructor. Call to initialize, followed by setMode and setup.
+	 */
+	public TimeLocalizer() {
+		this.project = PROJECT_ID;
+	}
+	
+	public TimeLocalizer(String project) {
+		this.project = project;
+	}
 
 	public TimeLocalizer setMode(boolean mode) {
 		this.mode = mode;
@@ -65,7 +79,6 @@ public class TimeLocalizer {
 				rows.add(entries);
 				timezoneMap.put(zoneName, rows);
 			}
-
 		}
 
 	}
@@ -118,17 +131,12 @@ public class TimeLocalizer {
 	 * @throws IOException
 	 */
 	private void instantiateBqMaps() throws IOException {
-		BigQueryJob bqj = new BigQueryJob(PROJECT_ID);
-		String getTimezonesQuery = "select * from " + BQ_TIMEZONE_TABLE;
+		BigQueryJob bqj = new BigQueryJob(this.project);
+		String getTimezonesQuery = "select * from " + this.project + ":" + BQ_TIMEZONE_TABLE;
 		List<TableRow> timezones = bqj.executePaginatedQuery(getTimezonesQuery);
 		handleBQIterators(timezones.iterator());
 	}
 
-	/**
-	 * @constructor
-	 * Default constructor. Call to initialize, followed by setMode and setup.
-	 */
-	public TimeLocalizer() {}
 
 	public TimeLocalizer setup() throws IOException {
 		if (this.mode == LOCAL_MODE) {

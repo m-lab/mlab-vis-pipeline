@@ -21,6 +21,8 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
 import mlab.dataviz.dofn.AddLocationNamesFn;
 import mlab.dataviz.dofn.ExtractCountryCodeFn;
 import mlab.dataviz.dofn.ExtractRegionCodeFn;
+import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
+import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.Schema;
 
 public class AddLocationPipeline extends BasePipeline {
@@ -30,24 +32,48 @@ public class AddLocationPipeline extends BasePipeline {
 	private static final String REGION_CODE_TABLE = "data_viz_helpers.location_region_codes";
 
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.zz4_all_isp_by_day";
-	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.zz4_all_ip_by_day_with_locations";
+	private static final String INPUT_TABLE = "data_viz_testing.zz4_all_isp_by_day";
+	private static final String OUTPUT_TABLE = "data_viz_testing.zz4_all_ip_by_day_with_locations";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
-	public AddLocationPipeline(Pipeline p) {
+	private BQTableUtils bqUtils;
+	private String countryCodeTable;
+	private String regionCodeTable;
+	
+
+	public AddLocationPipeline(Pipeline p, BQTableUtils bqUtils) {
 		super(p);
+		this.bqUtils = bqUtils;
+		this.setCountryCodeTable(COUNTRY_CODE_TABLE);
+		this.setRegionCodeTable(REGION_CODE_TABLE);
 	}
 
+	public String getCountryCodeTable() {
+		return countryCodeTable;
+	}
+
+	public void setCountryCodeTable(String countryCodeTable) {
+		this.countryCodeTable = this.bqUtils.wrapTable(countryCodeTable);
+	}
+
+	public String getRegionCodeTable() {
+		return regionCodeTable;
+	}
+
+	public void setRegionCodeTable(String regionCodeTable) {
+		this.regionCodeTable = this.bqUtils.wrapTable(regionCodeTable);
+	}
+	
 	public PCollection<TableRow> applyInner(PCollection<TableRow> data) {
 		PCollection<TableRow> countryCodes = this.pipeline.apply(
 			BigQueryIO.Read
-				.named("Read " + COUNTRY_CODE_TABLE)
-				.from(COUNTRY_CODE_TABLE));
+				.named("Read " + this.getCountryCodeTable())
+				.from(this.getCountryCodeTable()));
 
 		PCollection<TableRow> regionCodes = this.pipeline.apply(
 				BigQueryIO.Read
-					.named("Read " + REGION_CODE_TABLE)
-					.from(REGION_CODE_TABLE));
+					.named("Read " + this.getRegionCodeTable())
+					.from(this.getRegionCodeTable()));
 
 		PCollection<KV<String, TableRow>> countryKeys =
 				countryCodes.apply(ParDo.named("Extract Country Keys")
@@ -81,11 +107,14 @@ public class AddLocationPipeline extends BasePipeline {
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
 
-		AddLocationPipeline addLocations = new AddLocationPipeline(p);
+		HistoricPipelineOptions optionsLocation = options.cloneAs(HistoricPipelineOptions.class);
+		BQTableUtils bqUtils = new BQTableUtils(optionsLocation);
+		
+		AddLocationPipeline addLocations = new AddLocationPipeline(p, bqUtils);
 		addLocations
 			.setWriteData(true)
-			.setOutputTable(OUTPUT_TABLE)
-		    .setInputTable(INPUT_TABLE)
+			.setOutputTable(bqUtils.wrapTable(OUTPUT_TABLE))
+		    .setInputTable(bqUtils.wrapTable(INPUT_TABLE))
 			.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
 			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
@@ -94,4 +123,6 @@ public class AddLocationPipeline extends BasePipeline {
 
 		p.run();
 	}
+
+	
 }

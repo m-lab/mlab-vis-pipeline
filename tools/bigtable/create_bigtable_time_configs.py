@@ -11,6 +11,10 @@ You can find them both under:
       bigtable
         queries/*.sql
         *.json
+
+Required arguments:
+--configs = directory pointing to where config files should go
+--project = mlab project name
 '''
 
 import os
@@ -21,8 +25,9 @@ from tools.bigtable.configurations.time_tables import METRIC_FIELDS, \
     LOCATION_LEVELS, TABLE_BASES, DATE_AGGEGATIONS, \
     DATE_QUERIES
 
-BIGQUERY_DATE_TABLE = "[mlab-oti:data_viz.all_ip_by_day]"
-BIGQUERY_HOUR_TABLE = "[mlab-oti:data_viz.all_ip_by_hour]"
+# Default tables, sandbox. These are updated in main based on --project flag
+BIGQUERY_DATE_TABLE = "data_viz.all_ip_by_day"
+BIGQUERY_HOUR_TABLE = "data_viz.all_ip_by_hour"
 
 # Current runtime directory
 CURRENT_DIRECTORY = os.path.abspath(os.path.join(
@@ -334,8 +339,6 @@ def main():
     '''
     Main creation script.
     '''
-
-
     print("saving configs to: {0}".format(CONFIG_DIR))
     print("saving queries to: {0}".format(BASE_DIR))
 
@@ -354,10 +357,22 @@ if __name__ == "__main__":
     PARSER.add_argument('--configs',
                         help='Directory of Bigtable config files')
 
+    PARSER.add_argument('--project',
+                        help='Which M-Lab project to deploy to')
+
     ARGS = PARSER.parse_args()
     if not ARGS.configs:
         print '--configs required. Provide config file directory'
+    elif not ARGS.project:
+        print '--project required. Provide project name'
     else:
+        # Update table names
+        PROJECT_ID = ARGS.project
+        # BIGQUERY_DATE_TABLE = "[%s:data_viz.all_ip_by_day]" % PROJECT_ID
+        # BIGQUERY_HOUR_TABLE = "[%s:data_viz.all_ip_by_hour]" % PROJECT_ID
+
+        BIGQUERY_DATE_TABLE = "data_viz.all_ip_by_day"
+        BIGQUERY_HOUR_TABLE = "data_viz.all_ip_by_hour"
 
         # Update relative paths if a new config directory has been specified.
         CONFIG_DIR = ARGS.configs

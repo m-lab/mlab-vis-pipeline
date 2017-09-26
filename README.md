@@ -40,8 +40,19 @@ make setup_bigtable
 Some helper tables are necessary for the pipeline. To create them, run:
 
 ```
-KEY_FILE=<path to cred file> make setup_bigquery
+API_MODE=sandbox|staging|production \
+KEY_FILE=<path to cred file> \
+make setup_bigquery
 ```
+
+## Build a pipeline jar
+
+In order to build the pipeline jar, you will need to have
+[Maven](https://maven.apache.org/) version 3.3.9 installed.
+Once you do, run:
+
+`make build_jar`
+
 
 # Development setup
 
@@ -91,7 +102,8 @@ java -jar target/mlab-vis-pipeline.jar \
 Perform a simple test to see if bigtable connection is writable. Run:
 
 ```
-KEY_FILE=../mlab-keys/production.json ./tools/bigtabe/test_connection.sh production|staging|sandbox
+API_MODE=sandbox|staging|production \
+KEY_FILE=<key file path> make test_connection
 ```
 
 Relies on the detals in the `environments/` files at the root of the

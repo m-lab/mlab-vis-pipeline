@@ -14,8 +14,8 @@ from ipaddr import IPNetwork
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIRECTORY = "{0}/output".format(CUR_DIR)
 OUTPUT_FILE = "{0}/mlab_sites_processed.csv".format(OUTPUT_DIRECTORY)
-INPUT_FILE = "../../../dataflow/data/bigquery/mlab-sites/M-Lab Sites - Sites.csv"
-INPUT_LOCATIONS_FILE = "../../../dataflow/data/bigquery/mlab-sites/mlab_site_locations.csv"
+INPUT_FILE = "./dataflow/data/bigquery/mlab-sites/M-Lab Sites - Sites.csv"
+INPUT_LOCATIONS_FILE = "./dataflow/data/bigquery/mlab-sites/mlab_site_locations.csv"
 IP_MIN_COLUMN = "Machine IPv4 Min IP"
 IP_MAX_COLUMN = "Machine IPv4 Max IP"
 IP_NETMASK_COLUMN = "Machine IPv4 IP prefix netmask"

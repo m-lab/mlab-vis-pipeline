@@ -19,7 +19,9 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 import mlab.dataviz.coder.NavigableMapCoder;
 import mlab.dataviz.dofn.AddISPsFn;
+import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
 import mlab.dataviz.transform.CombineAsNavigableMapHex;
+import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.Schema;
 
 
@@ -33,20 +35,25 @@ import mlab.dataviz.util.Schema;
  */
 public class AddISPsPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddISPsPipeline.class);
-	private static final String MAXMIND_ISPS_TABLE = "mlab-oti:data_viz_helpers.maxmind_asn";
+	
+	private static final String MAXMIND_ISPS_TABLE = "data_viz_helpers.maxmind_asn";
 
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.jim_test";
-	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.jim_test_out";
+	private static final String INPUT_TABLE = "data_viz_testing.maxmind_asn_test";
+	private static final String OUTPUT_TABLE = "data_viz_testing.maxmind_asn_test_out";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
-	private String maxmindIspsTable = MAXMIND_ISPS_TABLE;
+	private String maxmindIspsTable;
+	
+	private BQTableUtils bqUtils;
 	/**
 	 * Create a new pipeline.
 	 * @param p The Dataflow pipeline to build on
 	 */
-	public AddISPsPipeline(Pipeline p) {
+	public AddISPsPipeline(Pipeline p, BQTableUtils bqUtils) {
 		super(p);
+		this.bqUtils = bqUtils;
+		this.setMaxmindIspsTable(MAXMIND_ISPS_TABLE); // default
 	}
 
 	/**
@@ -117,7 +124,7 @@ public class AddISPsPipeline extends BasePipeline {
 		PCollection<TableRow> maxMindAsn = this.pipeline.apply(
 				BigQueryIO.Read
 				.named("Read " + this.maxmindIspsTable)
-				.from(this.maxmindIspsTable));
+				.from(this.getMaxmindIspsTable()));
 
 		//Make the MaxMind ISP data ready for side input
 		PCollectionView<NavigableMap<String, TableRow>> maxMindAsnView =
@@ -141,7 +148,7 @@ public class AddISPsPipeline extends BasePipeline {
 
 
 	public AddISPsPipeline setMaxmindIspsTable(String clientIspsTable) {
-		this.maxmindIspsTable = clientIspsTable;
+		this.maxmindIspsTable = this.bqUtils.wrapTable(clientIspsTable);
 		return this;
 	}
 
@@ -156,12 +163,14 @@ public class AddISPsPipeline extends BasePipeline {
 
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
+		HistoricPipelineOptions optionsAddISPs = options.cloneAs(HistoricPipelineOptions.class);
+		BQTableUtils bqTableUtils = new BQTableUtils(optionsAddISPs);
 
-		AddISPsPipeline addISPs = new AddISPsPipeline(p);
+		AddISPsPipeline addISPs = new AddISPsPipeline(p, bqTableUtils);
 		addISPs
 			.setWriteData(true)
-			.setInputTable(INPUT_TABLE)
-			.setOutputTable(OUTPUT_TABLE)
+			.setInputTable(bqTableUtils.wrapTable(INPUT_TABLE))
+			.setOutputTable(bqTableUtils.wrapTable(OUTPUT_TABLE))
 			.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
 			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);

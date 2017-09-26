@@ -1,6 +1,6 @@
-!/bin/bash
+#!/bin/bash
 
-USAGE="$0 [production|staging|sandbox]"
+USAGE="Pass CONFIG_DIR if desired. Also pass environment sandbox|staging|production"
 
 set -e
 set -x
@@ -19,9 +19,9 @@ else
   exit 1
 fi
 
-BIGTABLE_INSTANCE=${BIGTABLE_INSTANCE} \
+CONFIG_DIR=${CONFIG_DIR:-./dataflow/data/bigtable}
+
 PROJECT=${PROJECT} \
-API_MODE=${API_MODE} \
-GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} \
+BIGTABLE_INSTANCE=${BIGTABLE_INSTANCE} \
 BIGTABLE_POOL_SIZE=${BIGTABLE_POOL_SIZE} \
-python -m tools.bigtable.test_bigtable_connection
+python -m tools.bigtable.remove_unused_tables --configs ${CONFIG_DIR}

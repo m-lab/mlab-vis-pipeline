@@ -105,7 +105,8 @@ public class MergeUploadDownloadPipeline {
 		PCollection<TableRow> rows = this.p
 				.apply(BigQueryIO.Read.named("run query: " + queryName).fromQuery(queryString));
 
-		rows.apply(BigQueryIO.Write.named("write table " + this.outputTable).to(this.outputTable)
+		rows.apply(BigQueryIO.Write.named("write table " + this.outputTable)
+				.to(this.outputTable)
 				.withSchema(this.outputSchema).withCreateDisposition(createDisposition)
 				.withWriteDisposition(writeDisposition));
 
@@ -124,8 +125,8 @@ public class MergeUploadDownloadPipeline {
 
 		String queryFile = "./data/bigquery/queries/merge_upload_download.sql";
 		String outputSchema = "./data/bigquery/schemas/merged_all_ip.json";
-		String downloadTable = "[mlab-oti:data_viz.base_downloads_ip_by_day]";
-		String uploadTable = "[mlab-oti:data_viz.base_uploads_ip_by_day]";
+		String downloadTable = "[mlab-sandbox:data_viz.base_downloads_ip_by_day]";
+		String uploadTable = "[mlab-sandbox:data_viz.base_uploads_ip_by_day]";
 		String outputTable = "data_viz.base_all_ip_by_day";
 
 		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(BigQueryOptions.class);

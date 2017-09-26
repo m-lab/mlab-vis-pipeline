@@ -21,20 +21,26 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 import mlab.dataviz.dofn.AddLocalTimeFn;
 import mlab.dataviz.dofn.ExtractZoneKeynameFn;
+import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
+import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.Schema;
 public class AddLocalTimePipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddLocalTimePipeline.class);
 
 	// for running main()
-	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.zz_base_by_day_with_isp_test"; //"mlab-oti:data_viz.base_all_ip_by_day_with_isps";
-	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.zz_base_by_day_with_isp_test_localized"; // "mlab-oti:data_viz.base_all_ip_by_day_with_isps_localized";
+	private static final String INPUT_TABLE = "data_viz_testing.zz_base_by_day_with_isp_test";
+	private static final String OUTPUT_TABLE = "data_viz_testing.zz_base_by_day_with_isp_localized_test";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
 	// zones data
-	private static String BQ_TIMEZONE_TABLE = "mlab-oti:data_viz_helpers.localtime_timezones";
+	private static String BQ_TIMEZONE_TABLE = "data_viz_helpers.localtime_timezones";
 
-	public AddLocalTimePipeline(Pipeline p) {
+	// bigquery table wrapper helper
+	private BQTableUtils bqTableUtils;
+
+	public AddLocalTimePipeline(Pipeline p, BQTableUtils bqTableUtils) {
 		super(p);
+		this.bqTableUtils  = bqTableUtils;
 	}
 
 	/**
@@ -43,10 +49,13 @@ public class AddLocalTimePipeline extends BasePipeline {
 	 * @return
 	 */
 	public PCollection<TableRow> applyInner(PCollection<TableRow> data) {
+		
+		String bqTimezoneTable = this.bqTableUtils.wrapTable(BQ_TIMEZONE_TABLE);
+		
 		PCollection<TableRow> timezones = this.pipeline.apply(
 			BigQueryIO.Read
-				.named("Read " + BQ_TIMEZONE_TABLE)
-				.from(BQ_TIMEZONE_TABLE));
+				.named("Read " + bqTimezoneTable)
+				.from(bqTimezoneTable));
 
 		// build lookup map
 		PCollection<KV<String, TableRow>> zonekeys =
@@ -75,12 +84,14 @@ public class AddLocalTimePipeline extends BasePipeline {
 
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
+		HistoricPipelineOptions optionsLocalTime = options.cloneAs(HistoricPipelineOptions.class);
+		BQTableUtils bqTableUtils = new BQTableUtils(optionsLocalTime);
 
-		AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(p);
+		AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(p, bqTableUtils);
 		addLocalTime
 			.setWriteData(true)
-			.setInputTable(INPUT_TABLE)
-			.setOutputTable(OUTPUT_TABLE)
+			.setInputTable(bqTableUtils.wrapTable(INPUT_TABLE))
+			.setOutputTable(bqTableUtils.wrapTable(OUTPUT_TABLE))
 			.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
 			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);

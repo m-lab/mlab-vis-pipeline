@@ -1,15 +1,37 @@
 #!/bin/bash
-basedir=`dirname $0`
-timezoneDir=$basedir/../../../dataflow/data/bigquery/timezonedb
+
+USAGE="$0 [production|staging|sandbox]"
+basedir=`dirname "$BASH_SOURCE"`
+
+set -e
+set -x
+
+# Initialize correct environment variables
+if [[ "$1" == production ]]; then
+  source ./environments/production.sh
+elif [[ "$1" == staging ]]; then
+  source ./environments/staging.sh
+elif [[ "$1" == sandbox ]]; then
+  source ./environments/sandbox.sh
+else
+  echo "BAD ARGUMENT TO $0"
+  exit 1
+fi
+
+timezoneDir=./dataflow/data/bigquery/timezonedb
+tableName="${PROJECT}:data_viz_helpers.localtime_timezones"
 
 echo "Creating timezone tables"
 
 echo "Processing timezones csvs CSV"
-python $basedir/process_timezones.py
+python -m tools.bigquery.timezones.process_timezones
 
-echo "Adding data_viz_helpers.localtime_timezones to BigQuery"
+echo "Removing existing table"
+bq rm -f $tableName
+
+echo "Adding ${tableName} to BigQuery"
 bq load --allow_quoted_newlines --skip_leading_rows=1 --source_format=CSV \
-  data_viz_helpers.localtime_timezones  \
+  $tableName \
   $timezoneDir/merged_timezone.csv \
   $timezoneDir/schemas/merged_timezone.json
 

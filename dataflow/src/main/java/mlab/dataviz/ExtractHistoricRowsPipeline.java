@@ -115,7 +115,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 				"STRING(min(web100_log_entry.log_time)) as min_test_date " +
 				"FROM " + (String) config.get("lastDateFromTable");
 
-		BigQueryJob bqj = new BigQueryJob((String) config.get("projectId"));
+		BigQueryJob bqj = new BigQueryJob(this.options.getProject());
 		java.util.List<TableRow> rows = bqj.executeQuery(dateRangeQuery);
 
 		String [] timestamps = new String[2];
@@ -314,7 +314,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 	 * Run this as a regular Java application with the following arguments:
 	 * --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner
 	 * --configfile="./data/bigquery/batch-runs/historic/uploads_ip_by_day_base.json"
-	 * --project=mlab-oti
+	 * --project=mlab-sandbox
 	 * --stagingLocation="gs://mlab-data-viz-sandbox"
 	 *
 	 * @param args

@@ -19,7 +19,9 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 import mlab.dataviz.coder.NavigableMapCoder;
 import mlab.dataviz.dofn.AddMlabSitesInfoFn;
+import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
 import mlab.dataviz.transform.CombineAsNavigableMapHex;
+import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.Schema;
 
 
@@ -34,21 +36,24 @@ import mlab.dataviz.util.Schema;
  */
 public class AddMlabSitesInfoPipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddMlabSitesInfoPipeline.class);
-	private static final String MLAB_SITES_TABLE = "mlab-oti:data_viz_helpers.mlab_sites";
+	private static final String MLAB_SITES_TABLE = "data_viz_helpers.mlab_sites";
 
 	//for running main()
-	private static final String INPUT_TABLE = "mlab-oti:data_viz_testing.peter_test";
-	private static final String OUTPUT_TABLE = "mlab-oti:data_viz_testing.peter_test_out";
+	private static final String INPUT_TABLE = "data_viz_testing.mlab_sites_test";
+	private static final String OUTPUT_TABLE = "data_viz_testing.mlab_sites_test_output";
 	private static final String OUTPUT_SCHEMA = "./data/bigquery/schemas/all_ip.json";
 
-	private String mlabSitesTable = MLAB_SITES_TABLE;
+	private BQTableUtils bqUtils;
+	private String mlabSitesTable;
 
 	/**
 	 * Create a new pipeline.
 	 * @param p The Dataflow pipeline to build on
 	 */
-	public AddMlabSitesInfoPipeline(Pipeline p) {
+	public AddMlabSitesInfoPipeline(Pipeline p, BQTableUtils bqUtils) {
 		super(p);
+		this.bqUtils = bqUtils;
+		this.setMlabSitesTable(MLAB_SITES_TABLE);
 	}
 
 	/**
@@ -67,6 +72,14 @@ public class AddMlabSitesInfoPipeline extends BasePipeline {
 				.withSideInputs(mlabSitesView)
 				.of(new AddMlabSitesInfoFn(mlabSitesView)));
 		return byIpDataWithISPs;
+	}
+	
+	public void setMlabSitesTable(String mlabSitesTable) {
+		this.mlabSitesTable = this.bqUtils.wrapTable(mlabSitesTable);
+	}
+	
+	public String getMlabSitesTable() {
+		return this.mlabSitesTable;
 	}
 
 	/**
@@ -96,8 +109,8 @@ public class AddMlabSitesInfoPipeline extends BasePipeline {
 		// Read in the MaxMind ISP data
 		PCollection<TableRow> mlabSites = this.pipeline.apply(
 				BigQueryIO.Read
-				.named("Read " + this.mlabSitesTable)
-				.from(this.mlabSitesTable));
+				.named("Read " + this.getMlabSitesTable())
+				.from(this.getMlabSitesTable()));
 
 		//Make the MaxMind ISP data ready for side input
 		PCollectionView<NavigableMap<String, TableRow>> mlabSitesView =
@@ -124,12 +137,15 @@ public class AddMlabSitesInfoPipeline extends BasePipeline {
 
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
-
-		AddMlabSitesInfoPipeline addMlabSiteInfo = new AddMlabSitesInfoPipeline(p);
+		
+		HistoricPipelineOptions optionsMlabSites = options.cloneAs(HistoricPipelineOptions.class);
+		BQTableUtils bqTableUtils = new BQTableUtils(optionsMlabSites);
+		
+		AddMlabSitesInfoPipeline addMlabSiteInfo = new AddMlabSitesInfoPipeline(p, bqTableUtils);
 		addMlabSiteInfo
 		.setWriteData(true)
-		.setInputTable(INPUT_TABLE)
-		.setOutputTable(OUTPUT_TABLE)
+		.setInputTable(bqTableUtils.wrapTable(INPUT_TABLE))
+		.setOutputTable(bqTableUtils.wrapTable(OUTPUT_TABLE))
 		.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
 		.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 		.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);

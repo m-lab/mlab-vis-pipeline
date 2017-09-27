@@ -124,7 +124,7 @@ public class BigtableTransferPipeline {
 		// TODO: move this to the bigtable config class?
 		if(queryString == null) {
 			LOG.info("Using Queryfile");
-			Object[] queryParams = {this.getProjectId() + ":" + btConfig.getBigQueryTable()};
+			Object[] queryParams = {"[" + this.getProjectId() + ":" + btConfig.getBigQueryTable() + "]"};
 			QueryBuilder qb = new QueryBuilder(btConfig.getBigQueryQueryFile(), queryParams);
 			queryString = qb.getQuery();
 		}
@@ -284,7 +284,7 @@ public class BigtableTransferPipeline {
 
 		Pipeline pipe = Pipeline.create(options);
 		BigtableTransferPipeline transferPipeline = new BigtableTransferPipeline(pipe);
-		
+
 		transferPipeline.setProjectId(options.getProject());
 		transferPipeline.setInstanceId(options.getInstance());
 
@@ -321,7 +321,7 @@ public class BigtableTransferPipeline {
 
 		transferPipeline.setProjectId(options.getProject());
 		transferPipeline.setInstanceId(options.getInstance());
-		
+
 		try {
 			transferPipeline.apply(btConfig);
 		} catch (IOException e) {
@@ -343,7 +343,7 @@ public class BigtableTransferPipeline {
 		BigtableTransferPipelineOptions options = PipelineOptionsFactory.fromArgs(args)
 				.withValidation()
 				.as(BigtableTransferPipelineOptions.class);
-		
+
 		BigtableTransferPipeline.runAll(options);
 
 		//BigtableTransferPipeline.runOne(args, DEFAULT_BIGTABLE_CONFIG_FILE);

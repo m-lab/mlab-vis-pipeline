@@ -8,7 +8,7 @@
 #    -t : to do a test run (doesn't start dataflow)
 
 usage() {
-  echo "Usage: $0 -s <YYYY-MM-DD> -e <YYYY-MM-DD> -m staging|production|sandbox [-t]" $1 1>&2; exit 1;
+  echo "Usage: KEY_FILE=<path> $0 -s <YYYY-MM-DD> -e <YYYY-MM-DD> -m staging|production|sandbox [-t]" $1 1>&2; exit 1;
 }
 
 ENDDATE=""
@@ -83,18 +83,25 @@ echo "Running historic pipeline for DAY"
 GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -jar ${JAR_FILE} \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --timePeriod="day" --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
-  --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} &
+  --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} \
+  --diskSizeGb=30 &
+
 
 echo "Running historic pipeline for HOUR"
 GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -jar ${JAR_FILE} \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --timePeriod="hour" --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
-  --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} &
+  --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} \
+  --diskSizeGb=30 &
 
 # wait for these to complete.
 wait
 
 echo "Running Bigtable Transfer Pipeline"
-GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.bocoup.BigtableTransferPipeline \
+GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.BigtableTransferPipeline \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-  --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" --test=${TEST}
+  --project=${PROJECT} --instance=${BIGTABLE_INSTANCE} \
+  --stagingLocation="${STAGING_LOCATION}" --test=${TEST} &
+
+wait
+echo "Done."

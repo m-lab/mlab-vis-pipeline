@@ -17,7 +17,7 @@ jobs:
   include:
     # Run tests
     - stage: test
-      script: make test_no_remote
+      script: make test
 
     # Run build
     - stage: build

@@ -1,0 +1,24 @@
+language: java
+jdk:
+  - oraclejdk8
+
+sudo: false
+os:
+  - linux
+
+before_install:
+  - wget http://apache.claz.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+  - tar zxvf apache-maven-3.3.9-bin.tar.gz
+  - chmod +x apache-maven-3.3.9/bin/mvn
+  - export M2_HOME=$PWD/apache-maven-3.3.9
+  - export PATH=$PWD/apache-maven-3.3.9/bin:${PATH}
+
+jobs:
+  include:
+    # Run tests
+    - stage: test
+      script: mvn test
+
+    # Run build
+    - stage: build
+      script: mvn package

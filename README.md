@@ -51,8 +51,10 @@ In order to build the pipeline jar, you will need to have
 [Maven](https://maven.apache.org/) version 3.3.9 installed.
 Once you do, run:
 
-`make build_jar`
+`make build`
 
+This actually runs `mvn package` from the dataflow directory.
+Tests are automatically run on build.
 
 # Development setup
 
@@ -73,27 +75,10 @@ on a remote machine. We use a google cloud instance to do so. Make sure that
 the public keys of all required parties have been added via the google console.
 Details are explained in a Google Document entitled "Running Pipelines".
 
+# Testing
 
-# Building the executable JAR
+You can run the tests by calling `make test`.
 
-To build the executable JAR, run:
-
-```
-mvn package
-```
-
-This produces `target/mlab-vis-pipeline.jar` that includes all dependencies inside of it. To run it, you can do something like:
-
-```
-java -jar target/mlab-vis-pipeline.jar \
-  --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-  --timePeriod="day" \
-  --project=mlab-oti \
-  --stagingLocation="gs://bocoup" \
-  --skipNDTRead=0 \
-  --endDate="2016-10-15" \
-  --test=1
-```
 
 ## Troubleshooting
 

@@ -132,7 +132,7 @@ public class TimeLocalizer {
 	 */
 	private void instantiateBqMaps() throws IOException {
 		BigQueryJob bqj = new BigQueryJob(this.project);
-		String getTimezonesQuery = "select * from " + this.project + ":" + BQ_TIMEZONE_TABLE;
+		String getTimezonesQuery = "select * from [" + this.project + ":" + BQ_TIMEZONE_TABLE + "]";
 		List<TableRow> timezones = bqj.executePaginatedQuery(getTimezonesQuery);
 		handleBQIterators(timezones.iterator());
 	}

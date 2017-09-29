@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="Optionally pass CONFIG_DIR= to create files in new directory"
+USAGE="KEY_FILE=<> $0 sandbox|production|staging. Optionally pass CONFIG_DIR to point to bigtable configuration files."
 
 set -e
 set -x
@@ -37,15 +37,3 @@ do
     --instance ${BIGTABLE_INSTANCE} \
     setgcpolicy ${tablename} meta maxversions=1
 done
-
-
-
-# GOOGLE_APPLICATION_CREDENTIALS=../mlab-keys/sandbox.json cbt \
-# --project mlab-sandbox \
-# --instance data-api-sandbox-iros-cluster \
-# setgcpolicy client_asn_by_day_hour meta maxversions=1
-
-
-
-
-# server_asn_search

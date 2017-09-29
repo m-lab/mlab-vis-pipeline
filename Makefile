@@ -55,11 +55,12 @@ setup_bigquery: authenticate asn_merge maxmind location location_cleaning timezo
 	echo 'Done creating bigquery helper tables'
 
 #-- Pipeline Jars
-# Previously: cd dataflow && mvn -Dmaven.test.skip=true package && cd ../
-
 build:
-	cd dataflow && mvn package && cd ../
+	cd dataflow && mvn -Dmaven.test.skip=true package && cd ../
+
+test_no_remote:
+	cd dataflow && mvn surefire:test@no-remote-test && cd ../
 
 test:
-	cd dataflow && mvn test && cd ../
+	cd dataflow && mvn surefire:test@full && cd ../
 

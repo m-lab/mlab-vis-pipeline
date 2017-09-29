@@ -17,8 +17,8 @@ jobs:
   include:
     # Run tests
     - stage: test
-      script: mvn test
+      script: make test
 
     # Run build
     - stage: build
-      script: mvn package
+      script: make build

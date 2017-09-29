@@ -6,7 +6,10 @@ import time
 from tools.bigtable.bigtable_utils import init_pool
 from tools.utils import read_json
 
-COLUMN_FAMILIES = {'data': dict(), 'meta': dict()}
+COLUMN_FAMILIES = {
+    'data': dict(max_versions=1),
+    'meta': dict(max_versions=1)
+}
 
 def main(config_dir, remove_tables, pattern):
     '''
@@ -35,6 +38,7 @@ def main(config_dir, remove_tables, pattern):
 
             print 'CREATING ' + table_id + ' bigtable table'
 
+            # create table family
             try:
                 connection.create_table(table_id, COLUMN_FAMILIES)
             except Exception as err:

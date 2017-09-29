@@ -58,9 +58,6 @@ setup_bigquery: authenticate asn_merge maxmind location location_cleaning timezo
 build:
 	cd dataflow && mvn -Dmaven.test.skip=true package && cd ../
 
-test_no_remote:
-	cd dataflow && mvn surefire:test@no-remote-test && cd ../
-
 test:
-	cd dataflow && mvn surefire:test@full && cd ../
+	cd dataflow && mvn test && cd ../
 

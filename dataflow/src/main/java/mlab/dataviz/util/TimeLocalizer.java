@@ -100,6 +100,7 @@ public class TimeLocalizer {
 
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
+			LOG.error(e.getStackTrace().toString());
 		}
 	}
 

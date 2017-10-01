@@ -192,6 +192,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 				LOG.info("Setup - Table Schema: " + tableSchema.toPrettyString());
 			} catch (IOException e) {
 				LOG.error(e.getMessage());
+				LOG.error(e.getStackTrace().toString());
 			}
 			LOG.info("Setup - Output table: " + outputTableName);
 
@@ -227,6 +228,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 
 		} catch (IOException |  InterruptedException e) {
 			LOG.error(e.getMessage());
+			LOG.error(e.getStackTrace().toString());
 		}
 	}
 
@@ -267,6 +269,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 				LOG.debug("Setup - Table Schema: " + tableSchema.toPrettyString());
 			} catch (IOException e) {
 				LOG.error(e.getMessage());
+				LOG.error(e.getStackTrace().toString());
 			}
 			LOG.debug("Setup - Output table: " + outputTableName);
 			LOG.debug("Setup - Start date: " + startDate);
@@ -283,6 +286,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 						startDate, endDate, (int) numberOfDays);
 			} catch (ParseException e) {
 				LOG.error(e.getMessage());
+				LOG.error(e.getStackTrace().toString());
 			}
 
 			int counter = 0;
@@ -305,6 +309,7 @@ public class ExtractHistoricRowsPipeline implements Runnable {
 				this.setState(result.getState());
 			} catch (IOException | InterruptedException e) {
 				LOG.error(e.getMessage());
+				LOG.error(e.getStackTrace().toString());
 			}
 			LOG.info("Job completed, with status: " + result.getState().toString());
 			pos++;

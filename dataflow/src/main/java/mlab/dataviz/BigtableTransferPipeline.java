@@ -193,10 +193,9 @@ public class BigtableTransferPipeline {
 					try {
 						this.apply(btConfig);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						LOG.error(e.getMessage());
+						LOG.error(e.getStackTrace().toString());
 					}
-
 				} // end prefix check
 
 
@@ -296,8 +295,8 @@ public class BigtableTransferPipeline {
 		try {
 			transferPipeline.applyAll(BIGTABLE_CONFIG_DIR, configPrefix, configSuffix);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e.getMessage());
+			LOG.error(e.getStackTrace().toString());
 		}
 
 		if (test != 1) {
@@ -325,13 +324,12 @@ public class BigtableTransferPipeline {
 		try {
 			transferPipeline.apply(btConfig);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e.getMessage());
+			LOG.error(e.getStackTrace().toString());
 		}
 
 		pipe.run();
 	}
-
 
 	/**
 	 *

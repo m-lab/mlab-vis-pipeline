@@ -55,14 +55,16 @@ public class Schema {
 						.setType(fieldType)
 						.setMode(fieldMode));
 			}
-			
+
 			schema.setFields(fields);
 		} catch (FileNotFoundException e) {
 			LOG.error(e.getMessage());
+			LOG.error(e.getStackTrace().toString());
 		} catch (IOException | ParseException e) {
 			LOG.error(e.getMessage());
+			LOG.error(e.getStackTrace().toString());
 		}
-		
+
 		return schema;
 	}
 }

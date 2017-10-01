@@ -148,15 +148,16 @@ public class QueryPipeIterator implements Iterator<PCollection<TableRow>> {
 				LOG.debug("Query: \n" + this.queryString);
 			} catch (IOException e) {
 				LOG.error(e.getMessage());
+				LOG.error(e.getStackTrace().toString());
 			}
 		}
-		
+
 		PCollection<TableRow> rows = this.pipe.apply(
 				BigQueryIO.Read
 				.named("Running query " + this.queryName)
 				.fromQuery(this.queryString));
 
-	
+
 		return rows;
 	}
 }

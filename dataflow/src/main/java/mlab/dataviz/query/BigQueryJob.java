@@ -140,32 +140,33 @@ public class BigQueryJob {
 	    Thread.sleep(1000);
 	  }
 	}
-	
+
 	/**
-	 * Executes a query that is likely to have more rows than can fit in a single result. 
+	 * Executes a query that is likely to have more rows than can fit in a single result.
 	 * @param querySql String the query to run
 	 * @return
 	 * @throws IOException
 	 */
 	public java.util.List<TableRow> executePaginatedQuery(String querySql) throws IOException {
-		
+
 		JobReference jobId = startQuery(bigquery, this.projectId, querySql);
 		TableReference completedJob = null;
 		try {
 			completedJob = checkQueryResults(bigquery, this.projectId, jobId);
 		} catch (InterruptedException e) {
 			LOG.error(e.getMessage());
+			LOG.error(e.getStackTrace().toString());
 		}
-		
+
 		// QueryResponse query = bigquery.jobs().query(projectId, new QueryRequest().setQuery(querySql)).execute();
 		List<TableRow> allRows = null;
-		
+
 		int page = 1;
 		String pageToken = null;
 
 		// Default to not looping
 		boolean moreResults = false;
-		
+
 		do {
 			LOG.info("Fetching page " + page);
 			TableDataList queryResult = bigquery.tabledata().list(

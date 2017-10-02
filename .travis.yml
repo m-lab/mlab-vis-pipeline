@@ -8,8 +8,8 @@ addons:
       - oracle-java8-installer
 
 sudo: false
-os:
-  - osx
+os: linux
+dist: trusty
 
 before_install:
   - wget http://apache.claz.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz

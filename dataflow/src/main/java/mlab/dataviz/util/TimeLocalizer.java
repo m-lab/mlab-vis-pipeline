@@ -52,7 +52,7 @@ public class TimeLocalizer {
 	public TimeLocalizer() {
 		this.project = PROJECT_ID;
 	}
-	
+
 	public TimeLocalizer(String project) {
 		this.project = project;
 	}

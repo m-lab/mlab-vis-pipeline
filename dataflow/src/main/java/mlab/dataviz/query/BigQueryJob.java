@@ -29,17 +29,17 @@ import com.google.api.services.bigquery.model.TableRow;
 import mlab.dataviz.dofn.AddISPsFn;
 
 public class BigQueryJob {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(BigQueryJob.class);
-	
+
 	private Bigquery bigquery;
 	private String projectId;
-	
+
 	public BigQueryJob (String projectId) throws IOException {
 		this.projectId = projectId;
 		this.bigquery = createAuthorizedClient();
 	}
-	
+
 	/**
 	 * Creates authorized query client.
 	 * @return
@@ -77,23 +77,23 @@ public class BigQueryJob {
 	 */
 	public java.util.List<TableRow> executeQuery(String querySql)
 			throws IOException {
-		
+
 		QueryResponse query = bigquery.jobs()
-				.query(projectId, 
+				.query(projectId,
 						new QueryRequest().setQuery(querySql))
 				.execute();
-		
+
 		GetQueryResultsResponse queryResult = bigquery.jobs()
 				.getQueryResults(
 						query.getJobReference()
-							.getProjectId(), 
+							.getProjectId(),
 						query.getJobReference()
 							.getJobId())
 				.execute();
 
 		return queryResult.getRows();
 	}
-	
+
 	/**
 	 * @private
 	 * Sets up a query job and returns a reference.
@@ -175,7 +175,7 @@ public class BigQueryJob {
 		            completedJob.getTableId())
 		                .setPageToken(pageToken)
 		         .execute();
-			 
+
 			if (page == 1) {
 				allRows = queryResult.getRows();
 			} else {
@@ -189,8 +189,8 @@ public class BigQueryJob {
 				moreResults = false;
 			}
 		} while (moreResults);
-		
+
 		return allRows;
-		
+
 	}
 }

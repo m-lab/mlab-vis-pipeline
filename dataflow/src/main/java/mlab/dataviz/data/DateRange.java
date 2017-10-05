@@ -17,13 +17,6 @@ public class DateRange {
 		this.endDate = endDate;
 	}
 	
-	public long getRangeStart() {
-		return this.startDate;
-	}
-	public long getRangeEnd() {
-		return this.endDate;
-	}
-	
 	public String getStartRangeLongStr() {
 		return String.valueOf((this.startDate / 1000) - Instant.EPOCH.getEpochSecond());
 	}

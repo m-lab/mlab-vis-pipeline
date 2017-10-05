@@ -16,7 +16,6 @@ public class TimeChunkTest {
 	private String startDate = "2015-01-01T00:00:00Z";
 	private String finalDate = "2015-01-08T00:00:00Z";
 	private int numOfDays = 2;
-	private static ArrayList<DateRange> expectedDates;
 	private static ArrayList<StringPair> expectedDatesDisplay;
 	
 	private static class StringPair {
@@ -32,21 +31,20 @@ public class TimeChunkTest {
 		String getB() { return this.b; }
 	}
 	
+	private void checkPublic(DateRange d, StringPair sp, int idx) {
+		assertEquals(d.getDisplayStartTimestampStr(), sp.getA());
+		assertEquals(d.getDisplayEndTimestampStr(), sp.getB());
+	}
+	
 	@Test
 	public void testByNumberOfDays() throws ParseException {
 		
-		expectedDates = new ArrayList<DateRange>();
 		expectedDatesDisplay = new ArrayList<StringPair>();
-		expectedDates.add(new DateRange(1420088400000L, 1420261200000L));
-		expectedDates.add(new DateRange(1420261200001L, 1420434000001L));
-		expectedDates.add(new DateRange(1420434000002L, 1420606800002L));
-		expectedDates.add(new DateRange(1420606800003L, 1420693200000L));
 		
 		expectedDatesDisplay.add(new StringPair("2015-01-01T00:00:00Z", "2015-01-03T00:00:00Z"));
 		expectedDatesDisplay.add(new StringPair("2015-01-03T00:00:00Z", "2015-01-05T00:00:00Z"));
 		expectedDatesDisplay.add(new StringPair("2015-01-05T00:00:00Z", "2015-01-07T00:00:00Z"));
 		expectedDatesDisplay.add(new StringPair("2015-01-07T00:00:00Z", "2015-01-08T00:00:00Z"));
-		
 		
 		try {
 			ArrayList<DateRange> dates = TimeChunk.byNumberOfDays(startDate, finalDate, numOfDays);
@@ -63,22 +61,11 @@ public class TimeChunkTest {
 			fail(e.getMessage());
 		}
 	}
-	
-	private void checkPublic(DateRange d, StringPair sp, int idx) {
-		assertEquals(d.getRangeStart(), expectedDates.get(idx).getRangeStart());
-		assertEquals(d.getRangeEnd(), expectedDates.get(idx).getRangeEnd());
-		assertEquals(d.getDisplayStartTimestampStr(), sp.getA());
-		assertEquals(d.getDisplayEndTimestampStr(), sp.getB());
-	}
 
 	@Test
 	public void testIntoNumberOfChunks() throws ParseException {
 		
-		expectedDates = new ArrayList<DateRange>();
 		expectedDatesDisplay = new ArrayList<StringPair>();
-		
-		expectedDates.add(new DateRange(1420088400000L, 1420390800000L));
-		expectedDates.add(new DateRange(1420390800001L, 1420693200001L));
 		
 		expectedDatesDisplay.add(new StringPair("2015-01-01T00:00:00Z", "2015-01-04T12:00:00Z"));
 		expectedDatesDisplay.add(new StringPair("2015-01-04T12:00:00Z", "2015-01-08T00:00:00Z"));

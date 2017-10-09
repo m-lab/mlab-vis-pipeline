@@ -1,0 +1,28 @@
+FROM google/cloud-sdk
+FROM gcr.io/google-appengine/openjdk:8
+
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN apt-get install -y nginx openssh-server git-core openssh-client curl
+RUN apt-get install -y nano
+RUN apt-get install -y build-essential
+RUN apt-get install -y openssl zlib1g zlib1g-dev libssl-dev libyaml-dev \
+    libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake \
+    libtool pkg-config python python-dev python-pip
+
+WORKDIR /
+RUN wget http://apache.claz.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+RUN tar zxvf apache-maven-3.3.9-bin.tar.gz
+RUN chmod +x apache-maven-3.3.9/bin/mvn
+RUN export M2_HOME=/apache-maven-3.3.9
+RUN export PATH="/apache-maven-3.3.9/bin:${PATH}"
+ENV PATH="/apache-maven-3.3.9/bin:${PATH}"
+
+ADD . /mlab-vis-pipeline
+WORKDIR /mlab-vis-pipeline
+RUN make build
+
+WORKDIR /mlab-vis-pipeline/job_scheduler
+RUN pip install -r requirements.txt
+
+CMD cd /mlab-vis-pipeline/ && NDSCHEDULER_SETTINGS_MODULE=job_scheduler.settings python -m job_scheduler.server

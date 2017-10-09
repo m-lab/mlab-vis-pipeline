@@ -17,6 +17,11 @@ public interface BigtableTransferPipelineOptions extends PipelineOptions, BigQue
 	String getInstance();
 	void setInstance(String instance);
 	
+	@Description("Which Prometheus Instance")
+	@Default.String("prometheus")
+	String getPrometheus();
+	void setPrometheus(String prometheus);
+	
 	@Description("Do not actually execute the pipeline")
 	@Default.Integer(0)
 	int getTest();

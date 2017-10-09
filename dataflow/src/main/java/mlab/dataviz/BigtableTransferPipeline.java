@@ -2,6 +2,7 @@ package mlab.dataviz;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.hbase.client.Mutation;
 import org.slf4j.Logger;
@@ -14,9 +15,14 @@ import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
+import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
+import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.Gauge;
+import io.prometheus.client.exporter.PushGateway;
 import mlab.dataviz.dofn.TableRowToHBase;
 import mlab.dataviz.pipelineopts.BigtableTransferPipelineOptions;
 import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
@@ -279,7 +285,7 @@ public class BigtableTransferPipeline {
 	 *
 	 * @param args
 	 */
-	public static void runAll(BigtableTransferPipelineOptions options) {
+	public static DataflowPipelineJob runAll(BigtableTransferPipelineOptions options) {
 
 		Pipeline pipe = Pipeline.create(options);
 		BigtableTransferPipeline transferPipeline = new BigtableTransferPipeline(pipe);
@@ -300,14 +306,16 @@ public class BigtableTransferPipeline {
 		}
 
 		if (test != 1) {
-			pipe.run();
+			DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();
+			return result;
 		}
+		return null;
 	}
 
 	/**
 	 *
 	 * @param args
-	 */
+
 	public static void runOne(String[] args, String configFile) {
 
 		BigtableConfig btConfig = BigtableConfig.fromJSONFile(configFile);
@@ -337,14 +345,34 @@ public class BigtableTransferPipeline {
 	 */
 	public static void main(String[] args) {
 
+		// Prometheus, duration tracking
+		CollectorRegistry registry = new CollectorRegistry();
+		Gauge duration = Gauge.build()
+			.name("mlab_vis_pipeline_historic_bigtable_duration")
+		     .help("Historic pipeline duration - Bigtable")
+		     .register(registry);
+		
+		Gauge.Timer durationTimer = duration.startTimer();
+		
 		PipelineOptionsFactory.register(BigtableTransferPipelineOptions.class);
 		BigtableTransferPipelineOptions options = PipelineOptionsFactory.fromArgs(args)
 				.withValidation()
 				.as(BigtableTransferPipelineOptions.class);
 
-		BigtableTransferPipeline.runAll(options);
-
-		//BigtableTransferPipeline.runOne(args, DEFAULT_BIGTABLE_CONFIG_FILE);
-
+		DataflowPipelineJob result = BigtableTransferPipeline.runAll(options);
+		
+		if (result != null) {
+			try {
+				
+				// Wait for bigtable pipeline to finish
+				result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+				durationTimer.setDuration();
+				PushGateway pg = new PushGateway(options.getPrometheus());	
+				pg.pushAdd(registry, "mlab_vis_pipeline");
+			} catch (IOException | InterruptedException e) {
+				LOG.error(e.getMessage());
+				LOG.error(e.getStackTrace().toString());
+			}
+		}
 	}
 }

@@ -27,6 +27,11 @@ public interface HistoricPipelineOptions extends PipelineOptions, BigQueryOption
 	String getProject();
 	void setProject(String project);
 	
+	@Description("Which Prometheus Instance")
+	@Default.String("prometheus")
+	String getPrometheus();
+	void setPrometheus(String prometheus);
+	
 	@Description("Start date of historic pipeline. format: YYYY-MM-DD")
 	@Default.String("2009-01-01")
 	String getStartDate();

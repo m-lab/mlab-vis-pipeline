@@ -132,5 +132,17 @@
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.7.24</version>
     </dependency>
+
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient</artifactId>
+      <version>0.0.10</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_pushgateway</artifactId>
+      <version>0.0.10</version>
+    </dependency>
   </dependencies>
 </project>

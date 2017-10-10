@@ -42,4 +42,4 @@ RUN pip install -r requirements.txt
 WORKDIR /mlab-vis-pipeline
 COPY templates/supervisord.conf /etc/supervisor/supervisord.conf
 
-CMD ["/bin/sh", "-c", "/usr/local/bin/supervisord --configuration /etc/supervisor/supervisord.conf"]
+CMD ["/bin/sh", "-c", "service nginx restart && /usr/local/bin/supervisord --configuration /etc/supervisor/supervisord.conf"]

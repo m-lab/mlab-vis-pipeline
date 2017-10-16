@@ -70,7 +70,7 @@ if [[ $FETCH == 1 ]]; then
     echo "fetching jar ${REMOTE_PIPELINE_JAR_FILE}"
     gsutil cp ${REMOTE_PIPELINE_JAR} .
     cp ${REMOTE_PIPELINE_JAR_FILE} mlab-vis-pipeline.jar
-    export PIPELINE_JAR=${PIPELINE_JAR}
+    echo ${PIPELINE_JAR} > latest_jar.txt
 
     # remove the local file, since we fetched a new one.
     if [[ ! -z "${LOCAL_PIPELINE_JAR_FILE// }" ]]; then

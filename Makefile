@@ -1,3 +1,5 @@
+#!/bin/bash
+
 lint:
 	pylint --rcfile tools/.pylintrc tools/**/**.py
 
@@ -54,9 +56,9 @@ mlab_sites:
 setup_bigquery: authenticate asn_merge maxmind location location_cleaning timezones mlab_sites
 	echo 'Done creating bigquery helper tables'
 
-#-- Pipeline Jars
+#-- Pipeline Jars, Docker container
 build:
-	cd dataflow && mvn -Dmaven.test.skip=true package && cd ../
+	./build.sh -m ${API_MODE}
 
 test:
 	cd dataflow && mvn test && cd ../

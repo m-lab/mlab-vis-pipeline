@@ -1,0 +1,44 @@
+service: mlab-vis-pipeline-jobs
+runtime: custom
+env: flex
+api_version: 1
+threadsafe: yes
+
+manual_scaling:
+  instances: 1
+
+resources:
+  cpu: 1
+  memory_gb: 3
+
+builtins:
+- appstats: on
+
+# The default health check runs every 5 seconds and restarts the VM after 5 minutes of failures.
+# This is not sufficient for us, as the first time the app is run it will create all of the
+# databases required by Phabricator, and that can take more than 5 minutes.
+health_check:
+  enable_health_check: True
+  check_interval_sec: 60
+  timeout_sec: 30
+  unhealthy_threshold: 1
+  healthy_threshold: 1
+  restart_threshold: 10
+
+handlers:
+- url: /.*
+  script: job_scheduler.server
+
+skip_files:
+- .git/
+- dataflow/
+
+# Environment variables are set by the ./deploy.sh script
+env_variables:
+  GOOGLE_APPLICATION_CREDENTIALS: "{{GOOGLE_APPLICATION_CREDENTIALS}}"
+  KEY_FILE: "{{KEY_FILE}}"
+  API_MODE: "{{API_MODE}}"
+  PROJECT: "{{PROJECT}}"
+  BIGTABLE_INSTANCE: "{{BIGTABLE_INSTANCE}}"
+  BIGTABLE_CONFIG_DIR: "{{BIGTABLE_CONFIG_DIR}}"
+  BIGTABLE_POOL_SIZE: "{{BIGTABLE_POOL_SIZE}}"

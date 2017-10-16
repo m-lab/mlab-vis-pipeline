@@ -64,8 +64,8 @@ JAR_BASEDIR="${DIR}/dataflow/target"
 JAR_FILE="${JAR_BASEDIR}/mlab-vis-pipeline.jar"
 
 if [ ! -f $JAR_FILE ]; then
-  echo "JAR File not found at: ${JAR_FILE}"
-  exit 1;
+  echo "JAR File not found at: ${JAR_FILE}. Trying to download it."
+  ./getjar.sh -m ${API_MODE}
 fi
 
 echo "Project: ${PROJECT}"

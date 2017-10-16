@@ -7,6 +7,9 @@ import logging
 import tornado.wsgi
 import tornado.httpserver
 import wsgiref.simple_server
+import json
+
+from tools.utils import read_json, write_csv
 from ndscheduler import settings
 from ndscheduler.core import scheduler_manager
 
@@ -29,37 +32,30 @@ class SchedulerServer(server.SchedulerServer):
         if 'API_MODE' in os.environ:
             api_mode = os.environ['API_MODE']
 
-        self.scheduler_manager.add_job(
-            job_class_string='job_scheduler.jobs.shell_job.ShellJob',
-            name='Keep alive',
-            pub_args=['/bin/bash', '/mlab-vis-pipeline/keepalive.sh',
-                      '-m', api_mode],
-            hour='*')
+        # Read jobs from scheduler_jobs.json and add them.
+        current_directory = os.path.abspath(
+            os.path.join(os.path.dirname(os.path.realpath(__file__))))
+        jobs_file = os.path.join(current_directory, "scheduler_jobs.json")
 
-        # TODO: eventually add pipeline jar here?
-
-    # @classmethod
-    # def run(cls):
-    #     if not cls.singleton:
-    #         signal.signal(signal.SIGINT, cls.signal_handler)
-
-    #         cls.singleton = cls(scheduler_manager.SchedulerManager.get_instance())
-    #         cls.singleton.start_scheduler()
-    #         # cls.singleton.application.listen(settings.HTTP_PORT, settings.HTTP_ADDRESS)
-
-    #         # container = tornado.wsgi.WSGIContainer(cls.singleton.application)
-    #         # http_server = tornado.httpserver.HTTPServer(container)
-    #         # http_server.listen(settings.HTTP_PORT)
-
-    #         logger.info('Running server at %s:%d ...' % (settings.HTTP_ADDRESS, settings.HTTP_PORT))
-    #         logger.info('*** You can access scheduler web ui at http://localhost:%d'
-    #                     ' ***' % settings.HTTP_PORT)
-
-    #         # tornado.ioloop.IOLoop.current().start()
-
-    #         wsgi_app = tornado.wsgi.WSGIAdapter(cls.singleton.application)
-    #         server = wsgiref.simple_server.make_server('', settings.HTTP_PORT, wsgi_app)
-    #         server.serve_forever()
+        if os.path.isfile(jobs_file):
+            jobs = read_json(jobs_file)
+            for job in jobs["jobs"]:
+                self.scheduler_manager.add_job(
+                    job_class_string=job['job_class_string'],
+                    name=job['name'],
+                    pub_args=job['args'],
+                    hour=job['hour'] if 'hour' in job else "*",
+                    minute=job['minute'] if 'minute' in job else "*",
+                    day=job['day'] if 'day' in job else "*",
+                    month=job['month'] if 'month' in job else "*",
+                    day_of_week=job['day_of_week'] if 'day_of_week' in job else "*")
+        else:
+            self.scheduler_manager.add_job(
+                job_class_string='job_scheduler.jobs.shell_job.ShellJob',
+                name='Keep alive',
+                pub_args=['/bin/bash', '/mlab-vis-pipeline/keepalive.sh',
+                        '-m', api_mode],
+                hour='*')
 
 if __name__ == "__main__":
     SchedulerServer.run()

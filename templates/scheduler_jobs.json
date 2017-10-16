@@ -1,0 +1,28 @@
+{
+    "jobs": [
+        {
+            "job_class_string": "job_scheduler.jobs.shell_job.ShellJob",
+            "name": "Keep Alive Ping to Prometheus",
+            "args": ["/mlab-vis-pipeline/keepalive.sh",
+                "-m", "{{API_MODE}}"],
+            "minute": "0",
+            "hour": "*/4",
+            "day": "*",
+            "month": "*",
+            "day_of_week": "0-4"
+
+        },
+
+        {
+            "job_class_string": "job_scheduler.jobs.shell_job.ShellJob",
+            "name": "Check for new pipeline jar",
+            "args": ["/mlab-vis-pipeline/getjar.sh",
+                "-m", "{{API_MODE}}"],
+            "minute": "0",
+            "hour": "0",
+            "day": "*",
+            "month": "*",
+            "day_of_week": "0-4"
+        }
+    ]
+}

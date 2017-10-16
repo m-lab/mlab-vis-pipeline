@@ -4,6 +4,7 @@ usage() {
   echo "Usage: KEY_FILE=<path> $0 -m staging|production|sandbox" $1 1>&2; exit 1;
 }
 
+source /etc/profile
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 while getopts ":m:" opt; do
@@ -35,7 +36,6 @@ done
 if [ -z "${PROMETHEUS}" ]; then
   usage
 fi
-
 
 DATAFLOW_DIR="${DIR}/dataflow"
 JAR_BASEDIR="${DIR}/dataflow/target"

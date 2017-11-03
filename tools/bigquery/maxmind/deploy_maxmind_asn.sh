@@ -18,12 +18,12 @@ else
   exit 1
 fi
 
-ipv4File=./dataflow/data/bigquery/asn/GeoIPASNum2.csv
-ipv6File=./dataflow/data/bigquery/asn/GeoIPASNum2v6.csv
-asnNameFile=./dataflow/data/bigquery/asn/asn_name_map.csv
+ipv4File=./$basedir/data/GeoIPASNum2.csv
+ipv6File=./$basedir/data//GeoIPASNum2v6.csv
+asnNameFile=./$basedir/data/asn_name_map.csv
 
 tableName="${PROJECT}:data_viz_helpers.maxmind_asn"
-tableSchema=./dataflow/data/bigquery/asn/schemas/maxmind_asn_schema.json
+tableSchema=./$basedir/data/schemas/maxmind_asn_schema.json
 
 # This outputs the ./output/maxmind_asn.csv
 echo "Processing maxmind CSV"

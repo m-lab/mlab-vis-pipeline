@@ -11,7 +11,7 @@ CUR_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__
 
 OUTPUT_DIRECTORY = os.path.join(CUR_DIR, "output")
 OUTPUT_FILE = os.path.join(OUTPUT_DIRECTORY, "location_cleaning.csv")
-INPUT_FILE = os.path.join(CUR_DIR, "..", "..", "..", "dataflow", "data", "bigquery", "location_cleaning", "location_cleaning.json")
+INPUT_FILE = os.path.join(CUR_DIR, "data", "location_cleaning.json")
 
 if not os.path.exists(OUTPUT_DIRECTORY):
     os.makedirs(OUTPUT_DIRECTORY)

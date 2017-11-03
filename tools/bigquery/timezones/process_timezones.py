@@ -10,10 +10,11 @@ import os
 import csv
 
 CUR_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
-TIMEZONE_DIR = os.path.join(CUR_DIR, "..", "..", "..", "dataflow", "data", "bigquery", "timezonedb")
+TIMEZONE_DIR = os.path.join(CUR_DIR, "data")
+OUTPUT_DIR = os.path.join(CUR_DIR, "output")
 ZONES_FILE = os.path.join(TIMEZONE_DIR, "zone.csv")
 TIMEZONES_FILE = os.path.join(TIMEZONE_DIR, "timezone.csv")
-MERGED_TIMEZONE_FILE = os.path.join(TIMEZONE_DIR, "merged_timezone.csv")
+MERGED_TIMEZONE_FILE = os.path.join(OUTPUT_DIR, "merged_timezone.csv")
 
 def build_zone_map():
     '''

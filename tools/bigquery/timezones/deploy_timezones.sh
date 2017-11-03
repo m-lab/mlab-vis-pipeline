@@ -18,7 +18,8 @@ else
   exit 1
 fi
 
-timezoneDir=./dataflow/data/bigquery/timezonedb
+dataDir=./$basedir/data
+outputDir=./$basedir/output
 tableName="${PROJECT}:data_viz_helpers.localtime_timezones"
 
 echo "Creating timezone tables"
@@ -32,7 +33,7 @@ bq rm -f $tableName
 echo "Adding ${tableName} to BigQuery"
 bq load --allow_quoted_newlines --skip_leading_rows=1 --source_format=CSV \
   $tableName \
-  $timezoneDir/merged_timezone.csv \
-  $timezoneDir/schemas/merged_timezone.json
+  $outputDir/merged_timezone.csv \
+  $dataDir/schemas/merged_timezone.json
 
 echo "Done."

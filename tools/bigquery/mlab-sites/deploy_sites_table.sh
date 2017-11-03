@@ -18,7 +18,7 @@ else
 fi
 
 tableName="${PROJECT}:data_viz_helpers.mlab_sites"
-tableSchema=./dataflow/data/bigquery/mlab-sites/schemas/mlab_sites_schema.json
+tableSchema=./$basedir/data/schemas/mlab_sites_schema.json
 
 echo "Processing mlab_sites CSV"
 python -m tools.bigquery.mlab-sites.process_sites

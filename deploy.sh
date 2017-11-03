@@ -3,7 +3,7 @@
 # -m environment
 # -b to build or not to build (1|0)
 # -t to trais or not to travis
-USAGE="$0 -m production|staging|sandbox -b 1|0 -t"
+USAGE="KEY_FILE=pathto.json $0 -m production|staging|sandbox -b 1|0 -t"
 
 set -e
 set -x
@@ -53,7 +53,7 @@ while getopts ":m:b:" opt; do
           exit 1
         fi
       elif [[ "${OPTARG}" == sandbox ]]; then
-        source $DIR/environments/sandbox.sh
+        source ./environments/sandbox.sh
       else
         echo "BAD ARGUMENT TO $0: ${OPTARG}"
         exit 1
@@ -94,13 +94,14 @@ cp ${KEY_FILE} cred.json
 # Copy templates folder for deploy
 rm -rf deploy-build
 mkdir deploy-build
-cp templates/app.yaml deploy-build/
 cp templates/nginx.conf deploy-build/
 cp templates/supervisord.conf deploy-build/
 cp templates/scheduler_jobs.json deploy-build/
-cp templates/Dockerfile deploy-build/
+mkdir -p deploy-build/k8s/
+cp templates/k8s/deployment.yaml deploy-build/k8s/
+cp templates/k8s/service.yaml deploy-build/k8s/
 
-# Build app.yaml template
+# Build all template files
 ./travis/substitute_values.sh deploy-build \
     GOOGLE_APPLICATION_CREDENTIALS cred.json \
     KEY_FILE cred.json \
@@ -110,10 +111,14 @@ cp templates/Dockerfile deploy-build/
     BIGTABLE_CONFIG_DIR bigtable_configs \
     BIGTABLE_POOL_SIZE ${BIGTABLE_POOL_SIZE}
 
-# Copy app.yaml to root... this is required for the deploy to identify the Dockerfile
-# Also copy the dockerfile relevant to the environment.
-cp deploy-build/app.yaml app.yaml
-cp deploy-build/Dockerfile Dockerfile
+./travis/substitute_values.sh deploy-build/k8s \
+    GOOGLE_APPLICATION_CREDENTIALS cred.json \
+    KEY_FILE cred.json \
+    API_MODE ${API_MODE} \
+    PROJECT ${PROJECT} \
+    BIGTABLE_INSTANCE ${BIGTABLE_INSTANCE} \
+    BIGTABLE_CONFIG_DIR bigtable_configs \
+    BIGTABLE_POOL_SIZE ${BIGTABLE_POOL_SIZE}
 
 # build jar and docker container
 if [[ $BUILD == 1 ]]; then
@@ -121,10 +126,13 @@ if [[ $BUILD == 1 ]]; then
   ./build.sh -m ${API_MODE} -d 1
 fi
 
-# Run deploy - You might need to approve this.
-gcloud app deploy
+kubectl create -f deploy-build/k8s/deployment.yaml
+kubectl create -f deploy-build/k8s/service.yaml
 
-# Remove temporary files
+echo "Your service is being created. You might need to wait a few minutes"
+echo "to recieve your external IP. You can run\n\nkubectl get service\n"
+echo "until you get one assigned. If no IP is being assigned, we are likely"
+echo "out of IPs."
+
+# # Remove temporary files
 rm cred.json
-rm Dockerfile
-rm app.yaml

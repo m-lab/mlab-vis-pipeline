@@ -20,7 +20,7 @@ fi
 
 tableName="${PROJECT}:data_viz_helpers.location_cleaning"
 
-tableSchema=./dataflow/data/bigquery/location_cleaning/schemas/location_cleaning.json
+tableSchema=./$basedir/data/schemas/location_cleaning.json
 outputFile=$basedir/output/location_cleaning.csv
 
 echo "Processing location_cleaning CSV"

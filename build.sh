@@ -74,6 +74,9 @@ gcloud auth activate-service-account --key-file=${KEY_FILE}
 # Push container to registry
 if [[ $PUSH == 1 ]]; then
   echo "Pushing docker image to container registry"
+  # the _json_key is required per instructions here:
+  # https://cloud.google.com/container-registry/docs/advanced-authentication
+  docker login -u _json_key -p "$(cat $KEY_FILE)" https://gcr.io
   docker tag ${PROJECT}/mlab-vis-pipeline gcr.io/${PROJECT}/mlab-vis-pipeline:latest
   docker push gcr.io/${PROJECT}/mlab-vis-pipeline:latest
 fi

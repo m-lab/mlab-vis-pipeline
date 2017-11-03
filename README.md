@@ -10,11 +10,40 @@ There are two main components in this repo:
 location data etc.)
 
 
+# Development
+
+# Production
+
+- Make sure you have a kubernetes cluster setup. You can do so by calling
+`KEY_FILE=<pathto.json> make setup_cluster`
+
+You may want to adjust the zone to your liking, but it doesn't really matter.
+
+- You can make sur 
+
+# Setup Docker image
+
+First, build your docker image and deploy it to the container registry
+if you're using gcloud
+
+`KEY_FILE=<keyfile> ./build.sh -m sandbox|staging|production -d 0|1`
+
+d=0 to not push image to container registry, 1 to do so.
+
+
 # Setting up a new environment
 
 Note that you must have the appropriate service account credentials json file
 to access the bigtable instance. Store that file somewhere on your system
 outside of this application root.
+
+## Prerequisites
+
+The following are requireents:
+- gcloud
+- maven
+- kubernetis (gcloud components install kubectl)
+
 
 ## Setup Bigtable
 

@@ -10,3 +10,4 @@ API_MODE=production
 BIGTABLE_POOL_SIZE=40
 STAGING_LOCATION=gs://mlab-data-viz-production
 PROMETHEUS=status-mlab-oti.measurementlab.net:9091
+K8_CLUSTER=mlab-vis-pipeline-jobs

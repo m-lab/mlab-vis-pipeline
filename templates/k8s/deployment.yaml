@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mlab-vis-pipeline-jobs
+  labels:
+    # Project ID
+    app: mlab-vis-pipeline-jobs
+spec:
+  #Run one instance
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mlab-vis-pipeline-jobs
+    spec:
+      #Container details
+      containers:
+        - name: mlab-vis-pipeline-jobs
+          image: gcr.io/{{PROJECT}}/mlab-vis-pipeline:latest
+          imagePullPolicy: Always
+
+          #Ports to expose
+          ports:
+          - containerPort: 8888

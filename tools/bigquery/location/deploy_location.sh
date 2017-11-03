@@ -18,7 +18,8 @@ else
   exit 1
 fi
 
-locationDir=./dataflow/data/bigquery/location
+basedir=`dirname "$BASH_SOURCE"`
+locationDir=./$basedir/data
 
 echo "Creating location tables"
 

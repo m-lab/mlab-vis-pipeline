@@ -43,6 +43,7 @@
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
           <appendAssemblyId>false</appendAssemblyId>
+          <compress>Yes</compress>
         </configuration>
       </plugin>
 

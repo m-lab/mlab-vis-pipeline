@@ -10,8 +10,7 @@ CUR_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__
 
 OUTPUT_DIRECTORY = os.path.join(CUR_DIR, "output")
 OUTPUT_FILE = os.path.join(OUTPUT_DIRECTORY, "asn_merge.csv")
-INPUT_FILE = os.path.join(CUR_DIR, "..", "..", "..", "dataflow", "data",
-                          "bigquery", "asn_merge", "asn_merge.json")
+INPUT_FILE = os.path.join(CUR_DIR, "data", "asn_merge.json")
 
 if not os.path.exists(OUTPUT_DIRECTORY):
     os.makedirs(OUTPUT_DIRECTORY)

@@ -20,8 +20,8 @@ fi
 
 tableName="${PROJECT}:data_viz_helpers.asn_merge"
 
-tableSchema=./dataflow/data/bigquery/asn_merge/schemas/asn_merge.json
-outputFile=tools/bigquery/asn_merge/output/asn_merge.csv
+tableSchema=./$basedir/data/schemas/asn_merge.json
+outputFile=./$basedir/output/asn_merge.csv
 
 echo "Processing asn_merge CSV"
 python -m tools.bigquery.asn_merge.process_asn_merge

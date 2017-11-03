@@ -14,6 +14,7 @@ usage() {
 ENDDATE=""
 STARTDATE=""
 TEST=0
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 while getopts ":t:e:s:m:" opt; do
   case $opt in
@@ -26,11 +27,11 @@ while getopts ":t:e:s:m:" opt; do
     m)
       echo "${OPTARG} environment"
       if [[ "${OPTARG}" == production ]]; then
-        source ./environments/production.sh
+        source $DIR/environments/production.sh
       elif [[ "${OPTARG}" == staging ]]; then
-        source ./environments/staging.sh
+        source $DIR/environments/staging.sh
       elif [[ "${OPTARG}" == sandbox ]]; then
-        source ./environments/sandbox.sh
+        source $DIR/environments/sandbox.sh
       else
         echo "BAD ARGUMENT TO $0: ${OPTARG}"
         exit 1
@@ -58,14 +59,13 @@ if [ -z "${STARTDATE}" ]; then
   usage
 fi
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DATAFLOW_DIR="${DIR}/dataflow"
 JAR_BASEDIR="${DIR}/dataflow/target"
 JAR_FILE="${JAR_BASEDIR}/mlab-vis-pipeline.jar"
 
 if [ ! -f $JAR_FILE ]; then
   echo "JAR File not found at: ${JAR_FILE}. Trying to download it."
-  ./getjar.sh -m ${API_MODE}
+  $DIR/getjar.sh -m ${API_MODE}
 fi
 
 echo "Project: ${PROJECT}"
@@ -76,7 +76,9 @@ echo "STARTING PIPELINE"
 echo 'Authenticate service account'
 gcloud auth activate-service-account --key-file=${KEY_FILE}
 
-echo "moving into dir: ${DATAFLOW_DIR}"
+KEY_FILE=`echo "$(cd "$(dirname "$KEY_FILE")"; pwd)/$(basename "$KEY_FILE")"`
+
+# echo "moving into dir: ${DATAFLOW_DIR}"
 cd ${DATAFLOW_DIR}
 
 echo "Running historic pipeline for DAY"
@@ -85,7 +87,6 @@ GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -jar ${JAR_FILE} \
   --timePeriod="day" --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
   --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} \
   --diskSizeGb=30 &
-
 
 echo "Running historic pipeline for HOUR"
 GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -jar ${JAR_FILE} \

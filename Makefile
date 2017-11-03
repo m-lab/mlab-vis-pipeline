@@ -56,6 +56,13 @@ mlab_sites:
 setup_bigquery: authenticate asn_merge maxmind location location_cleaning timezones mlab_sites
 	echo 'Done creating bigquery helper tables'
 
+# Create a kubernetis cluster
+setup_cluster: authenticate
+	gcloud container clusters create --zone us-central1-b mlab-vis-pipeline-jobs
+
+setup: setup_bigquery setup_bigtable setup_cluster
+	echo "setup complete."
+
 #-- Pipeline Jars, Docker container
 build:
 	./build.sh -m ${API_MODE}

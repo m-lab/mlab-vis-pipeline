@@ -67,7 +67,7 @@ docker push ${CONTAINER_NAME}
 # update the k8s files. most templates are updated at deploy time
 # except these, because we need to know the specific container name.
 mkdir -p deploy-build/k8s/
-cp templates/k8s/deployment.yaml deploy-build/k8s/
+cp templates/k8s/*.yaml deploy-build/k8s/
 cp templates/k8s/bqpipeline.yaml deploy-build/k8s/
 cp templates/k8s/btpipeline.yaml deploy-build/k8s/
 

@@ -51,4 +51,4 @@ spec:
           - name: STAGING_LOCATION
             value: {{STAGING_LOCATION}}
           - name: BIGTABLE_POOL_SIZE
-            value: {{BIGTABLE_POOL_SIZE}}
+            value: "{{BIGTABLE_POOL_SIZE}}"

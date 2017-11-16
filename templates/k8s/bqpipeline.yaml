@@ -5,8 +5,9 @@ metadata:
   namespace: viz-pipeline
 spec:
   containers:
-  - image: viz-pipeline
-    command: ./run_bq.sh -m {{API_MODE}}
+  - image: {{CONTAINER_NAME}}
+    command: ["/bin/bash"]
+    args: ["./run_bq.sh", "-m", "{{API_MODE}}"]
     imagePullPolicy: IfNotPresent
     name: bq-viz-pipeline
   restartPolicy: Always

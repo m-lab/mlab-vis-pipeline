@@ -14,12 +14,26 @@ location data etc.)
 
 # Production
 
-- Make sure you have a kubernetes cluster setup. You can do so by calling
-`KEY_FILE=<pathto.json> make setup_cluster`
+## Cluster
 
-You may want to adjust the zone to your liking, but it doesn't really matter.
+Make sure you have a kubernetes cluster for the pipeline.
+You can do so by calling
 
-- You can make sur 
+```
+gcloud container \
+  --project "mlab-sandbox|mlab-staging|mlab-oti" clusters create "mlab-vis-pipeline-jobs" \
+  --zone "us-central1-b" \
+  --machine-type=n1-standard-8 \
+  --scopes "https://www.googleapis.com/auth/cloud-platform" \
+  --num-nodes 3 \
+  --node-labels=mlab-vis-pipeline-jobs-node=true
+```
+
+You may want to adjust the zone to ensure you get a public IP assigned.
+Make sure that it is set as your default cluster
+
+`gcloud config set container/cluster mlab-vis-pipeline-jobs`
+
 
 # Setup Docker image
 
@@ -122,3 +136,8 @@ KEY_FILE=<key file path> make test_connection
 
 Relies on the detals in the `environments/` files at the root of the
 application. Be sure to change them to map to the instance you're pointing at.
+
+#### 2. My kubernetes container is not getting a public IP assigned.
+
+It's likley because there are no more public IPs to go around. Try switching
+to another zone.

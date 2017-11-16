@@ -21,30 +21,19 @@ RUN apt-get install unzip && \
       component_manager/disable_update_check True && \
       . /etc/profile
 
-# setup nginx
-RUN mkdir /mlab-vis-pipeline
-ADD deploy-build/ /mlab-vis-pipeline/deploy-build
+# Setup maven
+ARG MAVEN_VERSION=3.3.9
+ARG BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
+
+RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
+  && curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+  && tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 \
+  && rm -f /tmp/apache-maven.tar.gz \
+  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+
+# Add this working folder
+ADD . /mlab-vis-pipeline
 WORKDIR /mlab-vis-pipeline
-COPY deploy-build/nginx.conf /etc/nginx/nginx.conf
-RUN service nginx start
-EXPOSE 80
 
-ENV DOCKER_HOST unix:///var/run/docker.sock
-
-# setup supervisord
-RUN touch /var/log/supervisor.log
-
-# setup jobs
-ADD job_scheduler/ /mlab-vis-pipeline/job_scheduler
-COPY deploy-build/scheduler_jobs.json /mlab-vis-pipeline/job_scheduler/
-WORKDIR /mlab-vis-pipeline/job_scheduler/
-RUN pip install -r requirements.txt
-RUN touch /var/log/jobs.log
-
-WORKDIR /mlab-vis-pipeline
-COPY deploy-build/supervisord.conf /etc/supervisor/supervisord.conf
-ADD tools/ /mlab-vis-pipeline/tools
-ADD environments/ /mlab-vis-pipeline/environments
-ADD *.sh /mlab-vis-pipeline/
-
-CMD ["/bin/sh", "-c", "service nginx restart && `which supervisord` --configuration /etc/supervisor/supervisord.conf"]
+# Build jar
+RUN cd dataflow && mvn package

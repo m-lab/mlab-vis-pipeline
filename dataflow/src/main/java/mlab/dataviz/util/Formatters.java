@@ -1,7 +1,6 @@
 package mlab.dataviz.util;
 
 public final class Formatters {
-	 
 	 // the timestamp used in the query comparisons
 	 public static final String TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	 

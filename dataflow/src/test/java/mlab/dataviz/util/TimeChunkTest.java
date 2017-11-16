@@ -8,7 +8,6 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
-import mlab.dataviz.data.DateRange;
 import mlab.dataviz.util.TimeChunk;
 
 public class TimeChunkTest {

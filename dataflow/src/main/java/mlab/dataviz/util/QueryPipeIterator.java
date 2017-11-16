@@ -13,7 +13,6 @@ import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 
-import mlab.dataviz.data.DateRange;
 import mlab.dataviz.query.QueryBuilder;
 
 public class QueryPipeIterator implements Iterator<PCollection<TableRow>> {

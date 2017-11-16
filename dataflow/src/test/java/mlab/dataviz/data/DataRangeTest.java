@@ -8,7 +8,7 @@ import java.util.TimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
-import mlab.dataviz.data.DateRange;
+import mlab.dataviz.util.DateRange;
 
 public class DataRangeTest {
 

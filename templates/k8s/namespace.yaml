@@ -1,0 +1,9 @@
+# To create the namespace for the scraper deployment, run
+#    kubectl create -f namespace.yml
+# The namespace should only need to be created once in the lifetime of the
+# cluster. This should match the variable defined in the ./environments
+# folder.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: viz-pipeline

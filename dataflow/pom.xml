@@ -38,7 +38,7 @@
 					<finalName>mlab-vis-pipeline</finalName>
 					<archive>
 						<manifest>
-							<mainClass>mlab.dataviz.BQRunner</mainClass>
+							<mainClass>mlab.dataviz.main.BQRunner</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

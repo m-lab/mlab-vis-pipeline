@@ -5,9 +5,8 @@
 ###
 
 PROJECT=mlab-staging
-BIGTABLE_INSTANCE=mlab-ndt-agg
+BIGTABLE_INSTANCE=viz-pipeline
 API_MODE=staging
 BIGTABLE_POOL_SIZE=10
-STAGING_LOCATION=gs://mlab-data-viz-staging
-PROMETHEUS=status-mlab-staging.measurementlab.net:9091
+STAGING_LOCATION=gs://viz-pipeline
 K8_CLUSTER=viz-pipeline

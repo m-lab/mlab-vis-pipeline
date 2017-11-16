@@ -9,118 +9,180 @@ There are two main components in this repo:
 2. `tools` - Python files for preparing data that we join with (like maxmind,
 location data etc.)
 
+The pipeline is actually comprised of two separate main pipelines:
 
-# Development
+1. Bigquery pipeline - responsible for reading from NDT and augmenting the data.
+1. Bigtable pipeline - responsible for taking the produced data from the bq
+pipeline and transforming it into bigtable tables.
 
-# Production
+In production, the pipelines run in Kubernetes. See below for more information.
 
-## Cluster
+# Running the pipelines
 
-Make sure you have a kubernetes cluster for the pipeline.
-You can do so by calling
+There are three ways to run the pipelines:
 
-```
-gcloud container \
-  --project "mlab-sandbox|mlab-staging|mlab-oti" clusters create "mlab-vis-pipeline-jobs" \
-  --zone "us-central1-b" \
-  --machine-type=n1-standard-8 \
-  --scopes "https://www.googleapis.com/auth/cloud-platform" \
-  --num-nodes 3 \
-  --node-labels=mlab-vis-pipeline-jobs-node=true
-```
+1. On your local machine
+1. In a docker container on your local machine
+1. In a kubernetes cluster
 
-You may want to adjust the zone to ensure you get a public IP assigned.
-Make sure that it is set as your default cluster
+Below we define the ways to do so, and the benefit / drawback of each.
 
-`gcloud config set container/cluster mlab-vis-pipeline-jobs`
+## Prerequisites for ANY pipeline run
 
+1. Before diving into any of these, ensure the configurations in `/environments`
+represent the environment you'll be running against. They should by default.
 
-# Setup Docker image
+2. You need to have a storage bucket setup. You can do so by calling after
+choosing the correct project via `gcloud config set project <mlab-sandbox|mlab-staging...>`
 
-First, build your docker image and deploy it to the container registry
-if you're using gcloud
+`gsutil mb -c regional -l us-east1 gs://viz-pipeline`
 
-`KEY_FILE=<keyfile> ./build.sh -m sandbox|staging|production -d 0|1`
-
-d=0 to not push image to container registry, 1 to do so.
-
-
-# Setting up a new environment
-
-Note that you must have the appropriate service account credentials json file
-to access the bigtable instance. Store that file somewhere on your system
-outside of this application root.
-
-## Prerequisites
-
-The following are requireents:
-- gcloud
-- maven
-- kubernetis (gcloud components install kubectl)
-
-
-## Setup Bigtable
-
-The dataflow pipeline will create bigtable tables. In order for the pipeline to
-write to them, they first need to exist. In order to create them do the
-following:
-
-1. In your google cloud console create a new big table instance. Note the
-`instance-id` since it will be required. Update the appropriate `environments/`
-file to point to that instance.
-
-2. Create the required tables in the bigtable instance. To do so, from the
-root of this app run the following:
+3. You need to create a bigtable instance to write to. You can do so by calling:
 
 ```
-API_MODE=sandbox|staging|production \
-KEY_FILE=<cred file path> \
-make setup_bigtable
+gcloud beta bigtable instances create viz-pipeline --cluster=viz-pipeline \
+    --cluster-zone=us-east1-c \
+    --cluster-num-nodes=3 \
+    --description="Viz Pipeline Cluster"
 ```
 
-## Setup Bigquery
+Note that the instance name should match what's in your `/environment` files.
+In this case we are using 'viz-pipeline`, but it can be anything (and has
+a different name in production.)
 
-Some helper tables are necessary for the pipeline. To create them, run:
+4. You need to create helper tables in biqeury. To do so, run:
 
 ```
+pip install -r requirements.txt
 API_MODE=sandbox|staging|production \
 KEY_FILE=<path to cred file> \
 make setup_bigquery
 ```
 
-## Build a pipeline jar
+5. You need to create the final container tables in bigtable. To do so, run:
 
-In order to build the pipeline jar, you will need to have
-[Maven](https://maven.apache.org/) version 3.3.9 installed.
-Once you do, run:
+```
+API_MODE=sandbox|staging|production \
+KEY_FILE=<path to cred file> \
+make setup_bigtable
+```
 
-`make build`
+## 1. Running on your Local Machine
 
-This actually runs `mvn package` from the dataflow directory.
-Tests are automatically run on build.
+In order for you to run the pipeline on your local machine you will need the following
+dependencies:
 
-# Development setup
+1. Maven 3.3.9 (you can check by running `mvn --version`)
+1. Java 1.8.0
+1. gcloud
 
-The dataflow pipelines have been developed using Eclipse. You can see more
-about the pipelines in the nested README files.
+First, you should build your pipeline jar from the source.
+You can do so by running `cd /dataflow && mvn package`.
+Note that it will also run the tests as part of this run.
 
-# Running the pipelines
+Once the jar has been built successfully, you can run either one of the pipelines
+as follows:
 
-It is easiest to run the pipelines from eclipse.
-You do not need to use the Dataflow running, instead setup the appropriate
-arguments via the command line. The pipelines README has more information
-about the requirement arguments for each pipeline.
+**Bigquery pipeline**
 
-## Running the pipelines remotely
+You can run the bigquery pipeline in two modes:
+1. With predefined dates
 
-Since some of the pipelines take a very long time to run, it's best to run them
-on a remote machine. We use a google cloud instance to do so. Make sure that
-the public keys of all required parties have been added via the google console.
-Details are explained in a Google Document entitled "Running Pipelines".
+`KEY_FILE=<path to your service key>./run_bq.sh -m <sandbox|staging|production>`
+
+2. With custom dates
+
+`KEY_FILE=<path to your service key>./run_bq.sh -m <sandbox|staging|production> -s <YYYY-MM-DD> -e <YYYY-MM-DD>`
+
+**Bigtable pipeline**
+
+You can run the bigtable pipeline like so:
+
+`KEY_FILE=<path to your service key>./run_bt.sh -m <sandbox|staging|production>`
+
+Note that the pipelines *do not* exit. They start an http server that runs
+for prometheus metric collection. The pipelines will run, then shut down, and
+restart after 1 day (bq) and 3 days (bt). You can just exit those scripts with
+Ctrl + C in your shell.
+
+## 2. Running in a docker container on your local machine
+
+If you don't wish to setup any dependencies (or you want to test the container)
+for deployment purposes, you can build a docker container of the pipeline and
+run against it instead.
+
+First, to build the container run:
+
+`docker build -t viz-pipeline .`
+
+Then, to run the container for either pipeline, call it like so:
+
+```
+docker run -it \
+    -v <path to local service key folder>:/keys \
+    -e KEY_FILE=/keys/<key name>.json \
+    -e API_MODE=<sandbox|staging|production> pipeline \
+    ./run_{bq|bt}.sh -m <sandbox|staging|production>
+```
+
+For example, this will run the bigquery pipeline:
+
+```
+docker run -it \
+     -v /dev/opensource/mlab/mlab-keys:/keys \
+     -e KEY_FILE=/keys/sandbox.json \
+     -e API_MODE=sandbox pipeline \
+     ./run_bq.sh -m sandbox
+```
+
+## 3. Running on a kubernetes cluster
+
+In order to run on kubernetes you need to have it setup locally. You can do that
+by calling `gcloud components install kubectl`.
+
+**Setup cluster**
+
+First, you need to setup a cluster. Make sure that you're running in the
+right project by calling `gcloud config set <project name>`, which could be
+`mlab-sandbox`, `mlab-staging`, or `mlab-oti`.
+
+Then, run the following script to setup your cluster:
+
+`KEY_FILE=<path to your key file>./setup_cluster.sh -m <sandbox|staging|production>`
+
+This script will setup a cluster, copy over the encrypted service key so it can be
+mounted as an key later, and setup the namespace for this cluter.
+This will take some time.
+
+**Build cluster**
+
+You can build the cluster container image and required templates by calling:
+
+`KEY_FILE=<path to your key file>./build_cluster.sh -m <sandbox|staging|production>`
+
+This will build and push a docker image to gcr.io that will then be pulled
+by kubernetes. It is required to be able to deploy pods. Anytime you
+
+**Deploy to cluster**
+
+To deploy (and start) your pipelines on the cluster you can call:
+
+`KEY_FILE=<path to your key file>./deploy_cluster.sh -m <sandbox|staging|production>`
+
+This will deploy your image and startup the pods.
 
 # Testing
 
-You can run the tests by calling `make test`.
+You can run the tests locally by calling `make test`.
+
+Alternatively you can run them through Docker, against the same
+container that we use to run the pipelines.
+
+`docker build -t pipeline -f Dockerfile .`
+
+And then running the tests by calling
+
+`docker run -it -w /mlab-vis-pipeline/dataflow pipeline mvn test`
 
 
 ## Troubleshooting

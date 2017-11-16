@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bq-viz-pipeline
+  namespace: viz-pipeline
+spec:
+  containers:
+  - image: viz-pipeline
+    command: ./run_bq.sh -m {{API_MODE}}
+    imagePullPolicy: IfNotPresent
+    name: bq-viz-pipeline
+  restartPolicy: Always

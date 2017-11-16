@@ -1,24 +1,56 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: mlab-vis-pipeline-jobs
+  name: viz-pipeline
   labels:
     # Project ID
-    app: mlab-vis-pipeline-jobs
+    app: viz-pipeline
 spec:
+spec:
+  # Rollbacks are accomplished via the autodeploy meachanism, so no need to keep
+  # around old configs and old ReplicaSets. They just use up kubernetes
+  # resources and slow everything down.
+  revisionHistoryLimit: 0
   #Run one instance
   replicas: 1
   template:
     metadata:
       labels:
-        app: mlab-vis-pipeline-jobs
+        app: viz-pipeline
+      annotations:
+        prometheus.io/scrape: 'true'
+        source: '{{GIT_BRANCH}}/{{GIT_COMMIT}}'
     spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: service-key
       #Container details
       containers:
-        - name: mlab-vis-pipeline-jobs
-          image: gcr.io/{{PROJECT}}/mlab-vis-pipeline:latest
+        - name: viz-pipeline
+          image: {{CONTAINER_NAME}}
           imagePullPolicy: Always
 
-          #Ports to expose
+          #Prometheus port
           ports:
-          - containerPort: 8888
+          - containerPort: 9090
+          volumeMounts:
+          - name: google-cloud-key
+            mountPath: /keys
+          env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /keys/service_account_key.json
+          - name: KEY_FILE
+            value: /keys/service_account_key.json
+          - name: PROJECT
+            value: {{PROJECT}}
+          - name: API_MODE
+            value: {{API_MODE}}
+          - name: BIGTABLE_INSTANCE
+            value: {{BIGTABLE_INSTANCE}}
+          - name: STAGING_LOCATION
+            value: {{STAGING_LOCATION}}
+          - name: BIGTABLE_POOL_SIZE
+            value: {{BIGTABLE_POOL_SIZE}}
+          - name: PROMETHEUS
+            value: {{PROMETHEUS}}

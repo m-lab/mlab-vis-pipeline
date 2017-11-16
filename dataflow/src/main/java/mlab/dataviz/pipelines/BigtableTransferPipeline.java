@@ -396,7 +396,7 @@ public class BigtableTransferPipeline implements Runnable {
 			}
 		} catch (SQLException e1) {
 			LOG.error(e1.getMessage());
-			e1.printStackTrace();
+			e1.printStackTrace();			
 		}
 
 	}

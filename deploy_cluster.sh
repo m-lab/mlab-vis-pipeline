@@ -85,54 +85,10 @@ if [[ $2 == travis ]]; then
   gcloud auth activate-service-account --key-file ${KEY_FILE}
 fi
 
-# remove built files so we do not upload them.
-find job_scheduler/ -name '*.pyc' -delete
+# Update container
+kubectl apply -f deploy-build/k8s/deployment.yaml
+kubectl apply -f deploy-build/k8s/bqpipeline.yaml
+kubectl apply -f deploy-build/k8s/btpipeline.yaml
 
-# Copy service key locally so that we can upload it as part of the deploy.
-cp ${KEY_FILE} cred.json
-
-# Copy templates folder for deploy
-rm -rf deploy-build
-mkdir deploy-build
-cp templates/nginx.conf deploy-build/
-cp templates/supervisord.conf deploy-build/
-cp templates/scheduler_jobs.json deploy-build/
-mkdir -p deploy-build/k8s/
-cp templates/k8s/deployment.yaml deploy-build/k8s/
-cp templates/k8s/service.yaml deploy-build/k8s/
-
-# Build all template files
-./travis/substitute_values.sh deploy-build \
-    GOOGLE_APPLICATION_CREDENTIALS cred.json \
-    KEY_FILE cred.json \
-    API_MODE ${API_MODE} \
-    PROJECT ${PROJECT} \
-    BIGTABLE_INSTANCE ${BIGTABLE_INSTANCE} \
-    BIGTABLE_CONFIG_DIR bigtable_configs \
-    BIGTABLE_POOL_SIZE ${BIGTABLE_POOL_SIZE}
-
-./travis/substitute_values.sh deploy-build/k8s \
-    GOOGLE_APPLICATION_CREDENTIALS cred.json \
-    KEY_FILE cred.json \
-    API_MODE ${API_MODE} \
-    PROJECT ${PROJECT} \
-    BIGTABLE_INSTANCE ${BIGTABLE_INSTANCE} \
-    BIGTABLE_CONFIG_DIR bigtable_configs \
-    BIGTABLE_POOL_SIZE ${BIGTABLE_POOL_SIZE}
-
-# build jar and docker container
-if [[ $BUILD == 1 ]]; then
-  echo "Building jar and docker image"
-  ./build.sh -m ${API_MODE} -d 1
-fi
-
-kubectl create -f deploy-build/k8s/deployment.yaml
-kubectl create -f deploy-build/k8s/service.yaml
-
-echo "Your service is being created. You might need to wait a few minutes"
-echo "to recieve your external IP. You can run\n\nkubectl get service\n"
-echo "until you get one assigned. If no IP is being assigned, we are likely"
-echo "out of IPs."
-
-# # Remove temporary files
-rm cred.json
+echo "Your service is being created. You might need to wait a few minutes."
+echo "Run kubectl proxy to see the status."

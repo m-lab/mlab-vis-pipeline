@@ -52,5 +52,3 @@ spec:
             value: {{STAGING_LOCATION}}
           - name: BIGTABLE_POOL_SIZE
             value: {{BIGTABLE_POOL_SIZE}}
-          - name: PROMETHEUS
-            value: {{PROMETHEUS}}

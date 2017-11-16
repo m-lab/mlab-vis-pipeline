@@ -64,7 +64,6 @@ docker login -u _json_key -p "$(cat $KEY_FILE)" https://gcr.io
 docker tag ${PROJECT}/vis-pipeline ${CONTAINER_NAME}
 docker push ${CONTAINER_NAME}
 
-
 # update the k8s files. most templates are updated at deploy time
 # except these, because we need to know the specific container name.
 mkdir -p deploy-build/k8s/
@@ -72,14 +71,13 @@ cp templates/k8s/deployment.yaml deploy-build/k8s/
 cp templates/k8s/bqpipeline.yaml deploy-build/k8s/
 cp templates/k8s/btpipeline.yaml deploy-build/k8s/
 
-./travis/substitute_values.sh deploy-build/k8s \
+./travis/substitute_values.sh deploy-build/k8s/ \
   CONTAINER_NAME ${CONTAINER_NAME} \
   BIGTABLE_INSTANCE ${BIGTABLE_INSTANCE} \
   PROJECT ${PROJECT} \
   API_MODE ${API_MODE} \
   BIGTABLE_POOL_SIZE ${BIGTABLE_POOL_SIZE} \
   STAGING_LOCATION ${STAGING_LOCATION} \
-  PROMETHEUS ${PROMETHEUS} \
   K8_CLUSTER ${K8_CLUSTER} \
   GIT_COMMIT ${GIT_COMMIT} \
   GIT_BRANCH ${GIT_BRANCH}

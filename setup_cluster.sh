@@ -38,7 +38,7 @@ gcloud container \
   --project ${PROJECT} clusters create ${K8_CLUSTER} \
   --zone "us-central1-b" \
   --machine-type=n1-standard-8 \
-  --num-nodes 4 \
+  --num-nodes 5 \
   --node-labels=vis-pipeline-jobs-node=true
 
 # Set as active cluster

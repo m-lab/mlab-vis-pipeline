@@ -7,7 +7,7 @@ spec:
   containers:
   - image: {{CONTAINER_NAME}}
     command: ["/bin/bash"]
-    args: ["./run_bq.sh", "-m", "{{API_MODE}}"]
+    args: ["./run_bt.sh", "-m", "{{API_MODE}}"]
     imagePullPolicy: IfNotPresent
     name: bt-viz-pipeline
   restartPolicy: Always

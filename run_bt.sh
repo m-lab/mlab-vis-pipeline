@@ -55,7 +55,7 @@ KEY_FILE=`echo "$(cd "$(dirname "$KEY_FILE")"; pwd)/$(basename "$KEY_FILE")"`
 cd ${DATAFLOW_DIR}
 
 echo "Starting server for bigquery metrics & bigtable pipeline"
-GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.BTRunner \
+GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BTRunner \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --project=${PROJECT} --instance=${BIGTABLE_INSTANCE} \
   --stagingLocation="${STAGING_LOCATION}"

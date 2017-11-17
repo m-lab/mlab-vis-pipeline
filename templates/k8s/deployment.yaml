@@ -41,6 +41,13 @@ spec:
           envFrom:
           - configMapRef:
               name: viz-pipeline-env
+          resources:
+            requests:
+              memory: "4G"
+              cpu: "200m"
+            limits:
+              memory: "8G"
+              cpu: "4000m"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -85,3 +92,10 @@ spec:
           envFrom:
           - configMapRef:
               name: viz-pipeline-env
+          resources:
+            requests:
+              memory: "4G"
+              cpu: "200m"
+            limits:
+              memory: "8G"
+              cpu: "4000m"

@@ -7,6 +7,9 @@
 #    -m staging|production|sandbox: environment to use
 #    -t : to do a test run (doesn't start dataflow)
 
+set -e
+set -x
+
 usage() {
   echo "Usage: KEY_FILE=<path> $0 -s <YYYY-MM-DD> -e <YYYY-MM-DD> -m staging|production|sandbox [-t]" $1 1>&2; exit 1;
 }
@@ -56,11 +59,6 @@ DATAFLOW_DIR="${DIR}/dataflow"
 JAR_BASEDIR="${DIR}/dataflow/target"
 JAR_FILE="${JAR_BASEDIR}/mlab-vis-pipeline.jar"
 
-if [ ! -f $JAR_FILE ]; then
-  echo "JAR File not found at: ${JAR_FILE}. Trying to download it."
-  $DIR/getjar.sh -m ${API_MODE}
-fi
-
 echo "Project: ${PROJECT}"
 echo "Start date: ${STARTDATE}"
 echo "End date: ${ENDDATE}"
@@ -78,14 +76,14 @@ echo "Starting server for metrics & bigquery pipeline (DAY and HOUR)"
 if [ -z "${ENDDATE}" ] && [ -z "${STARTDATE}" ]; then
   # empty start and end dates, going to let auto detection happen
   echo "Empty start and end dates, going to let pipeline determine dates."
-  GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -jar ${JAR_FILE} mlab.dataviz.main.BQRunner \
+  GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
   --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
   --skipNDTRead=0 --test=${TEST} --diskSizeGb=30
 else
   echo "Running on dates ${STARTDATE} - ${ENDDATE}"
-  GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -jar ${JAR_FILE} \
-  --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner mlab.dataviz.main.BQRunner \
+  GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
+  --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
   --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
   --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} \
   --diskSizeGb=30

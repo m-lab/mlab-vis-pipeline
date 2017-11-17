@@ -69,8 +69,6 @@ docker push ${CONTAINER_NAME}
 mkdir -p deploy-build/k8s/
 cp templates/k8s/configmap.yaml deploy-build/k8s/
 cp templates/k8s/deployment.yaml deploy-build/k8s/
-cp templates/k8s/bqpipeline.yaml deploy-build/k8s/
-cp templates/k8s/btpipeline.yaml deploy-build/k8s/
 
 ./travis/substitute_values.sh deploy-build/k8s/ \
   CONTAINER_NAME ${CONTAINER_NAME} \

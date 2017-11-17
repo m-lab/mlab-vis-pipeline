@@ -7,7 +7,6 @@ metadata:
     # Project ID
     app: viz-pipeline
 spec:
-spec:
   # Rollbacks are accomplished via the autodeploy meachanism, so no need to keep
   # around old configs and old ReplicaSets. They just use up kubernetes
   # resources and slow everything down.

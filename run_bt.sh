@@ -4,6 +4,9 @@
 # options:
 #    -m staging|production|sandbox: environment to use
 
+set -e
+set -x
+
 usage() {
   echo "Usage: KEY_FILE=<path> $0 -m staging|production|sandbox" $1 1>&2; exit 1;
 }

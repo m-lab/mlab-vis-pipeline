@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: viz-pipeline-env
+  namespace: viz-pipeline
+data:
+  GOOGLE_APPLICATION_CREDENTIALS: /keys/service_account_key.json
+  KEY_FILE: /keys/service_account_key.json
+  PROJECT: {{PROJECT}}
+  API_MODE: {{API_MODE}}
+  BIGTABLE_INSTANCE: {{BIGTABLE_INSTANCE}}
+  STAGING_LOCATION: {{STAGING_LOCATION}}
+  BIGTABLE_POOL_SIZE: "{{BIGTABLE_POOL_SIZE}}"

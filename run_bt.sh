@@ -43,16 +43,7 @@ DATAFLOW_DIR="${DIR}/dataflow"
 JAR_BASEDIR="${DIR}/dataflow/target"
 JAR_FILE="${JAR_BASEDIR}/mlab-vis-pipeline.jar"
 
-if [ ! -f $JAR_FILE ]; then
-  echo "JAR File not found at: ${JAR_FILE}. Trying to download it."
-  $DIR/getjar.sh -m ${API_MODE}
-fi
-
 echo "Project: ${PROJECT}"
-echo 'Authenticate service account'
-# gcloud auth activate-service-account --key-file=${KEY_FILE}
-
-# KEY_FILE=`echo "$(cd "$(dirname "$KEY_FILE")"; pwd)/$(basename "$KEY_FILE")"`
 
 # echo "moving into dir: ${DATAFLOW_DIR}"
 cd ${DATAFLOW_DIR}

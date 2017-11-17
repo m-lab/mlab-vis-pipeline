@@ -49,7 +49,7 @@ echo "Project: ${PROJECT}"
 echo 'Authenticate service account'
 gcloud auth activate-service-account --key-file=${KEY_FILE}
 
-KEY_FILE=`echo "$(cd "$(dirname "$KEY_FILE")"; pwd)/$(basename "$KEY_FILE")"`
+# KEY_FILE=`echo "$(cd "$(dirname "$KEY_FILE")"; pwd)/$(basename "$KEY_FILE")"`
 
 # echo "moving into dir: ${DATAFLOW_DIR}"
 cd ${DATAFLOW_DIR}

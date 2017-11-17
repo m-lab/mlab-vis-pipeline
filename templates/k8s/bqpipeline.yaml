@@ -10,4 +10,19 @@ spec:
     args: ["./run_bq.sh", "-m", "{{API_MODE}}"]
     imagePullPolicy: IfNotPresent
     name: bq-viz-pipeline
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /keys/service_account_key.json
+      - name: KEY_FILE
+        value: /keys/service_account_key.json
+      - name: PROJECT
+        value: {{PROJECT}}
+      - name: API_MODE
+        value: {{API_MODE}}
+      - name: BIGTABLE_INSTANCE
+        value: {{BIGTABLE_INSTANCE}}
+      - name: STAGING_LOCATION
+        value: {{STAGING_LOCATION}}
+      - name: BIGTABLE_POOL_SIZE
+        value: "{{BIGTABLE_POOL_SIZE}}"
   restartPolicy: Always

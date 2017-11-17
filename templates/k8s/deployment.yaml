@@ -39,4 +39,4 @@ spec:
             mountPath: /keys
           envFrom:
           - configMapRef:
-            name: viz-pipeline-env
+              name: viz-pipeline-env

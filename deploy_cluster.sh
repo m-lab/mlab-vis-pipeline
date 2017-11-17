@@ -86,6 +86,7 @@ if [[ $2 == travis ]]; then
 fi
 
 # Update container
+kubectl apply -f deploy-build/k8s/configmap.yaml
 kubectl apply -f deploy-build/k8s/deployment.yaml
 kubectl apply -f deploy-build/k8s/bqpipeline.yaml --force
 kubectl apply -f deploy-build/k8s/btpipeline.yaml --force

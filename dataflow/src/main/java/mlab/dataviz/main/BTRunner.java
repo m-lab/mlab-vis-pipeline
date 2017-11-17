@@ -15,7 +15,7 @@ public class BTRunner {
 
 		// Bigtable pipeline thread
 		Thread bigtablePipeline = new Thread(btp);
-		
+
 		// Prometheus http server
 		Thread metricsThread = new Thread(m);
 

@@ -119,8 +119,8 @@ public class NDTReadPipeline implements Runnable {
 		String startDateRangeQuery = "select STRING(max(test_date)) as min_test_date from " +
 				this.config.getStartDateFromTable();
 
-		String endDateRangeQuery = "SELECT STRING(max(web100_log_entry.log_time)) as max_test_date " +
-				"FROM " + this.config.getEndDateFromTable();
+		String endDateRangeQuery = "SELECT STRING(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(max(web100_log_entry.log_time * INTEGER(POW(10, 6))))))" +
+				" as max_test_date FROM " + this.config.getEndDateFromTable();
 
 		BigQueryJob bqj = new BigQueryJob(this.options.getProject());
 		java.util.List<TableRow> startRows = bqj.executeQuery(startDateRangeQuery);
@@ -158,18 +158,19 @@ public class NDTReadPipeline implements Runnable {
 		// if we already have the dates from a previous run, use them.
 		// since this pipeline is used twice, once for daily and one for hourly
 		// we expect this to be set the first time and then be used.
-		if (this.pipelineRunRecord.getDataStartDate() != null &&
-				this.pipelineRunRecord.getDataEndDate() != null) {
+		if (!this.pipelineRunRecord.getDataStartDate().equals("") &&
+			!this.pipelineRunRecord.getDataEndDate().equals("")) {
 			this.dates = new String[] {
 					this.pipelineRunRecord.getDataStartDate(),
 					this.pipelineRunRecord.getDataEndDate()
 			};
 		// Pipeline run dates provided via the command-line. Use those.
-		} else if (dates != null & dates[0] != null && dates[1] != null) {
+		} else if (dates != null & !dates[0].equals("") && !dates[1].equals("")) {
 			LOG.info(">>> Dates passed via commandline.");
 
 			this.pipelineRunRecord.setDataStartDate(dates[0]);
 			this.pipelineRunRecord.setDataEndDate(dates[1]);
+			this.pipelineRunRecord.save();
 
 		// get auto dates from BQ. We will either use our last test date from
 		// previous runs or we will just both dates automatically.
@@ -188,10 +189,12 @@ public class NDTReadPipeline implements Runnable {
 				this.pipelineRunRecord.setDataStartDate(dates[0]); // our last test date in table
 			}
 
+			this.pipelineRunRecord.save();
 			dates = this.pipelineRunRecord.getDates();
 		}
 		return dates;
 	}
+
 	/**
 	* Runs one main pipeline read and write given that we have a table that
 	* does not have allowLargeResutls set to false.
@@ -212,16 +215,15 @@ public class NDTReadPipeline implements Runnable {
 		String queryFile = this.config.getQueryFile();
 		TableSchema tableSchema = Schema.fromJSONFile(this.config.getSchemaFile());
 		String outputTableName =  this.config.getOutputTable();
-		String [] dates = this.dates;
 
 		QueryBuilder qb;
 
 		try {
 			determineRunDates();
 
-			LOG.info(">>> Kicking off pipeline for dates: " + dates[0] + " " + dates[1]);
+			LOG.info(">>> Kicking off pipeline for dates: " + this.dates[0] + " " + this.dates[1]);
 			LOG.info("Setup - Query file: " + queryFile);
-			qb = new QueryBuilder(queryFile, dates);
+			qb = new QueryBuilder(queryFile, this.dates);
 			try {
 				LOG.info("Setup - Table Schema: " + tableSchema.toPrettyString());
 			} catch (IOException e) {

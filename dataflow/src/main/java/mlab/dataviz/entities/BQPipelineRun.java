@@ -1,14 +1,19 @@
 package mlab.dataviz.entities;
 
+import java.sql.SQLException;
+
 /**
- * Represents a run of the bigquery portion of the 
- * viz pipeline. It is stored in Datastore, to track the 
+ * Represents a run of the bigquery portion of the
+ * viz pipeline. It is stored in Datastore, to track the
  * dates we use to query for new data as well as the
  * dates of the run and its status.
  *
  * @author iros
  */
 public class BQPipelineRun {
+
+	// handle to datastore
+	BQPipelineRunDatastore datastore;
 
 	// properties
 	private long id;
@@ -32,7 +37,8 @@ public class BQPipelineRun {
 	public static final String STATUS_FAILED = "failed";
 
 	// constructor
-	private BQPipelineRun(Builder builder) {
+	private BQPipelineRun(Builder builder, BQPipelineRunDatastore d) {
+		this.datastore = d;
 		this.id = builder.id;
 		this.data_start_date = builder.data_start_date;
 		this.data_end_date = builder.data_end_date;
@@ -100,7 +106,11 @@ public class BQPipelineRun {
 			this.data_start_date, this.data_end_date
 		};
 	}
-	
+
+	public void save() throws SQLException {
+		this.datastore.updateBQPipelineRunEntity(this);
+	}
+
 	public String toString() {
 	    return
 	        "ID: " + this.id +
@@ -112,6 +122,7 @@ public class BQPipelineRun {
 	  }
 
 	public static class Builder {
+		private BQPipelineRunDatastore datastore;
 		private long id;
 		private String run_start_date = "";
 		private String run_end_date = "";
@@ -126,6 +137,15 @@ public class BQPipelineRun {
 
 		public long getId() {
 			return this.id;
+		}
+
+		public Builder datastore(BQPipelineRunDatastore d) {
+			this.datastore = d;
+			return this;
+		}
+
+		public BQPipelineRunDatastore getDatastore() {
+			return this.datastore;
 		}
 
 		public Builder run_start_date(String run_date) {
@@ -174,7 +194,7 @@ public class BQPipelineRun {
 		}
 
 		public BQPipelineRun build() {
-			return new BQPipelineRun(this);
+			return new BQPipelineRun(this, this.datastore);
 		}
 
 		 @Override

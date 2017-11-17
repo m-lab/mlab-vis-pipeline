@@ -1,13 +1,17 @@
 package mlab.dataviz.entities;
 
+import java.sql.SQLException;
+
 /**
  * Represents a bigtable pipeline run.
  * Stores the run dates as well as status.
- * 
+ *
  * @author iros
  *
  */
 public class BTPipelineRun {
+
+    BTPipelineRunDatastore datastore;
 
     // properties
     private long id;
@@ -27,8 +31,9 @@ public class BTPipelineRun {
     public static final String STATUS_FAILED = "failed";
 
     // constructor
-    private BTPipelineRun(Builder builder) {
-		this.id = builder.id;
+    private BTPipelineRun(Builder builder, BTPipelineRunDatastore d) {
+        this.datastore = d;
+        this.id = builder.id;
 		this.run_end_date = builder.run_end_date;
 		this.run_start_date = builder.run_start_date;
 		this.status = builder.status;
@@ -71,7 +76,12 @@ public class BTPipelineRun {
                 + " Status: " + this.status;
     }
 
+    public void save() throws SQLException {
+        this.datastore.updateBTPipelineRunEntity(this);
+    }
+
     public static class Builder {
+        private BTPipelineRunDatastore datastore;
 		private long id;
 		private String run_start_date = "";
 		private String run_end_date = "";
@@ -84,6 +94,15 @@ public class BTPipelineRun {
 
         public long getId() {
             return this.id;
+        }
+
+        public Builder datastore(BTPipelineRunDatastore d) {
+            this.datastore = d;
+            return this;
+        }
+
+        public BTPipelineRunDatastore getDatastore() {
+            return this.datastore;
         }
 
         public Builder run_start_date(String run_date) {
@@ -114,7 +133,7 @@ public class BTPipelineRun {
         }
 
         public BTPipelineRun build() {
-            return new BTPipelineRun(this);
+            return new BTPipelineRun(this, this.datastore);
         }
 
         @Override

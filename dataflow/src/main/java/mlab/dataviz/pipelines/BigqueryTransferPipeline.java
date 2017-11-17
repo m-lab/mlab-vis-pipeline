@@ -101,12 +101,13 @@ public class BigqueryTransferPipeline implements Runnable {
 	private static String[] getDatesFromCommandline(HistoricPipelineOptions options) {
 		String[] dates = new String[2];
 
-		if (options.getStartDate() != null && (options.getEndDate() != null)) {
+		if (!options.getStartDate().equals("") && !options.getEndDate().equals("")) {
 			dates[0] = options.getStartDate() + "T00:00:00Z"; // start of day
 			dates[1] = options.getEndDate() + "T23:59:59Z"; // end of day
-			return dates;
+		} else {
+			dates = new String[] { options.getStartDate(), options.getEndDate() };
 		}
-		return null;
+		return dates;
 	}
 
 	/**
@@ -121,6 +122,7 @@ public class BigqueryTransferPipeline implements Runnable {
 		String runDate = dateFormatter.format(time);
 
 		BQPipelineRun record = new BQPipelineRun.Builder()
+				.datastore(this.datastore)
 				.run_start_date(runDate)
 				.status(BQPipelineRun.STATUS_RUNNING)
 				.build();
@@ -298,7 +300,7 @@ public class BigqueryTransferPipeline implements Runnable {
 
 				// mark this run Done.
 				this.status.setStatus(BQPipelineRun.STATUS_DONE);
-				this.datastore.updateBQPipelineRunEntity(this.status);
+				this.status.save();
 			} else {
 				LOG.error("Download or Upload pipelines failed.");
 			}
@@ -307,7 +309,7 @@ public class BigqueryTransferPipeline implements Runnable {
 			e.printStackTrace();
 			this.status.setStatus(BQPipelineRun.STATUS_FAILED);
 			try {
-				this.datastore.updateBQPipelineRunEntity(this.status);
+				this.status.save();
 			} catch (SQLException e1) {
 				LOG.error(e1.getMessage());
 				e1.printStackTrace();
@@ -322,7 +324,7 @@ public class BigqueryTransferPipeline implements Runnable {
 			String runDate = dateFormatter.format(t);
 			this.status.setRunEndDate(runDate);
 			try {
-				this.datastore.updateBQPipelineRunEntity(this.status);
+				this.status.save();
 			} catch (SQLException e) {
 				LOG.error(e.getMessage());
 				e.printStackTrace();

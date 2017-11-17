@@ -22,7 +22,7 @@ public class BTPipelineRunDatastore implements BTPipelineRunDao {
 
     private Datastore datastore;
     private KeyFactory keyFactory;
-    
+
     /**
      * Creates a new bigtable pipeline run object
      * @throws IOException
@@ -55,7 +55,7 @@ public class BTPipelineRunDatastore implements BTPipelineRunDao {
     /**
      * Create a new database entry from a BTPipelineRun object
      * @param bpr A BTPipelineRun object
-     * @return id for created object. 
+     * @return id for created object.
      */
 	@Override
 	public Long createBTPipelineRunEntity(BTPipelineRun bpr) throws SQLException {
@@ -71,10 +71,10 @@ public class BTPipelineRunDatastore implements BTPipelineRunDao {
         return btPipelineRunEntity.getKey().getId();
 	}
 
-	
+
 	/**
 	 * Fetches a bigtable pipeline run entity from datastore
-	 * @param id 
+	 * @param id
 	 * @return bpr BTPipelineRun object
 	 */
 	@Override

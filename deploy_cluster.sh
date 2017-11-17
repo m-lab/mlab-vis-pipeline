@@ -88,8 +88,6 @@ fi
 # Update container
 kubectl apply -f deploy-build/k8s/configmap.yaml
 kubectl apply -f deploy-build/k8s/deployment.yaml
-kubectl apply -f deploy-build/k8s/bqpipeline.yaml --force
-kubectl apply -f deploy-build/k8s/btpipeline.yaml --force
 
 echo "Your service is being created. You might need to wait a few minutes."
 echo "Run kubectl proxy to see the status."

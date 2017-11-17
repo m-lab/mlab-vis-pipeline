@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: viz-pipeline
+  namespace: viz-pipeline
   labels:
     # Project ID
     app: viz-pipeline
@@ -25,12 +26,28 @@ spec:
       - name: google-cloud-key
         secret:
           secretName: service-key
-      #Container details
+
       containers:
-        - name: viz-pipeline
+        - name: bt-viz-pipeline
           image: {{CONTAINER_NAME}}
           imagePullPolicy: Always
+          command: ["/bin/bash"]
+          args: ["./run_bt.sh", "-m", "{{API_MODE}}"]
+          #Prometheus port
+          ports:
+          - containerPort: 9090
+          volumeMounts:
+          - name: google-cloud-key
+            mountPath: /keys
+          envFrom:
+          - configMapRef:
+              name: viz-pipeline-env
 
+        - name: bq-viz-pipeline
+          image: {{CONTAINER_NAME}}
+          imagePullPolicy: Always
+          command: ["/bin/bash"]
+          args: ["./run_bq.sh", "-m", "{{API_MODE}}"]
           #Prometheus port
           ports:
           - containerPort: 9090

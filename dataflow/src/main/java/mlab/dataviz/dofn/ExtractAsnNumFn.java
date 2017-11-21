@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.values.KV;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.values.KV;
 
 public class ExtractAsnNumFn extends DoFn<TableRow, KV<String, TableRow>> {
 
@@ -15,7 +15,7 @@ public class ExtractAsnNumFn extends DoFn<TableRow, KV<String, TableRow>> {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(ExtractAsnNumFn.class);
 
-	@Override
+	@ProcessElement
 	public void processElement(DoFn<TableRow, KV<String, TableRow>>.ProcessContext c) throws Exception {
 		TableRow row = c.element();
 		String asnNum = (String) row.get("asn_number");

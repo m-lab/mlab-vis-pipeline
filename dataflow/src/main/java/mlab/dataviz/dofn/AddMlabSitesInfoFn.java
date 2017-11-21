@@ -3,8 +3,7 @@ package mlab.dataviz.dofn;
 import java.util.NavigableMap;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
-
+import org.apache.beam.sdk.values.PCollectionView;
 /**
  * DoFn that adds MLab site info to a row based on a PCollectionView passed in
  * as side input. It uses as NavigableMap to efficiently match IPs in a range.

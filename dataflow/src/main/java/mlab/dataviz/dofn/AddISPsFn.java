@@ -3,7 +3,8 @@ package mlab.dataviz.dofn;
 import java.util.NavigableMap;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+//import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.values.PCollectionView;
 
 /**
  * DoFn that adds AS information to a row based on a PCollectionView passed in

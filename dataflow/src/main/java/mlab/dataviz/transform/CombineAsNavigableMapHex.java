@@ -4,7 +4,8 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.Combine.CombineFn;
+//import com.google.cloud.dataflow.sdk.transforms.Combine.CombineFn;
+import org.apache.beam.sdk.transforms.Combine.CombineFn;
 
 /**
  * Combines IPv4 and IPv6 address ranges in a single map based on their hex encoding

@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+//import com.google.cloud.dataflow.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.DoFn;
+//import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.values.PCollectionView;
 
 public class BaseIPMatchingFn extends DoFn<TableRow, TableRow> {
 
@@ -88,7 +90,7 @@ public class BaseIPMatchingFn extends DoFn<TableRow, TableRow> {
 	 * This adds the AS to the data row in the columns specified by
 	 * dataASNNameKey and dataASNNumberKey.
 	 */
-	@Override
+	@ProcessElement
 	public void processElement(DoFn<TableRow, TableRow>.ProcessContext c) throws Exception {
 		// get the data row to modify
 		TableRow dataRow = c.element().clone();

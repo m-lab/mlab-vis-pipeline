@@ -6,17 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.transforms.View;
-import com.google.cloud.dataflow.sdk.values.KV;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Combine;
+import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.View;
+import org.apache.beam.sdk.values.KV;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
 
 import mlab.dataviz.dofn.CleanLocationFn;
 import mlab.dataviz.dofn.ExtractLocationKeyFn;
@@ -66,22 +67,22 @@ public class LocationCleaningPipeline extends BasePipeline {
 	 */
 	public PCollection<TableRow> applyInner(PCollection<TableRow> data) {
 		PCollection<TableRow> locationCleaning = this.pipeline.apply(
-			BigQueryIO.Read
-				.named("Read " + this.getLocationCleaningTable())
-				.from(this.getLocationCleaningTable()));
+			BigQueryIO.read()
+				.from(this.getLocationCleaningTable()))
+				.setName("Read " + this.getLocationCleaningTable());
 
 		PCollection<KV<String, TableRow>> locationKeys =
-				locationCleaning.apply(ParDo.named("Extract Location Keys")
-						.of(new ExtractLocationKeyFn()));
+				locationCleaning.apply(ParDo
+						.of(new ExtractLocationKeyFn()))
+						.setName("Extract Location Keys");
 
 		PCollectionView<Map<String, TableRow>> locationMap = locationKeys.apply(View.asMap());
 
 		// resolve locations
 		PCollection<TableRow> withLocations = data.apply(
 			ParDo
-				.named("Clean locations")
-				.withSideInputs(locationMap)
-				.of(new CleanLocationFn(locationMap)));
+				.of(new CleanLocationFn(locationMap)).withSideInputs(locationMap))
+				.setName("Clean locations");
 
 		return withLocations;
 	}
@@ -94,7 +95,9 @@ public class LocationCleaningPipeline extends BasePipeline {
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
 		
-		HistoricPipelineOptions optionsLocationClean = options.cloneAs(HistoricPipelineOptions.class);
+		HistoricPipelineOptions optionsLocationClean = PipelineOptionsFactory.fromArgs(args).withValidation()
+				.as(HistoricPipelineOptions.class);
+		
 		BQTableUtils bqUtils = new BQTableUtils(optionsLocationClean);
 
 		LocationCleaningPipeline addLocations = new LocationCleaningPipeline(p, bqUtils);

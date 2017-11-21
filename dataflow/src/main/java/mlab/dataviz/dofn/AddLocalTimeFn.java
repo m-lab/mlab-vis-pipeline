@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.values.PCollectionView;
 
 import mlab.dataviz.util.Formatters;
 import mlab.dataviz.util.TimezoneMapper;
@@ -114,7 +114,7 @@ public class AddLocalTimeFn extends DoFn<TableRow, TableRow> {
 		return new LocalTimeDetails(dateOutputFormatter.format(cal.getTime()), (String) row.get("timezone_name"), tz, hours);
 	}
 	
-	@Override
+	@ProcessElement
 	public void processElement(DoFn<TableRow, TableRow>.ProcessContext c) throws Exception {
 		
 		TableRow dataRow = c.element().clone();

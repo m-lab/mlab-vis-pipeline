@@ -14,14 +14,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.coders.TableRowJsonCoder;
-import com.google.cloud.dataflow.sdk.testing.TestPipeline;
-import com.google.cloud.dataflow.sdk.transforms.Combine;
-import com.google.cloud.dataflow.sdk.transforms.Create;
-import com.google.cloud.dataflow.sdk.transforms.DoFnTester;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.coders.StringUtf8Coder;
+import org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder;
+import org.apache.beam.sdk.testing.TestPipeline;
+import org.apache.beam.sdk.transforms.Combine;
+import org.apache.beam.sdk.transforms.Create;
+import org.apache.beam.sdk.transforms.DoFnTester;
+import org.apache.beam.sdk.transforms.windowing.GlobalWindow;
+import org.apache.beam.sdk.util.WindowedValue;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import mlab.dataviz.coder.NavigableMapCoder;
 import mlab.dataviz.dofn.AddISPsFn;
@@ -130,8 +137,19 @@ public class AddISPsFnTest {
 		// initialize the test pipeline -- we do not even run it, but we 
 		// need it to create PCollections it seems.
 		Pipeline p = TestPipeline.create();
-		p.getCoderRegistry().registerCoder(NavigableMap.class, NavigableMapCoder.class);
-		p.getCoderRegistry().registerCoder(TableRow.class, TableRowJsonCoder.class);	
+		p.getCoderRegistry().registerCoderForClass(
+				NavigableMap.class, 
+				NavigableMapCoder.of(
+						StringUtf8Coder.of(),
+						TableRowJsonCoder.of()));
+		
+		p.getCoderRegistry().registerCoderForClass(
+				String.class, 
+				StringUtf8Coder.of());
+		
+		p.getCoderRegistry().registerCoderForClass(
+				TableRow.class, 
+				TableRowJsonCoder.of());
 		
 		// create our initial ASNs PCollection
 		List<TableRow> asnList = getAsnData();
@@ -149,7 +167,7 @@ public class AddISPsFnTest {
 	}
 	
 	@Test
-	public void testClientAsn() {		
+	public void testClientAsn() throws Exception {		
 		// create the DoFn to test
 		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "min_ip_hex",
 				"max_ip_hex", "min_ip_hex", "max_ip_hex", "client_asn_name", "client_asn_number", "asn_name",
@@ -159,7 +177,9 @@ public class AddISPsFnTest {
 		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(addIspsFn);
 		
 		// set side inputs 
-		fnTester.setSideInputInGlobalWindow(asnsView, asnMapIterable);
+		fnTester.setSideInput(asnsView, GlobalWindow.INSTANCE, null);
+//		fnTester.setSideInputs(asnsView, asnMapIterable);
+//		fnTester.setSideInputs(sideInputs);
 		
 		// prepare the test data
 		List<TableRow> inputData = new ArrayList<TableRow>();
@@ -170,7 +190,7 @@ public class AddISPsFnTest {
 		
 		
 		// run the tester
-		List<TableRow> output = fnTester.processBatch(inputData);
+		List<TableRow> output = fnTester.processBundle(inputData);
 		
 		// verify the output is what is expected
 		assertEquals("Shaw Communications Inc.", (String) output.get(0).get("client_asn_name"));
@@ -184,7 +204,7 @@ public class AddISPsFnTest {
 	}
 	
 	@Test
-	public void testNoAsnNumber() {
+	public void testNoAsnNumber() throws Exception {
 		// create the DoFn to test
 		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "min_ip_hex",
 				"max_ip_hex", "min_ip_hex", "max_ip_hex", "client_asn_name", "client_asn_number", "asn_name", null);
@@ -193,7 +213,8 @@ public class AddISPsFnTest {
 		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(addIspsFn);
 		
 		// set side inputs 
-		fnTester.setSideInputInGlobalWindow(asnsView, asnMapIterable);
+		fnTester.setSideInput(asnsView, GlobalWindow.INSTANCE, null);
+//		fnTester.setSideInputInGlobalWindow(asnsView, asnMapIterable);
 		
 		// prepare the test data
 		List<TableRow> inputData = new ArrayList<TableRow>();
@@ -201,7 +222,7 @@ public class AddISPsFnTest {
 		inputData.add(makeTestData("70.54.182.109", IP_FAMILY_IPV4)); // IPv4 not in range
 		
 		// run the tester
-		List<TableRow> output = fnTester.processBatch(inputData);
+		List<TableRow> output = fnTester.processBundle(inputData);
 		
 		// verify the output is what is expected
 		assertEquals("Shaw Communications Inc.", (String) output.get(0).get("client_asn_name"));
@@ -209,7 +230,7 @@ public class AddISPsFnTest {
 	}
 	
 	@Test
-	public void testDifferentIPv6Columns() {
+	public void testDifferentIPv6Columns() throws Exception {
 		// create the DoFn to test
 		AddISPsFn addIspsFn = new AddISPsFn(asnsView, "client_ip_family", "client_ip_base64", "min_ip_hex",
 				"max_ip_hex", "min_ipv6_hex", "max_ipv6_hex", "client_asn_name", "client_asn_number", "asn_name",
@@ -218,8 +239,19 @@ public class AddISPsFnTest {
 		// create the tester
 		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(addIspsFn);
 		
+		Iterable<WindowedValue<?>> windowdAsnMap = Iterables.transform(asnMapIterable, new Function<Object, WindowedValue<?>>() {
+	          @Override
+	          public WindowedValue<?> apply(Object input) {
+	            return WindowedValue.valueInGlobalWindow(input);
+	          }
+	        });
+	        
+		
+		fnTester.setSideInput(asnsView, GlobalWindow.INSTANCE, windowdAsnMap);
+//		fnTester.setSideInput(asnsView, windowdAsnMap, null);
+//		fnTester.setSideInput(asnMapIterable, GlobalWindow.INSTANCE, null);
 		// set side inputs 
-		fnTester.setSideInputInGlobalWindow(asnsView, asnMapIterable);
+//		fnTester.setSideInputInGlobalWindow(asnsView, asnMapIterable);
 		
 		// prepare the test data
 		List<TableRow> inputData = new ArrayList<TableRow>();
@@ -229,7 +261,7 @@ public class AddISPsFnTest {
 		inputData.add(makeTestData("2a02:9f8:8000::1", IP_FAMILY_IPV6)); // IPv6 not in range
 		
 		// run the tester
-		List<TableRow> output = fnTester.processBatch(inputData);
+		List<TableRow> output = fnTester.processBundle(inputData);
 		
 		// verify the output is what is expected
 		assertEquals("Uppsala Lans Landsting", (String) output.get(0).get("client_asn_name"));

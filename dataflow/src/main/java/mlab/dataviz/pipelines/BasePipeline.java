@@ -2,13 +2,21 @@ package mlab.dataviz.pipelines;
 
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.dataviz.util.BigQueryIOHelpers;
+
+//import com.google.cloud.dataflow.sdk.Pipeline;
+import org.apache.beam.sdk.Pipeline;
+//import com.google.cloud.dataflow.sdk.io.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+
+//import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
+//import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+//import com.google.cloud.dataflow.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollection;
+
 
 public class BasePipeline {
 	protected Pipeline pipeline;
@@ -32,10 +40,14 @@ public class BasePipeline {
 	 */
 	public PCollection<TableRow> loadData() {
 		// read in the by IP data from `by_ip_day_base`
-		PCollection<TableRow> byIpData = this.pipeline.apply(
-				BigQueryIO.Read
-				.named("Read " + this.inputTable)
-				.from(this.inputTable));
+		 PCollection<TableRow> byIpData = pipeline.apply(
+				 BigQueryIO.read().from(this.inputTable));
+	
+	
+//		PCollection<TableRow> byIpData = this.pipeline.apply(
+//				BigQueryIO.Read
+//				.named("Read " + this.inputTable)
+//				.from(this.inputTable));
 
 		return byIpData;
 	}
@@ -49,7 +61,8 @@ public class BasePipeline {
 	 */
 	public void writeDataToTable(PCollection<TableRow> data) {
 		// Write the changes to the specified table
-		BigQueryIOHelpers.writeTable(data, this.outputTable, this.outputSchema, this.writeDisposition, this.createDisposition);
+		 BigQueryIOHelpers.writeTable(data, this.outputTable, this.outputSchema, 
+				 this.writeDisposition, this.createDisposition);
 	}
 
 	public Pipeline getPipeline() {

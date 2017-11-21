@@ -11,15 +11,16 @@ import org.slf4j.LoggerFactory;
 import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.PipelineResult.State;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
-import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
-import com.google.cloud.dataflow.sdk.values.PCollection;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult.State;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+import org.apache.beam.runners.dataflow.DataflowPipelineJob;
+import org.apache.beam.runners.dataflow.util.MonitoringUtil;
+import org.apache.beam.sdk.values.PCollection;
+import org.joda.time.Duration;
 
 import mlab.dataviz.entities.BQPipelineRun;
 import mlab.dataviz.entities.BQPipelineRunDatastore;
@@ -241,12 +242,11 @@ public class NDTReadPipeline implements Runnable {
 			String normalizedQueryFile = queryFile.replaceAll("/", "__");
 
 			PCollection<TableRow> rows = this.pipeline.apply(
-					BigQueryIO.Read
-					.named("Running query " + normalizedQueryFile)
-					.fromQuery(qb.getQuery()));
+					BigQueryIO.read()
+					.fromQuery(qb.getQuery()))
+					.setName("Running query " + normalizedQueryFile);
 
-			rows.apply(BigQueryIO.Write
-					.named("Write " + outputTableName)
+			rows.apply(BigQueryIO.writeTableRows()
 					.to(outputTableName)
 					.withSchema(tableSchema)
 					.withCreateDisposition(this.createDisposition)
@@ -255,7 +255,8 @@ public class NDTReadPipeline implements Runnable {
 			// by default, the pipeline will not run.
 			if (this.isExecutable()) {
 				DataflowPipelineJob result = (DataflowPipelineJob) this.pipeline.run();
-				result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+				Duration d = new Duration(-1);
+				result.waitUntilFinish(d, new MonitoringUtil.LoggingHandler());
 				this.setState(result.getState());
 				LOG.info("Job completed, with status: " + result.getState().toString());
 			} else {

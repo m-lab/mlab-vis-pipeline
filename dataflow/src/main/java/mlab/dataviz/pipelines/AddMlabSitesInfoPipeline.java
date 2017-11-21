@@ -6,17 +6,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.Combine;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.coders.StringUtf8Coder;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Combine;
+import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
 
+import org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder;
 import mlab.dataviz.coder.NavigableMapCoder;
 import mlab.dataviz.dofn.AddMlabSitesInfoFn;
 import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
@@ -68,9 +70,8 @@ public class AddMlabSitesInfoPipeline extends BasePipeline {
 		// Use the side-loaded MaxMind ISP data to get server ISPs
 		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
 				ParDo
-				.named("Add MLab Sites Info")
-				.withSideInputs(mlabSitesView)
-				.of(new AddMlabSitesInfoFn(mlabSitesView)));
+				.of(new AddMlabSitesInfoFn(mlabSitesView)).withSideInputs(mlabSitesView))
+				.setName("Add MLab Sites Info");
 		return byIpDataWithISPs;
 	}
 	
@@ -91,7 +92,12 @@ public class AddMlabSitesInfoPipeline extends BasePipeline {
 	@Override
 	public void preparePipeline() {
 		// needed to use NavigableMap as an output/accumulator for adding ISPs efficiently
-		this.pipeline.getCoderRegistry().registerCoder(NavigableMap.class, NavigableMapCoder.class);
+		this.pipeline.getCoderRegistry()
+			.registerCoderForClass(
+				NavigableMap.class, 
+				NavigableMapCoder.of(
+						StringUtf8Coder.of(),
+						TableRowJsonCoder.of()));
 	}
 
 	/**
@@ -108,19 +114,17 @@ public class AddMlabSitesInfoPipeline extends BasePipeline {
 	public PCollection<TableRow> applyInner(PCollection<TableRow> data) {
 		// Read in the MaxMind ISP data
 		PCollection<TableRow> mlabSites = this.pipeline.apply(
-				BigQueryIO.Read
-				.named("Read " + this.getMlabSitesTable())
-				.from(this.getMlabSitesTable()));
+				BigQueryIO.read()
+				.from(this.getMlabSitesTable()))
+				.setName("Read " + this.getMlabSitesTable());
 
 		//Make the MaxMind ISP data ready for side input
 		PCollectionView<NavigableMap<String, TableRow>> mlabSitesView =
 				mlabSites
 				.apply(Combine.globally(new CombineAsNavigableMapHex())
-						.named("Combine ISPs as NavMap")
 						// make a view so it can be used as side input
 						.asSingletonView());
-
-
+					
 		// add in ISPs
 		data = this.addMlabSiteInfo(data, mlabSitesView);
 
@@ -138,7 +142,9 @@ public class AddMlabSitesInfoPipeline extends BasePipeline {
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
 		
-		HistoricPipelineOptions optionsMlabSites = options.cloneAs(HistoricPipelineOptions.class);
+		HistoricPipelineOptions optionsMlabSites =  PipelineOptionsFactory.fromArgs(args).withValidation()
+				.as(HistoricPipelineOptions.class);
+		
 		BQTableUtils bqTableUtils = new BQTableUtils(optionsMlabSites);
 		
 		AddMlabSitesInfoPipeline addMlabSiteInfo = new AddMlabSitesInfoPipeline(p, bqTableUtils);

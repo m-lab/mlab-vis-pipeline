@@ -6,17 +6,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.transforms.View;
-import com.google.cloud.dataflow.sdk.values.KV;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Combine;
+import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.View;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
+import org.apache.beam.sdk.values.KV;
+
 
 import mlab.dataviz.dofn.ExtractAsnNumFn;
 import mlab.dataviz.dofn.MergeAsnsFn;
@@ -82,13 +84,14 @@ public class MergeASNsPipeline extends BasePipeline {
 	public PCollection<TableRow> mergeASNs(PCollection<TableRow> data) {
 		// Read in the MaxMind ISP data
 		PCollection<TableRow> mergeAsn = this.pipeline.apply(
-				BigQueryIO.Read
-				.named("Read " + this.getMergeASNTable())
-				.from(this.getMergeASNTable()));
+				BigQueryIO.read()
+				.from(this.getMergeASNTable()))
+				.setName("Read " + this.getMergeASNTable());
 
 		PCollection<KV<String, TableRow>> mergeAsnKeys =
-				mergeAsn.apply(ParDo.named("Extract ASN from " + this.getMergeASNTable())
-						.of(new ExtractAsnNumFn()));
+				mergeAsn.apply(ParDo
+						.of(new ExtractAsnNumFn()))
+						.setName("Extract ASN from " + this.getMergeASNTable());
 
 		PCollectionView<Map<String, TableRow>> mergeAsnMap = mergeAsnKeys.apply(View.asMap());
 
@@ -96,9 +99,8 @@ public class MergeASNsPipeline extends BasePipeline {
 		// Use the side-loaded Merge ASN table to merge the ASNs for clients and servers
 		PCollection<TableRow> byIpDataWithISPs = data.apply(
 				ParDo
-				.named("Merge ASNs")
-				.withSideInputs(mergeAsnMap)
-				.of(new MergeAsnsFn(mergeAsnMap)));
+				.of(new MergeAsnsFn(mergeAsnMap)).withSideInputs(mergeAsnMap))
+				.setName("Merge ASNs");
 
 		return byIpDataWithISPs;
 	}
@@ -114,7 +116,9 @@ public class MergeASNsPipeline extends BasePipeline {
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
 
-		HistoricPipelineOptions optionsMergeASN = options.cloneAs(HistoricPipelineOptions.class);
+		HistoricPipelineOptions optionsMergeASN = PipelineOptionsFactory.fromArgs(args).withValidation()
+				.as(HistoricPipelineOptions.class);
+		
 		BQTableUtils bqTableUtils = new BQTableUtils(optionsMergeASN);
 		
 		MergeASNsPipeline mergeASNs = new MergeASNsPipeline(p, bqTableUtils);

@@ -12,29 +12,35 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import org.apache.beam.sdk.coders.StructuredCoder;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.cloud.dataflow.sdk.coders.Coder;
-import com.google.cloud.dataflow.sdk.coders.CoderException;
-import com.google.cloud.dataflow.sdk.coders.StandardCoder;
-import com.google.cloud.dataflow.sdk.util.PropertyNames;
-import com.google.cloud.dataflow.sdk.util.common.ElementByteSizeObserver;
+import org.apache.beam.sdk.coders.Coder;
+import org.apache.beam.sdk.coders.CoderException;
+
+//import com.google.cloud.dataflow.sdk.coders.Coder;
+//import com.google.cloud.dataflow.sdk.coders.CoderException;
+//import com.google.cloud.dataflow.sdk.coders.StandardCoder;
+//import com.google.cloud.dataflow.sdk.util.PropertyNames;
+import org.apache.beam.runners.dataflow.util.PropertyNames;
+//import com.google.cloud.dataflow.sdk.util.common.ElementByteSizeObserver;
+import org.apache.beam.sdk.util.common.ElementByteSizeObserver;
 import com.google.common.base.Preconditions;
 
 /**
  * A Coder for NavigableMaps, based on Google's MapCoder
  * https://github.com/GoogleCloudPlatform/DataflowJavaSDK/blob/master/sdk/src/main/java/com/google/cloud/dataflow/sdk/coders/MapCoder.java
  */
-public class NavigableMapCoder<K, V> extends StandardCoder<NavigableMap<K, V>> {
+public class NavigableMapCoder<K, V> extends StructuredCoder<NavigableMap<K, V>> {
+	
 	Coder<K> keyCoder;
 	Coder<V> valueCoder;
-
 
 	NavigableMapCoder(Coder<K> keyCoder, Coder<V> valueCoder) {
 		this.keyCoder = keyCoder;
 		this.valueCoder = valueCoder;
 	}
-
 	
 	/**
 	 * Produces a MapCoder with the given keyCoder and valueCoder.
@@ -75,38 +81,6 @@ public class NavigableMapCoder<K, V> extends StandardCoder<NavigableMap<K, V>> {
 	}
 
 
-	public void encode(
-			NavigableMap<K, V> map,
-			OutputStream outStream,
-			Context context)
-					throws IOException, CoderException  {
-		if (map == null) {
-			throw new CoderException("cannot encode a null Map");
-		}
-		DataOutputStream dataOutStream = new DataOutputStream(outStream);
-		dataOutStream.writeInt(map.size());
-		for (Entry<K, V> entry : map.entrySet()) {
-			keyCoder.encode(entry.getKey(), outStream, context.nested());
-			valueCoder.encode(entry.getValue(), outStream, context.nested());
-		}
-		dataOutStream.flush();
-	}
-
-	@Override
-	public NavigableMap<K, V> decode(InputStream inStream, Context context)
-			throws IOException, CoderException {
-		DataInputStream dataInStream = new DataInputStream(inStream);
-		int size = dataInStream.readInt();
-		NavigableMap<K, V> retval = new TreeMap<K, V>();
-
-		for (int i = 0; i < size; ++i) {
-			K key = keyCoder.decode(inStream, context.nested());
-			V value = valueCoder.decode(inStream, context.nested());
-			retval.put(key, value);
-		}
-		return retval;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 *
@@ -132,15 +106,49 @@ public class NavigableMapCoder<K, V> extends StandardCoder<NavigableMap<K, V>> {
 
 	@Override
 	public void registerByteSizeObserver(
-			NavigableMap<K, V> map, ElementByteSizeObserver observer, Context context)
+			NavigableMap<K, V> map, ElementByteSizeObserver observer)
 					throws Exception {
 		observer.update(4L);
 		for (Entry<K, V> entry : map.entrySet()) {
+	
 			keyCoder.registerByteSizeObserver(
-					entry.getKey(), observer, context.nested());
+					entry.getKey(), observer);
 			valueCoder.registerByteSizeObserver(
-					entry.getValue(), observer, context.nested());
+					entry.getValue(), observer);
 		}
+	}
+
+	@Override
+	public void encode(
+			NavigableMap<K, V> map,
+			OutputStream outStream)
+					throws IOException, CoderException  {
+		if (map == null) {
+			throw new CoderException("cannot encode a null Map");
+		}
+		DataOutputStream dataOutStream = new DataOutputStream(outStream);
+		dataOutStream.writeInt(map.size());
+		for (Entry<K, V> entry : map.entrySet()) {
+			keyCoder.encode(entry.getKey(),  outStream);
+			valueCoder.encode(entry.getValue(), outStream);
+		}
+		dataOutStream.flush();
+	}
+	
+
+	@Override
+	public NavigableMap<K, V> decode(InputStream inStream)
+			throws IOException, CoderException {
+		DataInputStream dataInStream = new DataInputStream(inStream);
+		int size = dataInStream.readInt();
+		NavigableMap<K, V> retval = new TreeMap<K, V>();
+
+		for (int i = 0; i < size; ++i) {
+			K key = keyCoder.decode(inStream);
+			V value = valueCoder.decode(inStream);
+			retval.put(key, value);
+		}
+		return retval;
 	}
 
 }

@@ -1,17 +1,28 @@
 package mlab.dataviz.dofn;
 
-import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bigtable.v2.Row;
+import com.google.api.services.bigquery.model.TableRow;
+import com.google.bigtable.v2.Mutation;
+import com.google.bigtable.v2.Mutation.Builder;
+import com.google.bigtable.v2.ReadRowsRequest;
+import com.google.bigtable.v2.Row;
+import com.google.bigtable.v2.RowRange;
+import com.google.bigtable.v2.RowSet;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.ByteString;
+
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.values.KV;
 
 import mlab.dataviz.util.bigtable.BigtableColumnSchema;
 import mlab.dataviz.util.bigtable.BigtableConfig;
@@ -23,7 +34,7 @@ import mlab.dataviz.util.bigtable.BigtableRowKeySchema;
  * @author pbeshai
  *
  */
-public class TableRowToHBase extends DoFn<TableRow, Mutation> {
+public class TableRowToHBase extends DoFn<TableRow, KV<ByteString, Iterable<Mutation>>> {
 	/**
 	 *
 	 */
@@ -36,56 +47,58 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 	private BigtableConfig schema;
 
 	public TableRowToHBase(BigtableConfig schema) {
-
 		super();
-
 		this.schema = schema;
 	}
 
-	private void addStringColumn(Put put, String colFamily, TableRow row, String field) {
-		String value = (String) row.get(field);
-		if(value != null && value.length() > 0) {
-			put.addColumn(colFamily.getBytes(), field.getBytes(), value == null ? null : value.getBytes(StandardCharsets.UTF_8));
-		}
-	}
-
-	private void addIntegerColumn(Put put, String colFamily, TableRow row, String field) {
-		// Note: it presently seems that "INTEGER" columns are passed as Strings
-		String value = (String) row.get(field);
-		if(value != null && value.length() > 0) {
-			put.addColumn(colFamily.getBytes(), field.getBytes(), value == null ? null : Bytes.toBytes(value));
-		}
-	}
-	
-	private void addDoubleColumn(Put put, String colFamily, TableRow row, String field) {
-		Double value = (Double) row.get(field);
-		if(value != null) {
-            put.addColumn(colFamily.getBytes(), field.getBytes(), value == null ? null : Bytes.toBytes(value));
-        }
-	}
-
-	private void addColumns(TableRow row, Put put, BigtableConfig schema) {
-
-		Iterator<BigtableColumnSchema> columnIterator = schema.columns.iterator();
+	/**
+	 * Augments builder with the specific cells.
+	 * @param row
+	 * @param builder
+	 * @return
+	 */
+	private Builder addCellsToBuilder(TableRow row, Builder builder) {
+		Iterator<BigtableColumnSchema> columnIterator = this.schema.columns.iterator();
+		
 		while (columnIterator.hasNext()) {
 			BigtableColumnSchema colSchema = columnIterator.next();
-
+			String famName = colSchema.getFamily();
+			
 			switch (colSchema.getType()) {
 			case "string":
-				addStringColumn(put, colSchema.getFamily(), row, colSchema.getName());
+				String strValue = (String) row.get(colSchema.getName());
+				ByteString strByteStr = ByteString.copyFromUtf8(strValue);
+				builder.setSetCell(
+						Mutation.SetCell.newBuilder()
+						.setValue(strByteStr)
+						.setFamilyName(famName));
 				break;
 			case "double":
-				addDoubleColumn(put, colSchema.getFamily(), row, colSchema.getName());
+				Double doubleValue = (Double) row.get(colSchema.getName());
+				ByteString doubleByteStr = ByteString.copyFromUtf8(doubleValue.toString());
+				builder.setSetCell(
+						Mutation.SetCell.newBuilder()
+						.setValue(doubleByteStr)
+						.setFamilyName(famName));
 				break;
 			case "integer":
-				addIntegerColumn(put, colSchema.getFamily(), row, colSchema.getName());
+				Integer intValue = (Integer) row.get(colSchema.getName());
+				ByteString intByteStr = ByteString.copyFromUtf8(intValue.toString());
+				builder.setSetCell(
+						Mutation.SetCell.newBuilder()
+						.setValue(intByteStr)
+						.setFamilyName(famName));
 				break;
 			case "integer_list":
-				// encode as a string
-				addStringColumn(put, colSchema.getFamily(), row, colSchema.getName());
+				String strIntListValue = (String) row.get(colSchema.getName());
+				builder.setSetCell(
+						Mutation.SetCell.newBuilder()
+						.setValue(ByteString.copyFromUtf8(strIntListValue))
+						.setFamilyName(famName));
 				break;
 			}
 		}
+		return builder;
 	}
 
 	/**
@@ -94,7 +107,7 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 	 * @param row
 	 * @return
 	 */
-	private byte[] getRowKey(TableRow row, BigtableConfig schema) {
+	private ByteString getRowKey(TableRow row, BigtableConfig schema) {
 		Iterator<BigtableRowKeySchema> keyIterator = schema.rowKeys.iterator();
 
 		ArrayList<String> rowKeys = new ArrayList<String>();
@@ -107,19 +120,7 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 			rowKeys.add(paddedKeyValue);
 		}
 		String rowKey = String.join("|", rowKeys);
-		return rowKey.getBytes(StandardCharsets.UTF_8);
-	}
-
-	public void processElement(ProcessContext c) throws Exception {
-		TableRow row = c.element();
-
-		byte[] rowKey = this.getRowKey(row, this.schema);
-
-		Put put = new Put(rowKey);
-
-		this.addColumns(row, put, this.schema);
-		
-		c.output(put);
+		return ByteString.copyFromUtf8(rowKey);
 	}
 
 	/**
@@ -147,4 +148,17 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 
 		return builder.toString();
 	}
+	
+	@ProcessElement
+	public void processElement_(ProcessContext c) {
+		TableRow row = c.element();
+        ByteString rowKey = this.getRowKey(row, this.schema);
+
+        	Builder builder = Mutation.newBuilder();
+        	
+        Iterable<Mutation> mutations =
+            ImmutableList.of(addCellsToBuilder(row, builder).build());
+        
+        c.output(KV.of(rowKey, mutations));
+    }
 }

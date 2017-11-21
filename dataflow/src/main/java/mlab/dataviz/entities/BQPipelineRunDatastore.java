@@ -97,6 +97,7 @@ public class BQPipelineRunDatastore implements BQPipelineRunDao {
 				.set(BQPipelineRun.RUN_END_DATE, vpr.getRunEndDate())
 				.set(BQPipelineRun.STATUS, BQPipelineRun.STATUS_DONE)
 				.build();
+		
 		datastore.update(vprEntity);
 	}
 	

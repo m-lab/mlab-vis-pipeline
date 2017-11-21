@@ -14,14 +14,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.coders.TableRowJsonCoder;
-import com.google.cloud.dataflow.sdk.testing.TestPipeline;
-import com.google.cloud.dataflow.sdk.transforms.Combine;
-import com.google.cloud.dataflow.sdk.transforms.Create;
-import com.google.cloud.dataflow.sdk.transforms.DoFnTester;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.coders.StringUtf8Coder;
+import org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder;
+import org.apache.beam.sdk.testing.TestPipeline;
+import org.apache.beam.sdk.transforms.Combine;
+import org.apache.beam.sdk.transforms.Create;
+import org.apache.beam.sdk.transforms.DoFnTester;
+import org.apache.beam.sdk.transforms.windowing.GlobalWindow;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
+
 
 import mlab.dataviz.coder.NavigableMapCoder;
 import mlab.dataviz.dofn.AddMlabSitesInfoFn;
@@ -127,8 +130,17 @@ public class AddMlabSitesInfoFnTest {
 		// initialize the test pipeline -- we do not even run it, but we 
 		// need it to create PCollections it seems.
 		Pipeline p = TestPipeline.create();
-		p.getCoderRegistry().registerCoder(NavigableMap.class, NavigableMapCoder.class);
-		p.getCoderRegistry().registerCoder(TableRow.class, TableRowJsonCoder.class);	
+		p.getCoderRegistry()
+		.registerCoderForClass(
+				NavigableMap.class, 
+				NavigableMapCoder.of(
+						StringUtf8Coder.of(),
+						TableRowJsonCoder.of()));
+		
+		p.getCoderRegistry()
+		.registerCoderForClass(
+				TableRow.class, 
+				TableRowJsonCoder.of());
 		
 		// create our initial ASNs PCollection
 		List<TableRow> asnList = getAsnData();
@@ -146,7 +158,7 @@ public class AddMlabSitesInfoFnTest {
 	}
 	
 	@Test
-	public void testAddsInfo() {		
+	public void testAddsInfo() throws Exception {		
 		// create the DoFn to test
 		AddMlabSitesInfoFn addInfoFn = new AddMlabSitesInfoFn(asnsView);
 		
@@ -154,7 +166,8 @@ public class AddMlabSitesInfoFnTest {
 		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(addInfoFn);
 		
 		// set side inputs 
-		fnTester.setSideInputInGlobalWindow(asnsView, asnMapIterable);
+		fnTester.setSideInput(asnsView, GlobalWindow.INSTANCE, null);
+//		fnTester.setSideInputInGlobalWindow(asnsView, asnMapIterable);
 		
 		
 		// prepare the test data
@@ -171,7 +184,7 @@ public class AddMlabSitesInfoFnTest {
 		 * 
 		 */
 		// run the tester
-		List<TableRow> output = fnTester.processBatch(inputData);
+		List<TableRow> output = fnTester.processBundle(inputData);
 //		
 //		// verify the output is what is expected
 //		assertEquals("acc01", (String) output.get(0).get("mlab_site_id"));

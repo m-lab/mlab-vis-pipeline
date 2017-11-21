@@ -6,16 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.Combine;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.coders.StringUtf8Coder;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+import org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Combine;
+import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
 
 import mlab.dataviz.coder.NavigableMapCoder;
 import mlab.dataviz.dofn.AddISPsFn;
@@ -67,12 +69,9 @@ public class AddISPsPipeline extends BasePipeline {
 
 		// Use the side-loaded MaxMind ISP data to get server ISPs
 		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
-				ParDo
-				.named("Add Server ISPs")
-				.withSideInputs(maxMindAsnView)
-				.of(new AddISPsFn(maxMindAsnView, "server_ip_family", "server_ip_base64", "min_ip_hex",
+				ParDo.of(new AddISPsFn(maxMindAsnView, "server_ip_family", "server_ip_base64", "min_ip_hex",
 						"max_ip_hex", "min_ip_hex", "max_ip_hex", "server_asn_name", "server_asn_number",
-						"asn_name", "asn_number")));
+						"asn_name", "asn_number")).withSideInputs(maxMindAsnView));
 		return byIpDataWithISPs;
 	}
 
@@ -88,11 +87,9 @@ public class AddISPsPipeline extends BasePipeline {
 		// Use the side-loaded MaxMind ISP data to get client ISPs
 		PCollection<TableRow> byIpDataWithISPs = byIpData.apply(
 				ParDo
-				.named("Add Client ISPs")
-				.withSideInputs(maxMindAsnView)
 				.of(new AddISPsFn(maxMindAsnView, "client_ip_family", "client_ip_base64", "min_ip_hex",
 						"max_ip_hex", "min_ip_hex", "max_ip_hex", "client_asn_name", "client_asn_number",
-						"asn_name", "asn_number")));
+						"asn_name", "asn_number")).withSideInputs(maxMindAsnView));
 		return byIpDataWithISPs;
 	}
 
@@ -105,7 +102,13 @@ public class AddISPsPipeline extends BasePipeline {
 	 */
 	public void preparePipeline() {
 		// needed to use NavigableMap as an output/accumulator for adding ISPs efficiently
-		this.pipeline.getCoderRegistry().registerCoder(NavigableMap.class, NavigableMapCoder.class);
+		this.pipeline.getCoderRegistry()
+			.registerCoderForClass(
+					NavigableMap.class, 
+					NavigableMapCoder.of(
+							StringUtf8Coder.of(),
+							TableRowJsonCoder.of()));
+//		this.pipeline.getCoderRegistry().registerCoder(NavigableMap.class, NavigableMapCoder.class);
 	}
 
 	/**
@@ -122,15 +125,12 @@ public class AddISPsPipeline extends BasePipeline {
 	protected PCollection<TableRow> applyInner(PCollection<TableRow> data) {
 		// Read in the MaxMind ISP data
 		PCollection<TableRow> maxMindAsn = this.pipeline.apply(
-				BigQueryIO.Read
-				.named("Read " + this.maxmindIspsTable)
-				.from(this.getMaxmindIspsTable()));
-
+				BigQueryIO.read().from(this.getMaxmindIspsTable()));
+		
 		//Make the MaxMind ISP data ready for side input
 		PCollectionView<NavigableMap<String, TableRow>> maxMindAsnView =
 				maxMindAsn
 				.apply(Combine.globally(new CombineAsNavigableMapHex())
-						.named("Combine ISPs as NavMap")
 						// make a view so it can be used as side input
 						.asSingletonView());
 
@@ -163,7 +163,10 @@ public class AddISPsPipeline extends BasePipeline {
 
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
-		HistoricPipelineOptions optionsAddISPs = options.cloneAs(HistoricPipelineOptions.class);
+		
+		HistoricPipelineOptions optionsAddISPs = PipelineOptionsFactory.fromArgs(args)
+				.withValidation().as(HistoricPipelineOptions.class);
+
 		BQTableUtils bqTableUtils = new BQTableUtils(optionsAddISPs);
 
 		AddISPsPipeline addISPs = new AddISPsPipeline(p, bqTableUtils);

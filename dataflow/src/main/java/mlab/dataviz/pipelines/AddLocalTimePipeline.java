@@ -6,24 +6,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.GroupByKey;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.transforms.View;
-import com.google.cloud.dataflow.sdk.values.KV;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.coders.StringUtf8Coder;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.GroupByKey;
+import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.View;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.KV;
+import org.apache.beam.sdk.values.PCollectionView;
 
 import mlab.dataviz.dofn.AddLocalTimeFn;
 import mlab.dataviz.dofn.ExtractZoneKeynameFn;
 import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
 import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.Schema;
+
 public class AddLocalTimePipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddLocalTimePipeline.class);
 
@@ -53,14 +56,14 @@ public class AddLocalTimePipeline extends BasePipeline {
 		String bqTimezoneTable = this.bqTableUtils.wrapTable(BQ_TIMEZONE_TABLE);
 		
 		PCollection<TableRow> timezones = this.pipeline.apply(
-			BigQueryIO.Read
-				.named("Read " + bqTimezoneTable)
-				.from(bqTimezoneTable));
+			BigQueryIO.read()
+				.from(bqTimezoneTable))
+				.setName("Read " + bqTimezoneTable);
 
 		// build lookup map
 		PCollection<KV<String, TableRow>> zonekeys =
-				timezones.apply(ParDo.named("Extract Timezone Key")
-						.of(new ExtractZoneKeynameFn()));
+				timezones.apply(ParDo.of(new ExtractZoneKeynameFn()))
+				.setName("Build timezone lookup");
 
 		PCollection<KV<String, Iterable<TableRow>>> groupedZones = zonekeys.apply(
 				    GroupByKey.<String, TableRow>create());
@@ -70,9 +73,8 @@ public class AddLocalTimePipeline extends BasePipeline {
 		// resolve time
 		PCollection<TableRow> withLocaltimeData = data.apply(
 				ParDo
-					.named("Add local time")
-					.withSideInputs(groupedZonesMap)
-					.of(new AddLocalTimeFn(groupedZonesMap)));
+					.of(new AddLocalTimeFn(groupedZonesMap))
+					.withSideInputs(groupedZonesMap)).setName("Add local time");
 
 		return withLocaltimeData;
 	}
@@ -84,7 +86,10 @@ public class AddLocalTimePipeline extends BasePipeline {
 
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
-		HistoricPipelineOptions optionsLocalTime = options.cloneAs(HistoricPipelineOptions.class);
+		
+		HistoricPipelineOptions optionsLocalTime = PipelineOptionsFactory.fromArgs(args).withValidation()
+				.as(HistoricPipelineOptions.class);
+		
 		BQTableUtils bqTableUtils = new BQTableUtils(optionsLocalTime);
 
 		AddLocalTimePipeline addLocalTime = new AddLocalTimePipeline(p, bqTableUtils);

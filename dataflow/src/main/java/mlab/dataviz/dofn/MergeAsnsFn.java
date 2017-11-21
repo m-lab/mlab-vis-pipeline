@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.values.PCollectionView;
 
 public class MergeAsnsFn extends DoFn<TableRow, TableRow> {
 	private static final Logger LOG = LoggerFactory.getLogger(MergeAsnsFn.class);
@@ -17,7 +17,7 @@ public class MergeAsnsFn extends DoFn<TableRow, TableRow> {
 		this.mergeAsnMap = mergeAsnMap;
 	}
 
-	@Override
+	@ProcessElement
 	public void processElement(DoFn<TableRow, TableRow>.ProcessContext c) throws Exception {
 
 		TableRow dataRow = c.element().clone();

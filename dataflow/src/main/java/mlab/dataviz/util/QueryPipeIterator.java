@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.values.PCollection;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.values.PCollection;
 
 import mlab.dataviz.query.QueryBuilder;
 
@@ -152,9 +152,9 @@ public class QueryPipeIterator implements Iterator<PCollection<TableRow>> {
 		}
 
 		PCollection<TableRow> rows = this.pipe.apply(
-				BigQueryIO.Read
-				.named("Running query " + this.queryName)
-				.fromQuery(this.queryString));
+				BigQueryIO.read()
+				.fromQuery(this.queryString))
+				.setName("Running query " + this.queryName);
 
 
 		return rows;

@@ -8,15 +8,18 @@ import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
-import com.google.cloud.dataflow.sdk.values.PCollection;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.runners.dataflow.DataflowPipelineJob;
+import org.apache.beam.sdk.values.PCollection;
 
 import mlab.dataviz.query.QueryBuilder;
+import mlab.dataviz.util.BigQueryIOHelpers;
 import mlab.dataviz.util.Schema;
 
 public class MergeUploadDownloadPipeline {
@@ -103,12 +106,11 @@ public class MergeUploadDownloadPipeline {
 
 		// set up the big query read
 		PCollection<TableRow> rows = this.p
-				.apply(BigQueryIO.Read.named("run query: " + queryName).fromQuery(queryString));
-
-		rows.apply(BigQueryIO.Write.named("write table " + this.outputTable)
-				.to(this.outputTable)
-				.withSchema(this.outputSchema).withCreateDisposition(createDisposition)
-				.withWriteDisposition(writeDisposition));
+				.apply(BigQueryIO.read().fromQuery(queryString)).setName("run query: " + queryName);
+		
+		BigQueryIOHelpers.writeTable(rows, this.outputTable,
+				this.outputSchema,
+				writeDisposition, createDisposition);
 
 		return rows;
 	}

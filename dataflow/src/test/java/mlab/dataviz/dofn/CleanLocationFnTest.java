@@ -10,16 +10,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.coders.TableRowJsonCoder;
-import com.google.cloud.dataflow.sdk.testing.TestPipeline;
-import com.google.cloud.dataflow.sdk.transforms.Create;
-import com.google.cloud.dataflow.sdk.transforms.DoFnTester;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.transforms.View;
-import com.google.cloud.dataflow.sdk.values.KV;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.coders.StringUtf8Coder;
+import org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder;
+import org.apache.beam.sdk.testing.TestPipeline;
+import org.apache.beam.sdk.transforms.Combine;
+import org.apache.beam.sdk.transforms.Create;
+import org.apache.beam.sdk.transforms.DoFnTester;
+import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.View;
+import org.apache.beam.sdk.transforms.windowing.GlobalWindow;
+import org.apache.beam.sdk.values.KV;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
+
 
 import mlab.dataviz.dofn.CleanLocationFn;
 import mlab.dataviz.dofn.ExtractLocationKeyFn;
@@ -98,7 +102,10 @@ public class CleanLocationFnTest {
 		// initialize the test pipeline -- we do not even run it, but we 
 		// need it to create PCollections it seems.
 		Pipeline p = TestPipeline.create();
-		p.getCoderRegistry().registerCoder(TableRow.class, TableRowJsonCoder.class);	
+		p.getCoderRegistry()
+		.registerCoderForClass(
+				TableRow.class, 
+				TableRowJsonCoder.of());
 		
 		// create our initial PCollection
 		List<TableRow> locationCleaningList = getLocationCleaningData();
@@ -106,8 +113,8 @@ public class CleanLocationFnTest {
 		
 		// get as Map (and as a view to be used as side input)
 		PCollection<KV<String, TableRow>> locationKeys = 
-				locationCleaningRows.apply(ParDo.named("Extract Location Keys")
-						.of(new ExtractLocationKeyFn()));
+				locationCleaningRows.apply(ParDo
+						.of(new ExtractLocationKeyFn())).setName("Extract Location Keys");
 		
 		locationCleaningView = locationKeys.apply(View.asMap());
 		
@@ -118,7 +125,7 @@ public class CleanLocationFnTest {
 	}
 	
 	@Test
-	public void testLocationCleaning() {		
+	public void testLocationCleaning() throws Exception {		
 		// create the DoFn to test
 		CleanLocationFn cleanLocationFn = new CleanLocationFn(locationCleaningView);
 		
@@ -126,7 +133,8 @@ public class CleanLocationFnTest {
 		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(cleanLocationFn);
 		
 		// set side inputs 
-		fnTester.setSideInputInGlobalWindow(locationCleaningView, locationMapIterable);
+		fnTester.setSideInput(locationCleaningView, GlobalWindow.INSTANCE, null);
+//		fnTester.setSideInputInGlobalWindow(locationCleaningView, locationMapIterable);
 		
 		// prepare the test data
 		List<TableRow> inputData = new ArrayList<TableRow>();
@@ -135,7 +143,7 @@ public class CleanLocationFnTest {
 		inputData.add(makeTestData("NA", "US", "WA", "New York City")); // no replacement
 		
 		// run the tester
-		List<TableRow> output = fnTester.processBatch(inputData);
+		List<TableRow> output = fnTester.processBundle(inputData);
 		
 		// verify the output is what is expected
 		assertEquals("New York", (String) output.get(0).get("client_city"));

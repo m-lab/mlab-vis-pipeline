@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
 
 import mlab.dataviz.entities.BTPipelineRun;
 import mlab.dataviz.entities.BTPipelineRunDatastore;

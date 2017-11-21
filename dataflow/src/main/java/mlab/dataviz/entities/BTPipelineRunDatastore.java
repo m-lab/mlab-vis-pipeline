@@ -67,7 +67,7 @@ public class BTPipelineRunDatastore implements BTPipelineRunDao {
                 .set(BTPipelineRun.RUN_END_DATE, bpr.getRunEndDate())
                 .set(BTPipelineRun.STATUS, BTPipelineRun.STATUS_RUNNING).build();
 
-        Entity btPipelineRunEntity = datastore.add(btPipelineRunShellEntity);
+        Entity btPipelineRunEntity = datastore.put(btPipelineRunShellEntity);
         return btPipelineRunEntity.getKey().getId();
 	}
 

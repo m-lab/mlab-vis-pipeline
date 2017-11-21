@@ -85,6 +85,10 @@ if [[ $2 == travis ]]; then
   gcloud auth activate-service-account --key-file ${KEY_FILE}
 fi
 
+# switch to correct cluster
+gcloud auth activate-service-account --key-file=${KEY_FILE}
+gcloud config set container/cluster ${K8_CLUSTER}
+
 # Update container
 kubectl apply -f deploy-build/k8s/configmap.yaml
 kubectl apply -f deploy-build/k8s/deployment.yaml

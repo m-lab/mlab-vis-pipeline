@@ -1,8 +1,10 @@
 package mlab.dataviz.entities;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.cloud.datastore.Entity;
@@ -16,6 +18,7 @@ import com.google.cloud.datastore.StructuredQuery.OrderBy;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.QueryResults;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -28,12 +31,13 @@ public class BQPipelineRunDatastore implements BQPipelineRunDao {
 	private Datastore datastore;
 	private KeyFactory keyFactory;
 
-	public BQPipelineRunDatastore() throws IOException {
+	public BQPipelineRunDatastore() throws IOException, GeneralSecurityException {
 
-		HttpTransport transport = new NetHttpTransport();
+//		HttpTransport transport = new NetHttpTransport();
+		HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
 		JsonFactory jsonFactory = new JacksonFactory();
 		GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
-
+		
 		DatastoreOptions options =
 		        DatastoreOptions.newBuilder()
 		        .setNamespace("mlab-vis-pipeline").build();

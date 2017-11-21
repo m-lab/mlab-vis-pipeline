@@ -1,6 +1,7 @@
 package mlab.dataviz.pipelines;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -60,7 +61,7 @@ public class BigqueryTransferPipeline implements Runnable {
 
 		 try {
 			this.datastore = new BQPipelineRunDatastore();
-		 } catch (IOException e) {
+		 } catch (IOException | GeneralSecurityException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();
 		 }
@@ -254,6 +255,8 @@ public class BigqueryTransferPipeline implements Runnable {
 				MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(pipe);
 
 				mergeUploadDownload
+						.setDataStartDate(this.status.getDataStartDate())
+						.setDataEndDate(this.status.getDataEndDate())
 						.setDownloadTable(bqUtils.wrapTableWithBrakets(downloadsConfig.getOutputTable()))
 						.setUploadTable(bqUtils.wrapTableWithBrakets(uploadsConfig.getOutputTable()))
 						.setOutputTable(bqUtils.wrapTable(downloadsConfig.getMergeTable()))

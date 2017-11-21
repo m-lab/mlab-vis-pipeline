@@ -27,4 +27,4 @@ jobs:
 
     # Run build
     - stage: build
-      script: make build
+      script: make build -m sandbox

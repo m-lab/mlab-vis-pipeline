@@ -1,6 +1,7 @@
 package mlab.dataviz.entities;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,7 +16,7 @@ public class DatastoreTest {
 	private static BQPipelineRunDatastore dbq;
 	private static BTPipelineRunDatastore dbt;
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, GeneralSecurityException {
 		
 		dbq = new BQPipelineRunDatastore();
 		dbt = new BTPipelineRunDatastore();

@@ -35,7 +35,7 @@ represent the environment you'll be running against. They should by default.
 2. You need to have a storage bucket setup. You can do so by calling after
 choosing the correct project via `gcloud config set project <mlab-sandbox|mlab-staging...>`
 
-`gsutil mb -c regional -l us-east1 gs://viz-pipeline`
+`gsutil mb -c regional -l us-east1 gs://viz-pipeline-{sandbox|staging|production}`
 
 3. You need to create a bigtable instance to write to. You can do so by calling:
 
@@ -154,6 +154,18 @@ This script will setup a cluster, copy over the encrypted service key so it can 
 mounted as an key later, and setup the namespace for this cluter.
 This will take some time.
 
+We also might be sharing a cluster with other services.
+If you are, you will first need to fetch the credentials for that cluster:
+
+`gcloud container clusters get-credentials data-processing-cluster --zone us-central1-a`
+
+Then, you will need to switch to it before you deploy to it:
+
+```
+gcloud auth activate-service-account --key-file <path to key file>
+gcloud config set container/cluster data-processing-cluster
+```
+
 **Build cluster**
 
 You can build the cluster container image and required templates by calling:
@@ -164,6 +176,10 @@ This will build and push a docker image to gcr.io that will then be pulled
 by kubernetes. It is required to be able to deploy pods. Anytime you
 
 **Deploy to cluster**
+
+First, ensure you've indicated which cluster you're deploying to by calling:
+
+`kubectl config use-context data-processing-cluster`
 
 To deploy (and start) your pipelines on the cluster you can call:
 

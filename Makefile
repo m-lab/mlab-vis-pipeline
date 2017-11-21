@@ -32,6 +32,12 @@ authenticate:
 	echo 'Authenticate service account'
 	gcloud auth activate-service-account --key-file=${KEY_FILE}
 
+setup_bq_dataset:
+	@if [ $(shell bq ls | grep data_viz_helpers | wc -l) = 0 ]; then\
+        echo "Making data_viz_helpers dataset";\
+		bq mk data_viz_helpers;\
+    fi
+
 asn_merge:
 	./tools/bigquery/asn_merge/deploy_asn_merge.sh ${API_MODE}
 
@@ -53,7 +59,7 @@ mlab_sites:
 # Call:
 # KEY_FILE=<path to cred file> \
 # API_MODE=staging|production|sandbox make setup_bigquery
-setup_bigquery: authenticate asn_merge maxmind location location_cleaning timezones mlab_sites
+setup_bigquery: authenticate setup_bq_dataset asn_merge maxmind location location_cleaning timezones mlab_sites
 	echo 'Done creating bigquery helper tables'
 
 # Create a kubernetis cluster

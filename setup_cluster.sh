@@ -51,11 +51,13 @@ cp templates/k8s/namespace.yaml deploy-build/k8s/
 ./travis/substitute_values.sh deploy-build/k8s \
     KEY_CONTENTS `more ${KEY_FILE} | base64`
 
+# Create namespace
+kubectl apply -f deploy-build/k8s/namespace.yaml
+
 # Create secret keys
 kubectl apply -f deploy-build/k8s/secret.yaml
 
-# Create namespace
-kubectl apply -f deploy-build/k8s/namespace.yaml
+
 
 
 

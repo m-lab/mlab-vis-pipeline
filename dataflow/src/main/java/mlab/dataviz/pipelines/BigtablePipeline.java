@@ -57,6 +57,22 @@ public class BigtablePipeline implements Runnable {
         // create pipeline
         this.pipe = Pipeline.create(this.options);
     }
+    
+    /**
+     * @constructor
+     * 
+     * Creates a new bigtable pipeline, reusing a global pipeline.
+     * @param p
+     * @param configFileName
+     */
+    public BigtablePipeline(Pipeline p, String configFileName) {
+    		this.pipe = p;
+    		
+    		// read config file
+        this.btConfig = BigtableConfig.fromJSONFile(configFileName);
+       
+        this.options = (BigtableTransferPipelineOptions) this.pipe.getOptions();
+    }
 
     /**
      * Return the query to be run based on the configuration file.

@@ -31,6 +31,8 @@ public class MergeUploadDownloadPipeline {
 	private String downloadTable;
 	private String uploadTable;
 	private String outputTable;
+	private String dataStartDate;
+	private String dataEndDate;
 	private Pipeline p;
 
 	private BigQueryIO.Write.WriteDisposition writeDisposition = BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE;
@@ -38,6 +40,16 @@ public class MergeUploadDownloadPipeline {
 
 	public MergeUploadDownloadPipeline(Pipeline p) {
 		this.p = p;
+	}
+
+	public MergeUploadDownloadPipeline setDataStartDate(String startDate) {
+		this.dataStartDate = startDate;
+		return this;
+	}
+
+	public MergeUploadDownloadPipeline setDataEndDate(String endDate) {
+		this.dataEndDate = endDate;
+		return this;
 	}
 
 	public MergeUploadDownloadPipeline setQueryFile(String queryFile) {
@@ -95,7 +107,7 @@ public class MergeUploadDownloadPipeline {
 		LOG.debug("MergeUploadDownloadPipeline - Output table: " + this.outputTable);
 
 		// Build query string
-		Object[] queryParams = { downloadTable, uploadTable };
+		Object[] queryParams = { downloadTable, uploadTable, this.dataStartDate, this.dataEndDate };
 
 		QueryBuilder qb = new QueryBuilder(queryFile, queryParams);
 		String queryString = qb.getQuery();
@@ -135,6 +147,8 @@ public class MergeUploadDownloadPipeline {
 
 		MergeUploadDownloadPipeline mudP = new MergeUploadDownloadPipeline(pipe);
 		mudP.setQueryFile(queryFile)
+			.setDataStartDate("2017-01-01:00:00.000000")
+			.setDataEndDate("2017-01-10:00:00.000000")
 			.setDownloadTable(downloadTable)
 			.setOutputSchema(Schema.fromJSONFile(outputSchema))
 			.setOutputTable(outputTable)

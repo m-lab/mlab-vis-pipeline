@@ -1,6 +1,7 @@
 package mlab.dataviz.pipelines;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
@@ -152,8 +153,9 @@ public class NDTReadPipeline implements Runnable {
 	 *
 	 * @throws IOException
 	 * @throws SQLException
+	 * @throws GeneralSecurityException 
 	 */
-	private String[] determineRunDates() throws IOException, SQLException {
+	private String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException {
 
 		// if we already have the dates from a previous run, use them.
 		// since this pipeline is used twice, once for daily and one for hourly
@@ -268,6 +270,9 @@ public class NDTReadPipeline implements Runnable {
 		} catch (SQLException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();
+		} catch (GeneralSecurityException e1) {
+			LOG.error(e1.getMessage());
+			e1.printStackTrace();
 		}
 	}
 }

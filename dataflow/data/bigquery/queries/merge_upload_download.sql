@@ -50,7 +50,6 @@ FROM
   FULL OUTER JOIN EACH {1} as upload
 ON
   (download.test_date = upload.test_date AND
-
   download.client_ip = upload.client_ip AND
   download.client_city = upload.client_city AND
   download.client_region_code = upload.client_region_code AND
@@ -68,3 +67,8 @@ ON
   download.server_country_code = upload.server_country_code AND
   download.server_latitude = upload.server_latitude AND
   download.server_longitude = upload.server_longitude)
+WHERE
+  download.test_date < "{2}" AND
+  download.test_date > "{3}" AND
+  upload.test_date < "{2}" AND
+  upload.test_date > "{3}"

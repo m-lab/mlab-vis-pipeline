@@ -8,5 +8,5 @@ BIGTABLE_INSTANCE=viz-pipeline
 PROJECT=mlab-sandbox
 API_MODE=sandbox
 BIGTABLE_POOL_SIZE=10
-STAGING_LOCATION=gs://viz-pipeline
+STAGING_LOCATION=gs://viz-pipeline-sandbox
 K8_CLUSTER=viz-pipeline

@@ -93,7 +93,7 @@ public class BTPipelineRunDatastore implements BTPipelineRunDao {
         Entity btPipelineEntity = Entity.newBuilder(key)
                 .set(BTPipelineRun.RUN_START_DATE, btPipelineRun.getRunStartDate())
                 .set(BTPipelineRun.RUN_END_DATE, btPipelineRun.getRunEndDate())
-                .set(BTPipelineRun.STATUS, BTPipelineRun.STATUS_RUNNING).build();
+                .set(BTPipelineRun.STATUS, btPipelineRun.getStatus()).build();
         datastore.update(btPipelineEntity);
 	}
 

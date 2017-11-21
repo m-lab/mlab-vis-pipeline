@@ -33,13 +33,12 @@ public class BQPipelineRunDatastore implements BQPipelineRunDao {
 
 	public BQPipelineRunDatastore() throws IOException, GeneralSecurityException {
 
-//		HttpTransport transport = new NetHttpTransport();
 		HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
 		JsonFactory jsonFactory = new JacksonFactory();
 		GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
-		
+
 		DatastoreOptions options =
-		        DatastoreOptions.newBuilder()
+				DatastoreOptions.newBuilder()
 		        .setNamespace("mlab-vis-pipeline").build();
 
 		datastore = options.getService();
@@ -103,7 +102,7 @@ public class BQPipelineRunDatastore implements BQPipelineRunDao {
 				.build();
 		datastore.update(vprEntity);
 	}
-	
+
 	public void markBQPipelineRunFailed(long id) throws SQLException {
 		Key key = keyFactory.newKey(id);
 		BQPipelineRun vpr = getBQPipelineRunEntity(id);

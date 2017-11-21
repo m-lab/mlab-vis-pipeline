@@ -142,6 +142,7 @@ by calling `gcloud components install kubectl`.
 
 **Setup cluster**
 
+1. Setup a new cluster
 First, you need to setup a cluster. Make sure that you're running in the
 right project by calling `gcloud config set <project name>`, which could be
 `mlab-sandbox`, `mlab-staging`, or `mlab-oti`.
@@ -154,17 +155,23 @@ This script will setup a cluster, copy over the encrypted service key so it can 
 mounted as an key later, and setup the namespace for this cluter.
 This will take some time.
 
+2. Use an existing cluster
+
 We also might be sharing a cluster with other services.
-If you are, you will first need to fetch the credentials for that cluster:
-
-`gcloud container clusters get-credentials data-processing-cluster --zone us-central1-a`
-
-Then, you will need to switch to it before you deploy to it:
+If you are, first authenticate with your service key (which should be given
+permission to deploy to this cluster):
 
 ```
 gcloud auth activate-service-account --key-file <path to key file>
-gcloud config set container/cluster data-processing-cluster
 ```
+
+Then, you will first need to fetch the credentials for that cluster:
+
+`gcloud container clusters get-credentials data-processing-cluster --zone us-central1-a`
+
+Then switch to it before deploying
+
+`gcloud config set container/cluster data-processing-cluster`
 
 **Build cluster**
 

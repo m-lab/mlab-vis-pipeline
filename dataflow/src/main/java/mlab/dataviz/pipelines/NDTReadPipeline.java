@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
@@ -117,14 +118,26 @@ public class NDTReadPipeline implements Runnable {
 	 */
 	public String[] getDatesFromBQ() throws IOException {
 
+		// read from one of our tables
 		String startDateRangeQuery = "select STRING(max(test_date)) as min_test_date from " +
 				this.config.getStartDateFromTable();
 
+		// read from NDT
 		String endDateRangeQuery = "SELECT STRING(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(max(web100_log_entry.log_time * INTEGER(POW(10, 6))))))" +
 				" as max_test_date FROM " + this.config.getEndDateFromTable();
 
 		BigQueryJob bqj = new BigQueryJob(this.options.getProject());
-		java.util.List<TableRow> startRows = bqj.executeQuery(startDateRangeQuery);
+		java.util.List<TableRow> startRows;
+		try {
+			startRows = bqj.executeQuery(startDateRangeQuery);
+		} catch (GoogleJsonResponseException e) {
+			// our table is not found yet (first run). Then we should get the earliest date from NDT instead.
+			// read min date from NDT.
+			startDateRangeQuery = "SELECT STRING(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(min(web100_log_entry.log_time * INTEGER(POW(10, 6))))))" +
+					" as min_test_date FROM " + this.config.getEndDateFromTable();
+			startRows = bqj.executeQuery(startDateRangeQuery);
+		}
+		
 		java.util.List<TableRow> endRows = bqj.executeQuery(endDateRangeQuery);
 
 		String [] timestamps = new String[2];
@@ -178,13 +191,18 @@ public class NDTReadPipeline implements Runnable {
 		// previous runs or we will just both dates automatically.
 		} else {
 			LOG.info(">>> Looking for last pipeline run in datastore");
+			
 			dates = getDatesFromBQ();
 
 			BQPipelineRunDatastore d = new BQPipelineRunDatastore();
 			BQPipelineRun lastRun = d.getLastBQPipelineRun();
-
+			
 			if (lastRun != null) {
-				this.pipelineRunRecord.setDataStartDate(lastRun.getDataEndDate()); // our last run
+				if (lastRun.getDataEndDate().length() > 0) {
+					this.pipelineRunRecord.setDataStartDate(lastRun.getDataEndDate()); // our last run
+				} else {
+					this.pipelineRunRecord.setDataStartDate(dates[0]); // our last run
+				}
 				this.pipelineRunRecord.setDataEndDate(dates[1]); // last date in NDT
 			} else {
 				LOG.info(">>> Dates not in config. Attempting to generate automatically.");

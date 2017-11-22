@@ -49,9 +49,15 @@ echo "Project: ${PROJECT}"
 cd ${DATAFLOW_DIR}
 
 echo "Starting server for bigquery metrics & bigtable pipeline"
-# GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE}
-java -cp ${JAR_FILE} mlab.dataviz.main.BTRunner \
-  --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-  --project=${PROJECT} --instance=${BIGTABLE_INSTANCE} \
-  --stagingLocation="${STAGING_LOCATION}"
+if [ -z "${KEY_FILE}" ]; then
+  GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BTRunner \
+    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
+    --project=${PROJECT} --instance=${BIGTABLE_INSTANCE} \
+    --stagingLocation="${STAGING_LOCATION}"
+else
+  java -cp ${JAR_FILE} mlab.dataviz.main.BTRunner \
+    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
+    --project=${PROJECT} --instance=${BIGTABLE_INSTANCE} \
+    --stagingLocation="${STAGING_LOCATION}"
+fi
 

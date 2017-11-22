@@ -119,38 +119,54 @@ public class NDTReadPipeline implements Runnable {
 	public String[] getDatesFromBQ() throws IOException {
 
 		// read from one of our tables
-		String startDateRangeQuery = "select STRING(max(test_date)) as min_test_date from " +
-				this.config.getStartDateFromTable();
+		String startDateRangeQuery = "select STRING(max(test_date)) as min_test_date from "
+				+ this.config.getStartDateFromTable();
 
 		// read from NDT
-		String endDateRangeQuery = "SELECT STRING(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(max(web100_log_entry.log_time * INTEGER(POW(10, 6))))))" +
-				" as max_test_date FROM " + this.config.getEndDateFromTable();
+		String endDateRangeQuery = "SELECT STRING(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(max(web100_log_entry.log_time * INTEGER(POW(10, 6))))))"
+				+ " as max_test_date FROM " + this.config.getEndDateFromTable();
 
 		BigQueryJob bqj = new BigQueryJob(this.options.getProject());
 		java.util.List<TableRow> startRows;
+		String[] timestamps = new String[2];
+		boolean seekNDT = false;
 		try {
 			startRows = bqj.executeQuery(startDateRangeQuery);
-		} catch (GoogleJsonResponseException e) {
-			// our table is not found yet (first run). Then we should get the earliest date from NDT instead.
-			// read min date from NDT.
-			startDateRangeQuery = "SELECT STRING(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(min(web100_log_entry.log_time * INTEGER(POW(10, 6))))))" +
-					" as min_test_date FROM " + this.config.getEndDateFromTable();
-			startRows = bqj.executeQuery(startDateRangeQuery);
+			for (TableRow row : startRows) {
+				for (TableCell field : row.getF()) {
+					if (!field.containsValue(null)) {
+						// for some reason even when the value is null, the above test doesn't work
+						// and we have a ClassCastException. It's been added to the catch, but surely
+						// it should be something different here.
+						timestamps[0] = (String) field.getV();
+					} else {
+						seekNDT = true;
+					}
+				}
+			}
+		} catch (GoogleJsonResponseException | ClassCastException e) {
+			// our table doesn't exist yet.
+			seekNDT = true;
 		}
-		
-		java.util.List<TableRow> endRows = bqj.executeQuery(endDateRangeQuery);
 
-		String [] timestamps = new String[2];
-		for (TableRow row : startRows) {
-			for (TableCell field : row.getF()) {
-				timestamps[0] = (String) field.getV();
-		      }
+		if (seekNDT) {
+			startDateRangeQuery = "SELECT STRING(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(min(web100_log_entry.log_time * INTEGER(POW(10, 6))))))"
+					+ " as min_test_date FROM " + this.config.getEndDateFromTable();
+			startRows = bqj.executeQuery(startDateRangeQuery);
+
+			for (TableRow row : startRows) {
+				for (TableCell field : row.getF()) {
+					timestamps[0] = (String) field.getV();
+				}
+			}
 		}
+
+		java.util.List<TableRow> endRows = bqj.executeQuery(endDateRangeQuery);
 
 		for (TableRow row : endRows) {
 			for (TableCell field : row.getF()) {
 				timestamps[1] = (String) field.getV();
-		      }
+			}
 		}
 
 		return timestamps;

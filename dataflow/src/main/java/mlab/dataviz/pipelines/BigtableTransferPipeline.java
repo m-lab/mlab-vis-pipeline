@@ -90,7 +90,7 @@ public class BigtableTransferPipeline implements Runnable {
 			// check to see if we already have a pipeline running.
 			BTPipelineRun lastRun = this.datastore.getLastBTPipelineRun();
 
-			if (lastRun.isDone()) {
+			if (lastRun == null || lastRun.isDone()) {
 				this.status = createRunRecord();
 
 				BigtableTransferPipelineOptions options = getOptions();

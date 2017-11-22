@@ -71,17 +71,32 @@ echo "Starting server for metrics & bigquery pipeline (DAY and HOUR)"
 if [ -z "${ENDDATE}" ] && [ -z "${STARTDATE}" ]; then
   # empty start and end dates, going to let auto detection happen
   echo "Empty start and end dates, going to let pipeline determine dates."
-  # GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE}
-  java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
-  --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-  --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
-  --skipNDTRead=0 --test=${TEST} --diskSizeGb=30
+
+  if [ -z "${KEY_FILE}" ]; then
+    GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
+    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
+    --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
+    --skipNDTRead=0 --test=${TEST} --diskSizeGb=30
+  else
+    java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
+    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
+    --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
+    --skipNDTRead=0 --test=${TEST} --diskSizeGb=30
+  fi
+
 else
   echo "Running on dates ${STARTDATE} - ${ENDDATE}"
-  # GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE}
-  java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
-  --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-  --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
-  --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} \
-  --diskSizeGb=30
+  if [ -z "${KEY_FILE}" ]; then
+    GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
+    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
+    --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
+    --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} \
+    --diskSizeGb=30
+  else
+    java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
+    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
+    --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
+    --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} \
+    --diskSizeGb=30
+  fi
 fi

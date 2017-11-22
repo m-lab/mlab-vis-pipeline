@@ -23,6 +23,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.auth.oauth2.GoogleCredentials;
 
 
 public class BQPipelineRunDatastore implements BQPipelineRunDao {
@@ -33,12 +34,14 @@ public class BQPipelineRunDatastore implements BQPipelineRunDao {
 
 	public BQPipelineRunDatastore() throws IOException, GeneralSecurityException {
 
-		HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
-		JsonFactory jsonFactory = new JacksonFactory();
-		GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
-
+//		HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
+//		JsonFactory jsonFactory = new JacksonFactory();
+//		GoogleCredential credential = GoogleCredential.getApplicationDefault(transport, jsonFactory);
+		GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
+		
 		DatastoreOptions options =
 				DatastoreOptions.newBuilder()
+				.setCredentials(credentials)
 		        .setNamespace("mlab-vis-pipeline").build();
 
 		datastore = options.getService();

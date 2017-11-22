@@ -70,7 +70,10 @@ public class BTPipelineRun {
     public void setStatus(String status) {
         this.status = status;
     }
-
+    
+    public boolean isDone() {
+    		return this.status == STATUS_DONE && this.run_end_date.length() > 0;
+    }
     public String toString() {
         return "ID: " + this.id + " Run Start date: " + this.run_start_date + " Run End date: " + this.run_end_date
                 + " Status: " + this.status;

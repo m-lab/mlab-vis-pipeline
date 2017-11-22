@@ -2,7 +2,8 @@ package mlab.dataviz.entities;
 
 import java.io.IOException;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
+import java.util.List;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.FullEntity;
 import com.google.cloud.datastore.IncompleteKey;
@@ -16,6 +17,11 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.datastore.Query;
+import com.google.cloud.datastore.StructuredQuery.CompositeFilter;
+import com.google.cloud.datastore.StructuredQuery.OrderBy;
+import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
+import com.google.cloud.datastore.QueryResults;
 
 public class BTPipelineRunDatastore implements BTPipelineRunDao {
 
@@ -30,7 +36,7 @@ public class BTPipelineRunDatastore implements BTPipelineRunDao {
      */
     public BTPipelineRunDatastore() throws IOException {
 		GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
-		
+
 		DatastoreOptions options =
 				DatastoreOptions.newBuilder()
 				.setCredentials(credentials)
@@ -45,13 +51,21 @@ public class BTPipelineRunDatastore implements BTPipelineRunDao {
      * @param entity DB entity
      * @return BTPipelineRun object
      */
-    public BTPipelineRun entityToBTPipelineRun(Entity entity) {
+    private BTPipelineRun entityToBTPipelineRun(Entity entity) {
         return new BTPipelineRun.Builder()
                 .run_end_date(entity.getString(BTPipelineRun.RUN_END_DATE))
                 .run_start_date(entity.getString(BTPipelineRun.RUN_START_DATE))
                 .status(entity.getString(BTPipelineRun.STATUS))
                 .id(entity.getKey().getId())
                 .build();
+    }
+
+    private List<BTPipelineRun> entitiesToBTPipelineRuns(QueryResults<Entity> resultList) {
+        List<BTPipelineRun> resultBTPipelineRuns = new ArrayList<>();
+        while (resultList.hasNext()) {
+                resultBTPipelineRuns.add(entityToBTPipelineRun(resultList.next()));
+        }
+        return resultBTPipelineRuns;
     }
 
     /**
@@ -112,5 +126,27 @@ public class BTPipelineRunDatastore implements BTPipelineRunDao {
                 .set(BTPipelineRun.RUN_END_DATE, vpr.getRunEndDate())
                 .set(BTPipelineRun.STATUS, BTPipelineRun.STATUS_DONE).build();
         datastore.update(btPipelineRunEntity);
-	}
+        }
+
+        /**
+         * Returns the last bigtable pipeline run that is still running.
+         * This way, we won't start another one if it is still running.
+         */
+        @Override
+        public BTPipelineRun getLastBTPipelineRun() throws SQLException {
+                Query<Entity> query = Query.newEntityQueryBuilder()
+                        .setKind(KIND)
+                        .setFilter(PropertyFilter.eq(BTPipelineRun.STATUS, BTPipelineRun.STATUS_RUNNING))
+                        .setLimit(1)
+                        .setOrderBy(OrderBy.desc(BTPipelineRun.RUN_END_DATE))
+                        .build();
+
+                QueryResults<Entity> resultList = datastore.run(query);
+                List<BTPipelineRun> resultBTPipelineRuns = entitiesToBTPipelineRuns(resultList);
+                if (resultBTPipelineRuns.size() == 1) {
+                        return resultBTPipelineRuns.get(0);
+                } else {
+                        return null;
+                }
+        }
 }

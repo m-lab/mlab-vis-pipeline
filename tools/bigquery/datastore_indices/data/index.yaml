@@ -1,0 +1,14 @@
+indexes:
+- kind: viz_pipeline_bt
+  ancestor: no
+  properties:
+  - name: status
+  - name: runenddate
+    direction: desc
+
+- kind: viz_pipeline_bq
+  properties:
+  - name: status
+  - name: type
+  - name: dataenddate
+    direction: desc

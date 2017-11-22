@@ -10,6 +10,8 @@
 		<jettyVersion>9.4.7.v20170914</jettyVersion>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jackson.version>2.7.0</jackson.version>
+		<appengine.version>1.9.59</appengine.version>
+		<google-api-client.version>1.22.0</google-api-client.version>
 	</properties>
 
 	<build>
@@ -166,7 +168,7 @@
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-1.0-sdk</artifactId>
-			<version>1.9.59</version>
+			<version>${appengine.version}</version>
 		</dependency>
 
 		<dependency>
@@ -251,6 +253,32 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
 			<version>9.0.2.v20130417</version>
+		</dependency>
+		<!-- test -->
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-testing</artifactId>
+			<version>${appengine.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-stubs</artifactId>
+			<version>${appengine.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-tools-sdk</artifactId>
+			<version>${appengine.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client-appengine</artifactId>
+			<version>${google-api-client.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

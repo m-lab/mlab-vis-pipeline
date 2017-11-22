@@ -24,7 +24,6 @@ public class DatastoreTest {
 		try {
 			// bq tests
 			long id = createBQ();
-			updateBQ(id);
 			BQPipelineRun vpr = getlast();
 			System.out.println(vpr.toString());
 			
@@ -50,6 +49,7 @@ public class DatastoreTest {
 		BQPipelineRun vpr = new BQPipelineRun.Builder()
 				.data_start_date(dtf.format(start))
 				.data_end_date(dtf.format(end))
+				.type("test")
 				.status(BQPipelineRun.STATUS_RUNNING)
 				.build();
 		return dbq.createBQPipelineRunEntity(vpr);
@@ -71,10 +71,6 @@ public class DatastoreTest {
 		return dbt.createBTPipelineRunEntity(bpr);
 	}
 	
-	public static void updateBQ(long id) throws SQLException {
-		dbq.markBQPipelineRunComplete(id);
-	}
-	
 	public static void updateBT(long id) throws SQLException {
 		dbt.markBTPipelineRunComplete(id);
 	}
@@ -83,6 +79,6 @@ public class DatastoreTest {
 		return dbt.getBTPipelineRunEntity(id);
 	}
 	public static BQPipelineRun getlast() throws SQLException {
-		return dbq.getLastBQPipelineRun();
+		return dbq.getLastBQPipelineRun("test");
 	}
 }

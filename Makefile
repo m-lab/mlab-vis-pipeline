@@ -38,6 +38,9 @@ setup_bq_dataset:
 		bq mk data_viz_helpers;\
     fi
 
+datastore_indices:
+	./tools/bigquery/datastore_indices/setup_datastore_indices.sh ${API_MODE}
+
 asn_merge:
 	./tools/bigquery/asn_merge/deploy_asn_merge.sh ${API_MODE}
 
@@ -59,7 +62,7 @@ mlab_sites:
 # Call:
 # KEY_FILE=<path to cred file> \
 # API_MODE=staging|production|sandbox make setup_bigquery
-setup_bigquery: authenticate setup_bq_dataset asn_merge maxmind location location_cleaning timezones mlab_sites
+setup_bigquery: authenticate datastore_indices setup_bq_dataset asn_merge maxmind location location_cleaning timezones mlab_sites
 	echo 'Done creating bigquery helper tables'
 
 # Create a kubernetis cluster

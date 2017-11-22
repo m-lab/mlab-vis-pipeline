@@ -195,7 +195,7 @@ public class NDTReadPipeline implements Runnable {
 			dates = getDatesFromBQ();
 
 			BQPipelineRunDatastore d = new BQPipelineRunDatastore();
-			BQPipelineRun lastRun = d.getLastBQPipelineRun();
+			BQPipelineRun lastRun = d.getLastBQPipelineRun(this.pipelineRunRecord.getType());
 			
 			if (lastRun != null) {
 				if (lastRun.getDataEndDate().length() > 0) {

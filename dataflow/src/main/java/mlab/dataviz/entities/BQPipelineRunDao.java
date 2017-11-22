@@ -12,9 +12,5 @@ public interface BQPipelineRunDao {
 	// update an entity
 	void updateBQPipelineRunEntity(BQPipelineRun vpr) throws SQLException;
 
-	// get last entry
-	BQPipelineRun getLastBQPipelineRun() throws SQLException;
-
-	// mark pipeline done
-	void markBQPipelineRunComplete(long id) throws SQLException;
+	BQPipelineRun getLastBQPipelineRun(String type) throws SQLException;
 }

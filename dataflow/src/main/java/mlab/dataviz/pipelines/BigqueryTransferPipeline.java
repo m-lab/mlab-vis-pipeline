@@ -125,6 +125,7 @@ public class BigqueryTransferPipeline implements Runnable {
 		BQPipelineRun record = new BQPipelineRun.Builder()
 				.datastore(this.datastore)
 				.run_start_date(runDate)
+				.type(this.timePeriod)
 				.status(BQPipelineRun.STATUS_RUNNING)
 				.build();
 

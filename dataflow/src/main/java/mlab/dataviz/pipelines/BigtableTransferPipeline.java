@@ -27,12 +27,12 @@ public class BigtableTransferPipeline implements Runnable {
 	private static final Logger LOG = LoggerFactory.getLogger(BigtableTransferPipeline.class);
 	private static final String BIGTABLE_CONFIG_DIR = "./data/bigtable/";
 	private static final boolean RUN_IN_PARALLEL = true;
-	
+
 	private String[] args;
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(Formatters.TIMESTAMP);
 	private BTPipelineRun status;
 	private BTPipelineRunDatastore datastore = null;
-	
+
 	/**
 	 * @constructor Creates a new big table transfer pipeline
 	 * @param args
@@ -50,7 +50,7 @@ public class BigtableTransferPipeline implements Runnable {
 
 	/**
 	 * Returns a timestamp of the current time.
-	 * 
+	 *
 	 * @return String of the timestamp.
 	 */
 	private String getNowTimestamp() {
@@ -62,7 +62,7 @@ public class BigtableTransferPipeline implements Runnable {
 	/**
 	 * Creates a datastore record of this pipeline run. Initializes its start date
 	 * and run status and write it to the store.
-	 * 
+	 *
 	 * @return VizPipelineRun record.
 	 * @throws SQLException
 	 */
@@ -82,66 +82,73 @@ public class BigtableTransferPipeline implements Runnable {
 				.as(BigtableTransferPipelineOptions.class);
 		return options;
 	}
-	
+
 	@Override
 	public void run() {
-		
+
 		try {
-			this.status = createRunRecord();
+			// check to see if we already have a pipeline running.
+			BTPipelineRun lastRun = this.datastore.getLastBTPipelineRun();
 
-			BigtableTransferPipelineOptions options = getOptions();
-			Pipeline p = Pipeline.create(options);
-			
-			int test = options.getTest();
-			String configPrefix = options.getConfigPrefix();
-			String configSuffix = options.getConfigSuffix();
+			if (lastRun.isDone()) {
+				this.status = createRunRecord();
 
-			File folder = new File(BIGTABLE_CONFIG_DIR);
-			File[] listOfFiles = folder.listFiles();
+				BigtableTransferPipelineOptions options = getOptions();
+				Pipeline p = Pipeline.create(options);
 
-			if (configSuffix.length() == 0) {
-				configSuffix = ".json";
-			}
+				int test = options.getTest();
+				String configPrefix = options.getConfigPrefix();
+				String configSuffix = options.getConfigSuffix();
 
-			ArrayList<Thread> threads = new ArrayList<Thread>();
-			for (File f : listOfFiles) {
-				if (f.isFile() && f.getName().endsWith(configSuffix)) {
-					if (configPrefix.length() == 0 || f.getName().startsWith(configPrefix)) {
-						String configFilename = BIGTABLE_CONFIG_DIR + f.getName();
-						LOG.debug("Running bigtable transfer for file: " + configFilename);
-						BigtablePipeline btPipeline;
-						if (RUN_IN_PARALLEL) {
-							btPipeline = new BigtablePipeline(this.args, configFilename);
-						} else {
-							btPipeline = new BigtablePipeline(p, configFilename);
-						}
-						
-						if (test == 0) {
-							Thread btPipeThread = new Thread(btPipeline);
-							btPipeThread.start();
-							threads.add(btPipeThread);
-						} else {
-							LOG.info("Test mode, not running pipeline for " + configFilename);
+				File folder = new File(BIGTABLE_CONFIG_DIR);
+				File[] listOfFiles = folder.listFiles();
+
+				if (configSuffix.length() == 0) {
+					configSuffix = ".json";
+				}
+
+				ArrayList<Thread> threads = new ArrayList<Thread>();
+				for (File f : listOfFiles) {
+					if (f.isFile() && f.getName().endsWith(configSuffix)) {
+						if (configPrefix.length() == 0 || f.getName().startsWith(configPrefix)) {
+							String configFilename = BIGTABLE_CONFIG_DIR + f.getName();
+							LOG.debug("Running bigtable transfer for file: " + configFilename);
+							BigtablePipeline btPipeline;
+							if (RUN_IN_PARALLEL) {
+								btPipeline = new BigtablePipeline(this.args, configFilename);
+							} else {
+								btPipeline = new BigtablePipeline(p, configFilename);
+							}
+
+							if (test == 0) {
+								Thread btPipeThread = new Thread(btPipeline);
+								btPipeThread.start();
+								threads.add(btPipeThread);
+							} else {
+								LOG.info("Test mode, not running pipeline for " + configFilename);
+							}
 						}
 					}
 				}
-			}
 
-			// once all jobs have been queued up, wait for them all
-			if (test == 0) {
-				for (Thread t : threads) {
-					try {
-						t.join();
-					} catch (InterruptedException ex) {
-						LOG.error(ex.getMessage());
-						ex.printStackTrace();
+				// once all jobs have been queued up, wait for them all
+				if (test == 0) {
+					for (Thread t : threads) {
+						try {
+							t.join();
+						} catch (InterruptedException ex) {
+							LOG.error(ex.getMessage());
+							ex.printStackTrace();
+						}
 					}
 				}
+
+				// once we get here, we are complete with all runs. Write status and exit.
+				this.status.setRunEndDate(this.getNowTimestamp());
+				this.status.save();
+			} else {
+				LOG.info("Last pipeline still running since " + lastRun.getRunStartDate() + ". Skipping this one.");
 			}
-			
-			// once we get here, we are complete with all runs. Write status and exit.
-			this.status.setRunEndDate(this.getNowTimestamp());
-			this.status.save();
 		} catch (SQLException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();

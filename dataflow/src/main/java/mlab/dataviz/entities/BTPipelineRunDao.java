@@ -15,4 +15,7 @@ public interface BTPipelineRunDao {
 
     // mark pipeline entry done
     void markBTPipelineRunComplete(long id) throws SQLException;
+
+    // get last pipeline run
+    BTPipelineRun getLastBTPipelineRun() throws SQLException;
 }

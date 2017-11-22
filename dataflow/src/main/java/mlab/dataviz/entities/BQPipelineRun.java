@@ -22,6 +22,7 @@ public class BQPipelineRun {
 	private String status = null;
 	private String run_start_date = null;
 	private String run_end_date = null;
+	private String type = null;
 
 	// property names
 	public static final String ID = "id";
@@ -30,7 +31,8 @@ public class BQPipelineRun {
 	public static final String RUN_START_DATE = "runstartdate";
 	public static final String RUN_END_DATE = "runenddate";
 	public static final String STATUS = "status";
-
+	public static final String TYPE = "type";
+	
 	// statuses
 	public static final String STATUS_RUNNING = "running";
 	public static final String STATUS_DONE = "done";
@@ -45,6 +47,7 @@ public class BQPipelineRun {
 		this.run_end_date = builder.run_end_date;
 		this.run_start_date = builder.run_start_date;
 		this.status = builder.status;
+		this.type = builder.type;
 	}
 
 
@@ -57,11 +60,9 @@ public class BQPipelineRun {
 		this.id = id;
 	}
 
-
 	public String getDataStartDate() {
 		return data_start_date;
 	}
-
 
 	public void setDataStartDate(String start_date) {
 		this.data_start_date = start_date;
@@ -71,7 +72,6 @@ public class BQPipelineRun {
 	public String getDataEndDate() {
 		return data_end_date;
 	}
-
 
 	public void setDataEndDate(String end_date) {
 		this.data_end_date = end_date;
@@ -101,6 +101,14 @@ public class BQPipelineRun {
 		this.status = status;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	public String getType() {
+		return this.type;
+	}
+	
 	public String[] getDates() {
 		return new String[] {
 			this.data_start_date, this.data_end_date
@@ -118,7 +126,8 @@ public class BQPipelineRun {
 	        " Data End date: " + this.data_end_date +
 	        " Run Start date: " + this.run_start_date +
 	        " Run End date: " + this.run_end_date +
-	        " Status: " + this.status;
+	        " Status: " + this.status +
+	        " Type: " + this.type;
 	  }
 
 	public static class Builder {
@@ -129,6 +138,7 @@ public class BQPipelineRun {
 		private String data_start_date = "";
 		private String data_end_date = "";
 		private String status = "";
+		private String type = "";
 
 		public Builder id(long id) {
 			this.id = id;
@@ -192,6 +202,11 @@ public class BQPipelineRun {
 		public String getStatus() {
 			return this.status;
 		}
+		
+		public Builder type(String type) {
+			this.type = type;
+			return this;
+		}
 
 		public BQPipelineRun build() {
 			return new BQPipelineRun(this, this.datastore);
@@ -205,7 +220,8 @@ public class BQPipelineRun {
 		 	      " Data End date: " + this.data_end_date +
 		 	      " Run Start date: " + this.run_start_date +
 		 	      " Run End date: " + this.run_end_date +
-		 	      " Status: " + this.status;
+		 	      " Status: " + this.status + 
+		 	      " Type: " + this.type;
 		  }
 	}
 }

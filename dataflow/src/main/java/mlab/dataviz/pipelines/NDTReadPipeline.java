@@ -219,12 +219,12 @@ public class NDTReadPipeline implements Runnable {
 				} else {
 					this.pipelineRunRecord.setDataStartDate(dates[0]); // our last run
 				}
-				this.pipelineRunRecord.setDataEndDate(dates[1]); // last date in NDT
 			} else {
 				LOG.info(">>> Dates not in config. Attempting to generate automatically.");
 				this.pipelineRunRecord.setDataStartDate(dates[0]); // our last test date in table
 			}
 
+			this.pipelineRunRecord.setDataEndDate(dates[1]);
 			this.pipelineRunRecord.save();
 			dates = this.pipelineRunRecord.getDates();
 		}

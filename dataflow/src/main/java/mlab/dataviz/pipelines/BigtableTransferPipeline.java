@@ -145,6 +145,7 @@ public class BigtableTransferPipeline implements Runnable {
 
 				// once we get here, we are complete with all runs. Write status and exit.
 				this.status.setRunEndDate(this.getNowTimestamp());
+				this.status.setStatus(BTPipelineRun.STATUS_DONE);
 				this.status.save();
 			} else {
 				LOG.info("Last pipeline still running since " + lastRun.getRunStartDate() + ". Skipping this one.");

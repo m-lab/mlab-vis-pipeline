@@ -20,6 +20,7 @@ import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.dataviz.dofn.TableRowToHBase;
 import mlab.dataviz.pipelineopts.BigtableTransferPipelineOptions;
+import mlab.dataviz.query.BigQueryJob;
 import mlab.dataviz.query.QueryBuilder;
 import mlab.dataviz.util.bigtable.BigtableConfig;
 
@@ -57,20 +58,20 @@ public class BigtablePipeline implements Runnable {
         // create pipeline
         this.pipe = Pipeline.create(this.options);
     }
-    
+
     /**
      * @constructor
-     * 
+     *
      * Creates a new bigtable pipeline, reusing a global pipeline.
      * @param p
      * @param configFileName
      */
     public BigtablePipeline(Pipeline p, String configFileName) {
     		this.pipe = p;
-    		
+
     		// read config file
         this.btConfig = BigtableConfig.fromJSONFile(configFileName);
-       
+
         this.options = (BigtableTransferPipelineOptions) this.pipe.getOptions();
     }
 
@@ -92,43 +93,62 @@ public class BigtablePipeline implements Runnable {
         return queryString;
     }
 
+    public boolean doesSourceTableExist() throws IOException {
+    		// check to see if table exists. If it doesn't, don't run.
+        // only relevant the first time.
+        String query = "SELECT size_bytes FROM data_viz_helpers.__TABLES__ WHERE table_id='" + this.btConfig.getBigQueryTable() + "'";
+        
+        BigQueryJob bqj = new BigQueryJob(this.options.getProject());
+        java.util.List<TableRow> results = bqj.executeQuery(query);
+        
+        if (results == null) {
+        		return false;
+        } else {
+        		return true;
+        }
+    }
+    
     @Override
     public void run() {
         try {
             String queryString = this.getQueryString();
-
-            LOG.info("Reading data from BigQuery query");
-            // Formally called this.pipeline.apply.
-            PCollection<TableRow> bigQueryCollection = pipe
-                    .apply(BigQueryIO.Read.named(btConfig.getBigtableTable() + " BQ Read").fromQuery(queryString));
-
-            CloudBigtableIO.initializeForWrite(pipe);
-
-            LOG.info("Transferring from BigQuery to Bigtable");
-            LOG.info("Bigtable Project ID: " + this.options.getProject());
-            LOG.info("Bigtable Instance ID: " + this.options.getInstance());
-            LOG.info("Bigtable Table: " + btConfig.getBigtableTable());
-
-            // create configuration for writing to the Bigtable
-            CloudBigtableScanConfiguration config = new CloudBigtableScanConfiguration.Builder()
-                    .withProjectId(this.options.getProject())
-                    .withInstanceId(this.options.getInstance())
-                    .withTableId(btConfig.getBigtableTable()).build();
-
-            // convert from TableRow objects to hbase compatible mutations (Put)
-            PCollection<Mutation> hbasePuts = bigQueryCollection.apply(
-                    ParDo.named(btConfig.getBigtableTable() + " BT Transform")
-                    .of(new TableRowToHBase(btConfig)));
-
-            // write the mutations to Bigtable
-            hbasePuts.apply(CloudBigtableIO.writeToTable(config));
-
-            DataflowPipelineJob result = (DataflowPipelineJob) this.pipe.run();
-            try {
-                result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
-            } catch (InterruptedException e) {
-                LOG.error(e.getMessage());
-                e.printStackTrace();
+            
+            if (!doesSourceTableExist()) {
+            		LOG.info("Source table not created yet. Skipping " + this.btConfig.getBigtableTable());
+            } else {
+	            LOG.info("Reading data from BigQuery query");
+	            // Formally called this.pipeline.apply.
+	            PCollection<TableRow> bigQueryCollection = pipe
+	                    .apply(BigQueryIO.Read.named(btConfig.getBigtableTable() + " BQ Read").fromQuery(queryString));
+	
+	            CloudBigtableIO.initializeForWrite(pipe);
+	
+	            LOG.info("Transferring from BigQuery to Bigtable");
+	            LOG.info("Bigtable Project ID: " + this.options.getProject());
+	            LOG.info("Bigtable Instance ID: " + this.options.getInstance());
+	            LOG.info("Bigtable Table: " + btConfig.getBigtableTable());
+	
+	            // create configuration for writing to the Bigtable
+	            CloudBigtableScanConfiguration config = new CloudBigtableScanConfiguration.Builder()
+	                    .withProjectId(this.options.getProject())
+	                    .withInstanceId(this.options.getInstance())
+	                    .withTableId(btConfig.getBigtableTable()).build();
+	
+	            // convert from TableRow objects to hbase compatible mutations (Put)
+	            PCollection<Mutation> hbasePuts = bigQueryCollection.apply(
+	                    ParDo.named(btConfig.getBigtableTable() + " BT Transform")
+	                    .of(new TableRowToHBase(btConfig)));
+	
+	            // write the mutations to Bigtable
+	            hbasePuts.apply(CloudBigtableIO.writeToTable(config));
+	
+	            DataflowPipelineJob result = (DataflowPipelineJob) this.pipe.run();
+	            try {
+	                result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+	            } catch (InterruptedException e) {
+	                LOG.error(e.getMessage());
+	                e.printStackTrace();
+	            }
             }
         } catch (IOException e) {
             LOG.error(e.getMessage());

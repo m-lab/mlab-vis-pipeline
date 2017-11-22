@@ -144,7 +144,12 @@ public class BTPipelineRunDatastore implements BTPipelineRunDao {
                 QueryResults<Entity> resultList = datastore.run(query);
                 List<BTPipelineRun> resultBTPipelineRuns = entitiesToBTPipelineRuns(resultList);
                 if (resultBTPipelineRuns.size() == 1) {
-                        return resultBTPipelineRuns.get(0);
+                		BTPipelineRun run = resultBTPipelineRuns.get(0);
+                		if (run.getRunEndDate().length() > 0) {
+                			return run;
+                		} else {
+                			return null;
+                		}
                 } else {
                         return null;
                 }

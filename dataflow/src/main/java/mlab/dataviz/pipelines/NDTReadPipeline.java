@@ -228,6 +228,7 @@ public class NDTReadPipeline implements Runnable {
 			this.pipelineRunRecord.save();
 			dates = this.pipelineRunRecord.getDates();
 		}
+		LOG.info("Dates computed: " + dates);
 		return dates;
 	}
 

@@ -43,6 +43,9 @@ public class NDTReadPipeline implements Runnable {
 	private boolean runPipeline = false;
 	private BQPipelineRun pipelineRunRecord = null;
 	private static SimpleDateFormat dtf = new SimpleDateFormat(Formatters.TIMESTAMP);
+	
+	private String ndtStartDate;
+	private String ndtEndDate;
 
 	private String[] dates;
 
@@ -116,7 +119,7 @@ public class NDTReadPipeline implements Runnable {
 	 * @return
 	 * @throws IOException
 	 */
-	public String[] getDatesFromBQ() throws IOException {
+	public synchronized String[] getDatesFromBQ() throws IOException {
 
 		// read from one of our tables
 		String startDateRangeQuery = "select STRING(max(test_date)) as min_test_date from "
@@ -168,7 +171,7 @@ public class NDTReadPipeline implements Runnable {
 				timestamps[1] = (String) field.getV();
 			}
 		}
-
+		LOG.info("Bigquery-based timestamps comptued as: " + timestamps[0] + "-" + timestamps[1]);
 		return timestamps;
 	}
 
@@ -184,7 +187,7 @@ public class NDTReadPipeline implements Runnable {
 	 * @throws SQLException
 	 * @throws GeneralSecurityException 
 	 */
-	private String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException {
+	private synchronized String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException {
 
 		// if we already have the dates from a previous run, use them.
 		// since this pipeline is used twice, once for daily and one for hourly
@@ -195,6 +198,8 @@ public class NDTReadPipeline implements Runnable {
 					this.pipelineRunRecord.getDataStartDate(),
 					this.pipelineRunRecord.getDataEndDate()
 			};
+			LOG.info("Using existing dates from status: " + this.pipelineRunRecord.toString());
+			return dates;
 		// Pipeline run dates provided via the command-line. Use those.
 		} else if (dates != null & !dates[0].equals("") && !dates[1].equals("")) {
 			LOG.info(">>> Dates passed via commandline.");
@@ -202,6 +207,8 @@ public class NDTReadPipeline implements Runnable {
 			this.pipelineRunRecord.setDataStartDate(dates[0]);
 			this.pipelineRunRecord.setDataEndDate(dates[1]);
 			this.pipelineRunRecord.save();
+			LOG.info("Using dates from commandline " + this.pipelineRunRecord.toString());
+			return dates;
 
 		// get auto dates from BQ. We will either use our last test date from
 		// previous runs or we will just both dates automatically.
@@ -217,10 +224,9 @@ public class NDTReadPipeline implements Runnable {
 				if (lastRun.getDataEndDate().length() > 0) {
 					this.pipelineRunRecord.setDataStartDate(lastRun.getDataEndDate()); // our last run
 				} else {
-					this.pipelineRunRecord.setDataStartDate(dates[0]); // our last run
+					this.pipelineRunRecord.setDataStartDate(dates[0]); // last ndt date. We've never had a good run.
 				}
 			} else {
-				LOG.info(">>> Dates not in config. Attempting to generate automatically.");
 				this.pipelineRunRecord.setDataStartDate(dates[0]); // our last test date in table
 			}
 
@@ -228,7 +234,8 @@ public class NDTReadPipeline implements Runnable {
 			this.pipelineRunRecord.save();
 			dates = this.pipelineRunRecord.getDates();
 		}
-		LOG.info("Dates computed: " + dates);
+		
+		LOG.info("Dates computed: " + dates[0] + "-" + dates[1]);
 		return dates;
 	}
 

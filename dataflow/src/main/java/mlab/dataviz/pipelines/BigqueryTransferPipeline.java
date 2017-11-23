@@ -117,7 +117,7 @@ public class BigqueryTransferPipeline implements Runnable {
 	 * @return VizPipelineRun record.
 	 * @throws SQLException
 	 */
-	private BQPipelineRun createRunRecord() throws SQLException {
+	private BQPipelineRun createRunRecord(String type) throws SQLException {
 		Calendar c = Calendar.getInstance();
 		Date time = c.getTime();
 		String runDate = dateFormatter.format(time);
@@ -125,7 +125,7 @@ public class BigqueryTransferPipeline implements Runnable {
 		BQPipelineRun record = new BQPipelineRun.Builder()
 				.datastore(this.datastore)
 				.run_start_date(runDate)
-				.type(this.timePeriod)
+				.type(type)
 				.status(BQPipelineRun.STATUS_RUNNING)
 				.build();
 
@@ -154,7 +154,7 @@ public class BigqueryTransferPipeline implements Runnable {
 		try {
 			// record when this is running in the datastore so we have
 			// a record of when we are running.
-			this.status = createRunRecord();
+			this.status = createRunRecord(this.timePeriod);
 			int skipNDTRead = options.getSkipNDTRead();
 
 			int test = options.getTest();
@@ -236,11 +236,13 @@ public class BigqueryTransferPipeline implements Runnable {
 			// when both pipelines are done, proceed to merge, add ISP and local time
 			// information.
 			if (next) {
-
+				
 				// prometheus, augmentation & merge pipeline write
 				Gauge mergeDuration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_merge_duration_" +  this.timePeriod)
 						.help("Historic pipeline duration - Bigquery Merge").register();
-
+				
+				// if we didn't do an NDT run, we have to figure out dates for this pipeline. @todo
+				
 				Gauge.Timer mergeTimer = mergeDuration.startTimer();
 
 				// set up big query IO options
@@ -304,7 +306,6 @@ public class BigqueryTransferPipeline implements Runnable {
 
 				// mark this run Done.
 				this.status.setStatus(BQPipelineRun.STATUS_DONE);
-				this.status.save();
 			} else {
 				LOG.error("Download or Upload pipelines failed.");
 			}

@@ -96,7 +96,9 @@ public class BigtablePipeline implements Runnable {
     public boolean doesSourceTableExist() throws IOException {
     		// check to see if table exists. If it doesn't, don't run.
         // only relevant the first time.
-        String query = "SELECT size_bytes FROM data_viz_helpers.__TABLES__ WHERE table_id='" + this.btConfig.getBigQueryTable() + "'";
+		String dataset = this.btConfig.getBigQueryTable().split("\\.")[0];
+		String table = this.btConfig.getBigQueryTable().split("\\.")[1];
+		String query = "SELECT size_bytes FROM " + dataset + ".__TABLES__ WHERE table_id='" + table + "'";
         
         BigQueryJob bqj = new BigQueryJob(this.options.getProject());
         java.util.List<TableRow> results = bqj.executeQuery(query);

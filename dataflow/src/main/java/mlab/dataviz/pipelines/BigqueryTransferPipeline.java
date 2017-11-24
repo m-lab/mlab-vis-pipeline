@@ -46,7 +46,10 @@ public class BigqueryTransferPipeline implements Runnable {
 
 	private BQPipelineRun status;
 	private BQPipelineRunDatastore datastore = null;
-
+	private Gauge duration;
+	private Gauge ndtReadDuration;
+	private Gauge mergeDuration; 
+	
 	private final String[] args;
 	private boolean isRunning = false;
 	private String timePeriod;
@@ -58,6 +61,15 @@ public class BigqueryTransferPipeline implements Runnable {
 	public BigqueryTransferPipeline(String[] args, String timePeriod) {
 		 this.args = args;
 		 this.timePeriod = timePeriod;
+		 
+		 this.duration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_duration_" + this.timePeriod)
+					.help("Historic pipeline duration - Bigquery").register();
+		 
+		 this.ndtReadDuration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_ndtread_duration_" +  this.timePeriod)
+					.help("Historic pipeline duration - Bigquery NDT Read").register();
+		 
+		 this.mergeDuration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_merge_duration_" +  this.timePeriod)
+					.help("Historic pipeline duration - Bigquery Merge").register();
 
 		 try {
 			this.datastore = new BQPipelineRunDatastore();
@@ -146,10 +158,7 @@ public class BigqueryTransferPipeline implements Runnable {
 				.withValidation()
 				.as(HistoricPipelineOptions.class);
 
-		Gauge duration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_duration_" + this.timePeriod)
-				.help("Historic pipeline duration - Bigquery").register();
-
-		Gauge.Timer durationTimer = duration.startTimer();
+		Gauge.Timer durationTimer = this.duration.startTimer();
 
 		try {
 			// record when this is running in the datastore so we have
@@ -176,10 +185,7 @@ public class BigqueryTransferPipeline implements Runnable {
 			if (skipNDTRead != 1) {
 
 				// prometheus, ndt read duration
-				Gauge ndtReadDuration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_ndtread_duration_" +  this.timePeriod)
-						.help("Historic pipeline duration - Bigquery NDT Read").register();
-
-				Gauge.Timer ndtTimer = ndtReadDuration.startTimer();
+				Gauge.Timer ndtTimer = this.ndtReadDuration.startTimer();
 
 				// === get downloads for timePeriod
 				options.setAppName("HistoricPipeline-Download-" + this.timePeriod + "-" + System.currentTimeMillis());
@@ -237,12 +243,8 @@ public class BigqueryTransferPipeline implements Runnable {
 			// information.
 			if (next) {
 				
-				// prometheus, augmentation & merge pipeline write
-				Gauge mergeDuration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_merge_duration_" +  this.timePeriod)
-						.help("Historic pipeline duration - Bigquery Merge").register();
-				
 				// if we didn't do an NDT run, we have to figure out dates for this pipeline. @todo
-				
+				// prometheus, augmentation & merge pipeline write
 				Gauge.Timer mergeTimer = mergeDuration.startTimer();
 
 				// set up big query IO options

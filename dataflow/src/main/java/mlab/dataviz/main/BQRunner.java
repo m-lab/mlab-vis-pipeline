@@ -39,8 +39,6 @@ public class BQRunner {
 			// restart day pipeline
 			if (!dayPipelineThread.isAlive() || !dayPipeline.getStatus()) {
 				LOG.info(">>> Starting pipeline thread");
-				dayPipeline = new BigqueryTransferPipeline(args, "day");
-				dayPipelineThread = new Thread(dayPipeline);
 				dayPipelineThread.start();
 			} else {
 				LOG.info(">>> Day Pipeline still running. Going back to sleep.");
@@ -50,8 +48,6 @@ public class BQRunner {
 			if (!hourPipelineThread.isAlive() || !hourPipeline.getStatus()) {
 				LOG.info(">>> Starting pipeline thread");
 				// reset the pipeline
-				hourPipeline = new BigqueryTransferPipeline(args, "day");
-				hourPipelineThread = new Thread(hourPipeline);
 				hourPipelineThread.start();
 			} else {
 				LOG.info(">>> Hour Pipeline still running. Going back to sleep.");

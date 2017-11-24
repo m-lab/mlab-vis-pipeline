@@ -34,8 +34,6 @@ public class BTRunner {
 			// restart day pipeline
 			if (!bigtablePipeline.isAlive()) {
 				LOG.info(">>> Starting new bigtable thread");
-				btp = new BigtableTransferPipeline(args);
-				bigtablePipeline = new Thread(btp);
 				bigtablePipeline.start();
 			} else {
 				LOG.info(">>> Bigtable Pipeline still running. Going back to sleep.");

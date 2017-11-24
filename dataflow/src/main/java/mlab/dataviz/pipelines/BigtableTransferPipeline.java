@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 
+import io.prometheus.client.Gauge;
 import mlab.dataviz.entities.BTPipelineRun;
 import mlab.dataviz.entities.BTPipelineRunDatastore;
 import mlab.dataviz.pipelineopts.BigtableTransferPipelineOptions;
@@ -29,6 +30,7 @@ public class BigtableTransferPipeline implements Runnable {
 	private static final boolean RUN_IN_PARALLEL = true;
 
 	private String[] args;
+	private Gauge duration;
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(Formatters.TIMESTAMP);
 	private BTPipelineRun status;
 	private BTPipelineRunDatastore datastore = null;
@@ -40,6 +42,9 @@ public class BigtableTransferPipeline implements Runnable {
 	 */
 	public BigtableTransferPipeline(String[] args) {
 		this.args = args;
+		
+		 this.duration = Gauge.build().name("mlab_vis_pipeline_bigtable")
+					.help("Historic pipeline duration - Bigquery").register();
 		try {
 			this.datastore = new BTPipelineRunDatastore();
 		} catch (IOException e) {
@@ -91,6 +96,8 @@ public class BigtableTransferPipeline implements Runnable {
 			BTPipelineRun lastRun = this.datastore.getLastBTPipelineRun();
 
 			if (lastRun == null || lastRun.isDone()) {
+				Gauge.Timer durationTimer = this.duration.startTimer();
+				
 				this.status = createRunRecord();
 
 				BigtableTransferPipelineOptions options = getOptions();
@@ -147,6 +154,7 @@ public class BigtableTransferPipeline implements Runnable {
 				this.status.setRunEndDate(this.getNowTimestamp());
 				this.status.setStatus(BTPipelineRun.STATUS_DONE);
 				this.status.save();
+				durationTimer.setDuration();
 			} else {
 				LOG.info("Last pipeline still running since " + lastRun.getRunStartDate() + ". Skipping this one.");
 			}

@@ -72,7 +72,7 @@ if [ -z "${ENDDATE}" ] && [ -z "${STARTDATE}" ]; then
   # empty start and end dates, going to let auto detection happen
   echo "Empty start and end dates, going to let pipeline determine dates."
 
-  if [ -z "${KEY_FILE}" ]; then
+  if [ -n "${KEY_FILE}" ]; then
     GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
     --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
     --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \

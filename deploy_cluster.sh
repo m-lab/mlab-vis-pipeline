@@ -34,6 +34,7 @@ function git_is_dirty {
 }
 
 BUILD=0
+TRAVIS=0
 GIT_COMMIT=$(git log -n 1 | head -n 1 | awk '{print $2}')
 # Initialize correct environment variables based on type of deployment
 while getopts ":m:b:" opt; do
@@ -62,6 +63,7 @@ while getopts ":m:b:" opt; do
     t)
       echo "Travis"
       cd $TRAVIS_BUILD_DIR
+      TRAVIS=1
       GIT_COMMIT=${TRAVIS_COMMIT}
       ;;
     b)
@@ -80,10 +82,6 @@ while getopts ":m:b:" opt; do
       ;;
   esac
 done
-
-if [[ $2 == travis ]]; then
-  gcloud auth activate-service-account --key-file ${KEY_FILE}
-fi
 
 # switch to correct cluster
 gcloud auth activate-service-account --key-file=${KEY_FILE}

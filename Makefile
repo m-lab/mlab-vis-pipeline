@@ -74,7 +74,7 @@ setup: setup_bigquery setup_bigtable setup_cluster
 
 #-- Pipeline Jars, Docker container
 build:
-	./build.sh -m ${API_MODE}
+	./build_cluster.sh -m ${API_MODE}
 
 test:
 	cd dataflow && mvn test && cd ../

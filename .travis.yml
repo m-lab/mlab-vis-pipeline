@@ -21,10 +21,12 @@ before_install:
 
 jobs:
   include:
+    # Run build
+    - stage: compile
+      script: ./build_cluster.sh -m sandbox -d 0 -t
+
     # Run tests
     - stage: test
-      script: make test
+      script: docker run -w /mlab-vis-pipeline/dataflow pipeline mvn test
 
-    # Run build
-    - stage: build
-      script: make build -m sandbox
+

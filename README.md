@@ -177,10 +177,12 @@ Then switch to it before deploying
 
 You can build the cluster container image and required templates by calling:
 
-`KEY_FILE=<path to your key file>./build_cluster.sh -m <sandbox|staging|production>`
+`KEY_FILE=<path to your key file>./build_cluster.sh -m <sandbox|staging|production> -d 1 -t 0`
 
 This will build and push a docker image to gcr.io that will then be pulled
-by kubernetes. It is required to be able to deploy pods. Anytime you
+by kubernetes. It is required to be able to deploy pods.
+If you just want to build a local image, specify -d as 0.
+The -t parameter is only relevant to travis.
 
 **Deploy to cluster**
 

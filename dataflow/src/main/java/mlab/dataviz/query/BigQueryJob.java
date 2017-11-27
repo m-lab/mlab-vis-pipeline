@@ -22,6 +22,7 @@ import com.google.api.services.bigquery.model.JobConfigurationQuery;
 import com.google.api.services.bigquery.model.JobReference;
 import com.google.api.services.bigquery.model.QueryRequest;
 import com.google.api.services.bigquery.model.QueryResponse;
+import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableDataList;
 import com.google.api.services.bigquery.model.TableReference;
 import com.google.api.services.bigquery.model.TableRow;
@@ -92,6 +93,47 @@ public class BigQueryJob {
 				.execute();
 
 		return queryResult.getRows();
+	}
+	
+	/**
+	 * Executes a query when the known response is a single string value.
+	 * @param querySql
+	 * @return response String value
+	 * @throws IOException
+	 */
+	public String executeQueryForValue(String querySql) throws IOException {
+		QueryResponse query = bigquery.jobs()
+				.query(projectId,
+						new QueryRequest().setQuery(querySql))
+				.execute();
+
+		GetQueryResultsResponse queryResult = bigquery.jobs()
+				.getQueryResults(
+						query.getJobReference()
+							.getProjectId(),
+						query.getJobReference()
+							.getJobId())
+				.execute();
+		List<TableRow> tableRows = queryResult.getRows();
+		try {
+			for (TableRow row : tableRows) {
+				for (TableCell field : row.getF()) {
+					if (!field.containsValue(null)) {
+						// for some reason even when the value is null, the above test doesn't work
+						// and we have a ClassCastException. It's been added to the catch, but surely
+						// it should be something different here.
+						return (String) field.getV();
+					} else {
+						return null;
+					}
+				}
+			}
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+		
 	}
 
 	/**

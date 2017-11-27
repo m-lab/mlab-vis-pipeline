@@ -257,7 +257,7 @@ public class BigqueryTransferPipeline implements Runnable {
 
 				// === merge upload and download into a single set of rows (outputs a table and
 				// also gives the rows back)
-				MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(pipe);
+				MergeUploadDownloadPipeline mergeUploadDownload = new MergeUploadDownloadPipeline(options, pipe);
 
 				mergeUploadDownload
 						.setDataStartDate(this.status.getDataStartDate())

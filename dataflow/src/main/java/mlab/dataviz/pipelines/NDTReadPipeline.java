@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.services.bigquery.model.TableCell;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.dataflow.sdk.Pipeline;
@@ -43,9 +42,6 @@ public class NDTReadPipeline implements Runnable {
 	private boolean runPipeline = false;
 	private BQPipelineRun pipelineRunRecord = null;
 	private static SimpleDateFormat dtf = new SimpleDateFormat(Formatters.TIMESTAMP);
-	
-	private String ndtStartDate;
-	private String ndtEndDate;
 
 	private String[] dates;
 
@@ -121,31 +117,32 @@ public class NDTReadPipeline implements Runnable {
 	 */
 	public synchronized String[] getDatesFromBQ() throws IOException {
 
+		// read date from our output table as A
+		// read max date from NDT as B
+		// if empty
+		// 		read min date from NDT as C
+		//		return {C, B}
+		// else
+		//		return {A, B}
+		
 		// read from one of our tables
-		String startDateRangeQuery = "select STRING(max(test_date)) as min_test_date from "
-				+ this.config.getStartDateFromTable();
+		String startDateRangeQuery = "select STRFTIME_UTC_USEC(max(test_date), \"%Y-%m-%d %H:%M:%S\") as max_test_date from "
+				+ this.config.getOutputTable();
 
 		// read from NDT
-		String endDateRangeQuery = "SELECT STRING(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(max(web100_log_entry.log_time * INTEGER(POW(10, 6))))))"
+		String endDateRangeQuery = "SELECT STRFTIME_UTC_USEC(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(max(web100_log_entry.log_time * INTEGER(POW(10, 6))))), \"%Y-%m-%d %H:%M:%S\")"
 				+ " as max_test_date FROM " + this.config.getEndDateFromTable();
 
 		BigQueryJob bqj = new BigQueryJob(this.options.getProject());
-		java.util.List<TableRow> startRows;
+	
 		String[] timestamps = new String[2];
 		boolean seekNDT = false;
 		try {
-			startRows = bqj.executeQuery(startDateRangeQuery);
-			for (TableRow row : startRows) {
-				for (TableCell field : row.getF()) {
-					if (!field.containsValue(null)) {
-						// for some reason even when the value is null, the above test doesn't work
-						// and we have a ClassCastException. It's been added to the catch, but surely
-						// it should be something different here.
-						timestamps[0] = (String) field.getV();
-					} else {
-						seekNDT = true;
-					}
-				}
+			String startDate = bqj.executeQueryForValue(startDateRangeQuery);
+			if (startDate.length() == 0) {
+				seekNDT = true;
+			} else {
+				timestamps[0] = startDate;
 			}
 		} catch (GoogleJsonResponseException | ClassCastException e) {
 			// our table doesn't exist yet.
@@ -153,25 +150,14 @@ public class NDTReadPipeline implements Runnable {
 		}
 
 		if (seekNDT) {
-			startDateRangeQuery = "SELECT STRING(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(min(web100_log_entry.log_time * INTEGER(POW(10, 6))))))"
+			startDateRangeQuery = "SELECT STRFTIME_UTC_USEC(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(min(web100_log_entry.log_time * INTEGER(POW(10, 6))))),  \"%Y-%m-%d %H:%M:%S\")"
 					+ " as min_test_date FROM " + this.config.getEndDateFromTable();
-			startRows = bqj.executeQuery(startDateRangeQuery);
-
-			for (TableRow row : startRows) {
-				for (TableCell field : row.getF()) {
-					timestamps[0] = (String) field.getV();
-				}
-			}
+			timestamps[0] = bqj.executeQueryForValue(startDateRangeQuery);
 		}
 
-		java.util.List<TableRow> endRows = bqj.executeQuery(endDateRangeQuery);
+		timestamps[1] = bqj.executeQueryForValue(endDateRangeQuery);
 
-		for (TableRow row : endRows) {
-			for (TableCell field : row.getF()) {
-				timestamps[1] = (String) field.getV();
-			}
-		}
-		LOG.info("Bigquery-based timestamps comptued as: " + timestamps[0] + "-" + timestamps[1]);
+		LOG.info("NDT pipeline date range comptued as: " + timestamps[0] + "-" + timestamps[1]);
 		return timestamps;
 	}
 

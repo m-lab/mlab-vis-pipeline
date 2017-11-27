@@ -23,7 +23,7 @@ jobs:
   include:
     # Run build
     - stage: compile
-      script: ./build_cluster.sh -m sandbox -d 0 -t
+      script: ./build_cluster.sh -m sandbox -d 0 -t 1
 
     # Run tests
     - stage: test

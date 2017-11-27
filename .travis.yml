@@ -23,6 +23,6 @@ jobs:
   include:
     # Run test
     - stage: test
-      script: ./run_in_travis.sh
+      script: ./build_cluster.sh -m sandbox -d 0 -t 1
 
 

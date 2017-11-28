@@ -6,13 +6,17 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
+import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
+import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
 
 import io.prometheus.client.Gauge;
 import mlab.dataviz.entities.BTPipelineRun;
@@ -27,7 +31,7 @@ import mlab.dataviz.util.Formatters;
 public class BigtableTransferPipeline implements Runnable {
 	private static final Logger LOG = LoggerFactory.getLogger(BigtableTransferPipeline.class);
 	private static final String BIGTABLE_CONFIG_DIR = "./data/bigtable/";
-	private static final boolean RUN_IN_PARALLEL = true;
+	private static final boolean RUN_IN_PARALLEL = false;
 
 	private String[] args;
 	private Gauge duration;
@@ -90,9 +94,11 @@ public class BigtableTransferPipeline implements Runnable {
 
 	@Override
 	public void run() {
-
+		Pipeline pipe = null;
+		
 		try {
 			// check to see if we already have a pipeline running.
+			LOG.info("Bigtable pipeline running in parallel: " + RUN_IN_PARALLEL);
 			BTPipelineRun lastRun = this.datastore.getLastBTPipelineRun();
 
 			if (lastRun == null || lastRun.isDone()) {
@@ -101,8 +107,12 @@ public class BigtableTransferPipeline implements Runnable {
 				this.status = createRunRecord();
 
 				BigtableTransferPipelineOptions options = getOptions();
-				Pipeline p = Pipeline.create(options);
-
+				
+				if (!RUN_IN_PARALLEL) {
+					pipe = Pipeline.create(options);
+					CloudBigtableIO.initializeForWrite(pipe);
+				}
+				
 				int test = options.getTest();
 				String configPrefix = options.getConfigPrefix();
 				String configSuffix = options.getConfigSuffix();
@@ -113,7 +123,7 @@ public class BigtableTransferPipeline implements Runnable {
 				if (configSuffix.length() == 0) {
 					configSuffix = ".json";
 				}
-
+				
 				ArrayList<Thread> threads = new ArrayList<Thread>();
 				for (File f : listOfFiles) {
 					if (f.isFile() && f.getName().endsWith(configSuffix)) {
@@ -122,17 +132,21 @@ public class BigtableTransferPipeline implements Runnable {
 							LOG.debug("Running bigtable transfer for file: " + configFilename);
 							BigtablePipeline btPipeline;
 							if (RUN_IN_PARALLEL) {
+								// parallel, so build and kick off threads.
 								btPipeline = new BigtablePipeline(this.args, configFilename);
+								if (test == 0) {
+									Thread btPipeThread = new Thread(btPipeline);
+									btPipeThread.start();
+									threads.add(btPipeThread);
+								} else {
+									LOG.info("Test mode, not running pipeline for " + configFilename);
+								}
+								
 							} else {
-								btPipeline = new BigtablePipeline(p, configFilename);
-							}
-
-							if (test == 0) {
-								Thread btPipeThread = new Thread(btPipeline);
-								btPipeThread.start();
-								threads.add(btPipeThread);
-							} else {
-								LOG.info("Test mode, not running pipeline for " + configFilename);
+								
+								// not threaded, so just apply the transforms to the pipe and don't execute.
+								btPipeline = new BigtablePipeline(pipe, configFilename);
+								btPipeline.run();
 							}
 						}
 					}
@@ -140,13 +154,23 @@ public class BigtableTransferPipeline implements Runnable {
 
 				// once all jobs have been queued up, wait for them all
 				if (test == 0) {
-					for (Thread t : threads) {
-						try {
-							t.join();
-						} catch (InterruptedException ex) {
-							LOG.error(ex.getMessage());
-							ex.printStackTrace();
+					if (RUN_IN_PARALLEL) {
+						for (Thread t : threads) {
+							try {
+								t.join();
+							} catch (InterruptedException ex) {
+								LOG.error(ex.getMessage());
+								ex.printStackTrace();
+							}
 						}
+					} else if (pipe != null) {
+						DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();
+			            try {
+			                result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+			            } catch (InterruptedException | IOException e) {
+			                LOG.error(e.getMessage());
+			                e.printStackTrace();
+			            }
 					}
 				}
 

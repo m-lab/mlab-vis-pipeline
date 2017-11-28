@@ -35,6 +35,7 @@ public class BigtablePipeline implements Runnable {
     private BigtableConfig btConfig;
     private BigtableTransferPipelineOptions options;
     private Pipeline pipe;
+    private boolean parallel;
 
     /**
      * @constructor
@@ -57,6 +58,7 @@ public class BigtablePipeline implements Runnable {
 
         // create pipeline
         this.pipe = Pipeline.create(this.options);
+        this.parallel = true;
     }
 
     /**
@@ -73,6 +75,7 @@ public class BigtablePipeline implements Runnable {
         this.btConfig = BigtableConfig.fromJSONFile(configFileName);
 
         this.options = (BigtableTransferPipelineOptions) this.pipe.getOptions();
+        this.parallel = false;
     }
 
     /**
@@ -84,7 +87,6 @@ public class BigtablePipeline implements Runnable {
 
         // TODO: move this to the bigtable config class?
         if (queryString == null) {
-            LOG.info("Using Queryfile");
             Object[] queryParams = { "[" + this.options.getProject() + ":" + btConfig.getBigQueryTable() + "]" };
             QueryBuilder qb = new QueryBuilder(btConfig.getBigQueryQueryFile(), queryParams);
             queryString = qb.getQuery();
@@ -93,7 +95,7 @@ public class BigtablePipeline implements Runnable {
         return queryString;
     }
 
-    public boolean doesSourceTableExist() throws IOException {
+    private boolean doesSourceTableExist() throws IOException {
     		// check to see if table exists. If it doesn't, don't run.
         // only relevant the first time.
 		String dataset = this.btConfig.getBigQueryTable().split("\\.")[0];
@@ -118,23 +120,18 @@ public class BigtablePipeline implements Runnable {
             if (!doesSourceTableExist()) {
             		LOG.info("Source table not created yet. Skipping " + this.btConfig.getBigtableTable());
             } else {
-	            LOG.info("Reading data from BigQuery query");
 	            // Formally called this.pipeline.apply.
-	            PCollection<TableRow> bigQueryCollection = pipe
+	            PCollection<TableRow> bigQueryCollection = this.pipe
 	                    .apply(BigQueryIO.Read.named(btConfig.getBigtableTable() + " BQ Read").fromQuery(queryString));
 	
-	            CloudBigtableIO.initializeForWrite(pipe);
-	
-	            LOG.info("Transferring from BigQuery to Bigtable");
-	            LOG.info("Bigtable Project ID: " + this.options.getProject());
-	            LOG.info("Bigtable Instance ID: " + this.options.getInstance());
-	            LOG.info("Bigtable Table: " + btConfig.getBigtableTable());
+	            LOG.info("Setting up bigtable job: " + btConfig.getBigtableTable());
 	
 	            // create configuration for writing to the Bigtable
 	            CloudBigtableScanConfiguration config = new CloudBigtableScanConfiguration.Builder()
 	                    .withProjectId(this.options.getProject())
 	                    .withInstanceId(this.options.getInstance())
-	                    .withTableId(btConfig.getBigtableTable()).build();
+	                    .withTableId(btConfig.getBigtableTable())
+	                    .build();
 	
 	            // convert from TableRow objects to hbase compatible mutations (Put)
 	            PCollection<Mutation> hbasePuts = bigQueryCollection.apply(
@@ -144,12 +141,15 @@ public class BigtablePipeline implements Runnable {
 	            // write the mutations to Bigtable
 	            hbasePuts.apply(CloudBigtableIO.writeToTable(config));
 	
-	            DataflowPipelineJob result = (DataflowPipelineJob) this.pipe.run();
-	            try {
-	                result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
-	            } catch (InterruptedException e) {
-	                LOG.error(e.getMessage());
-	                e.printStackTrace();
+	            // only execute the pipeline if we are doing this in parallel.
+	            if (this.parallel) {
+		            DataflowPipelineJob result = (DataflowPipelineJob) this.pipe.run();
+		            try {
+		                result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+		            } catch (InterruptedException e) {
+		                LOG.error(e.getMessage());
+		                e.printStackTrace();
+		            }
 	            }
             }
         } catch (IOException e) {

@@ -124,17 +124,17 @@ public class NDTReadPipeline implements Runnable {
 		//		return {C, B}
 		// else
 		//		return {A, B}
-		
+
 		// read from one of our tables
 		String startDateRangeQuery = "select STRFTIME_UTC_USEC(max(test_date), \"%Y-%m-%d %H:%M:%S\") as max_test_date from "
 				+ this.config.getOutputTable();
 
 		// read from NDT
-		String endDateRangeQuery = "SELECT STRFTIME_UTC_USEC(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(max(web100_log_entry.log_time * INTEGER(POW(10, 6))))), \"%Y-%m-%d %H:%M:%S\")"
-				+ " as max_test_date FROM " + this.config.getEndDateFromTable();
+		String endDateRangeQuery = "#standardSQL\n SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(max(web100_log_entry.log_time) * 1000000), HOUR, 'UTC'))"
+				+ " as max_test_date FROM " + this.config.getEndDateFromTable() + ";";
 
 		BigQueryJob bqj = new BigQueryJob(this.options.getProject());
-	
+
 		String[] timestamps = new String[2];
 		boolean seekNDT = false;
 		try {
@@ -150,8 +150,8 @@ public class NDTReadPipeline implements Runnable {
 		}
 
 		if (seekNDT) {
-			startDateRangeQuery = "SELECT STRFTIME_UTC_USEC(USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(min(web100_log_entry.log_time * INTEGER(POW(10, 6))))),  \"%Y-%m-%d %H:%M:%S\")"
-					+ " as min_test_date FROM " + this.config.getEndDateFromTable();
+			startDateRangeQuery = "#standardSQL\n SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(min(web100_log_entry.log_time) * 1000000), HOUR, 'UTC'))"
+					+ " as min_test_date FROM " + this.config.getEndDateFromTable() + ";";
 			timestamps[0] = bqj.executeQueryForValue(startDateRangeQuery);
 		}
 
@@ -171,7 +171,7 @@ public class NDTReadPipeline implements Runnable {
 	 *
 	 * @throws IOException
 	 * @throws SQLException
-	 * @throws GeneralSecurityException 
+	 * @throws GeneralSecurityException
 	 */
 	private synchronized String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException {
 
@@ -200,12 +200,12 @@ public class NDTReadPipeline implements Runnable {
 		// previous runs or we will just both dates automatically.
 		} else {
 			LOG.info(">>> Looking for last pipeline run in datastore");
-			
+
 			dates = getDatesFromBQ();
 
 			BQPipelineRunDatastore d = new BQPipelineRunDatastore();
 			BQPipelineRun lastRun = d.getLastBQPipelineRun(this.pipelineRunRecord.getType());
-			
+
 			if (lastRun != null) {
 				if (lastRun.getDataEndDate().length() > 0) {
 					this.pipelineRunRecord.setDataStartDate(lastRun.getDataEndDate()); // our last run
@@ -220,7 +220,7 @@ public class NDTReadPipeline implements Runnable {
 			this.pipelineRunRecord.save();
 			dates = this.pipelineRunRecord.getDates();
 		}
-		
+
 		LOG.info("Dates computed: " + dates[0] + "-" + dates[1]);
 		return dates;
 	}

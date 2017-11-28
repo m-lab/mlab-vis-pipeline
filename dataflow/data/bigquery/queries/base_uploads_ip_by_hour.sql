@@ -1,4 +1,6 @@
--- Finds upload median grouped by day & hour and client_ip based on
+#standardSQL
+
+-- Finds upload median grouped by day and client_ip based on
 -- passed in timestamps.
 --
 -- Note this assumes that IPs are masked with 0xffffffc0
@@ -15,15 +17,15 @@ SELECT
   count(*) AS upload_test_count,
 
   -- General Information
-  USEC_TO_TIMESTAMP(UTC_USEC_TO_HOUR(web100_log_entry.log_time * INTEGER(POW(10, 6)))) AS test_date,
+  FORMAT_TIMESTAMP("%F %X", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), HOUR, 'UTC')) as test_date,
 
- -- Client Information
+  -- Client Information
   web100_log_entry.connection_spec.remote_ip AS client_ip,
-  TO_BASE64(PARSE_PACKED_IP(web100_log_entry.connection_spec.remote_ip)) as client_ip_base64,
-  -- IP Family: 10 = IPv6, 2 = IPv4
-  case when PARSE_IP(web100_log_entry.connection_spec.remote_ip) is null then 10 else 2 end as client_ip_family,
+  TO_BASE64(NET.IP_FROM_STRING(web100_log_entry.connection_spec.remote_ip)) as client_ip_base64,
+  -- IP Family: 1 = IPv6, 0 = IPv4
+  connection_spec.client_af as client_ip_family,
   connection_spec.client_geolocation.city AS client_city,
-  connection_spec.client_geolocation.region AS client_region_code,
+  connection_spec.client_geolocation.region as client_region_code,
   connection_spec.client_geolocation.continent_code as client_continent_code,
   connection_spec.client_geolocation.country_code AS client_country_code,
   connection_spec.client_geolocation.latitude AS client_latitude,
@@ -31,9 +33,9 @@ SELECT
 
   -- Server Information
   web100_log_entry.connection_spec.local_ip AS server_ip,
-  TO_BASE64(PARSE_PACKED_IP(web100_log_entry.connection_spec.local_ip)) as server_ip_base64,
-  -- IP Family: 10 = IPv6, 2 = IPv4
-  case when PARSE_IP(web100_log_entry.connection_spec.local_ip) is null then 10 else 2 end as server_ip_family,
+  TO_BASE64(NET.IP_FROM_STRING(web100_log_entry.connection_spec.local_ip)) as server_ip_base64,
+  -- IP Family: 1 = IPv6, 0 = IPv4
+  web100_log_entry.connection_spec.local_af as server_ip_family,
   connection_spec.server_geolocation.city AS server_city,
   connection_spec.server_geolocation.region AS server_region_code,
   connection_spec.server_geolocation.continent_code as server_continent_code,
@@ -41,22 +43,20 @@ SELECT
   connection_spec.server_geolocation.latitude AS server_latitude,
   connection_spec.server_geolocation.longitude AS server_longitude,
 
-  nth(51, quantiles(8 * (web100_log_entry.snap.HCThruOctetsReceived /
-         web100_log_entry.snap.Duration), 101)) AS upload_speed_mbps
+  APPROX_QUANTILES(8 * (web100_log_entry.snap.HCThruOctetsReceived /
+         web100_log_entry.snap.Duration), 101)[SAFE_ORDINAL(51)] AS upload_speed_mbps
 FROM
-  [plx.google:m_lab.ndt.all]
+  `measurement-lab.public.ndt_all_valid`
 WHERE
   -- Limit to within a time region
-  USEC_TO_TIMESTAMP(UTC_USEC_TO_HOUR(web100_log_entry.log_time * INTEGER(POW(10, 6)))) >= "{0}"
-  AND USEC_TO_TIMESTAMP(UTC_USEC_TO_HOUR(web100_log_entry.log_time * INTEGER(POW(10, 6)))) < "{1}"
+  TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), DAY, 'UTC') >= PARSE_TIMESTAMP("%F %X", "{0}")
+  AND TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), DAY, 'UTC') < PARSE_TIMESTAMP("%F %X", "{1}")
 
   AND web100_log_entry.snap.Duration IS NOT NULL
   AND connection_spec.data_direction IS NOT NULL
-  AND project = 0
-  AND blacklist_flags = 0
   AND connection_spec.data_direction = 0
   AND web100_log_entry.snap.HCThruOctetsReceived >= 8192
-  AND (web100_log_entry.snap.State == 1
+  AND (web100_log_entry.snap.State = 1
     OR (web100_log_entry.snap.State >= 5
         AND web100_log_entry.snap.State <= 11))
   AND web100_log_entry.snap.Duration >= 9000000

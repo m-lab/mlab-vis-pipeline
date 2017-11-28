@@ -20,7 +20,7 @@ public class PipelineConfigTest {
 	@Test
 	public void testFetchingProperties() {
 		PipelineConfig pc = new PipelineConfig(filename, configPropName);
-		assertEquals(pc.getEndDateFromTable(), "[plx.google:m_lab.ndt.all]");
+		assertEquals(pc.getEndDateFromTable(), "`measurement-lab.public.ndt_all_valid`");
 		assertEquals(pc.getWithISPTable(), "data_viz.all_ip_by_hour");
 		assertEquals(pc.getWithISPTableSchema(), "./data/bigquery/schemas/all_ip.json");
 	}

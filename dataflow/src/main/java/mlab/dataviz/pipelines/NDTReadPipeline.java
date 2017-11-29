@@ -126,11 +126,11 @@ public class NDTReadPipeline implements Runnable {
 		//		return {A, B}
 
 		// read from one of our tables
-		String startDateRangeQuery = "select STRFTIME_UTC_USEC(max(test_date), \"%Y-%m-%d %H:%M:%S\") as max_test_date from "
+		String startDateRangeQuery = "select STRFTIME_UTC_USEC(max(test_date), \"%F %X\") as max_test_date from "
 				+ this.config.getOutputTable();
 
 		// read from NDT
-		String endDateRangeQuery = "#standardSQL\n SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(max(web100_log_entry.log_time) * 1000000), HOUR, 'UTC'))"
+		String endDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(max(web100_log_entry.log_time) * 1000000), HOUR, 'UTC'))"
 				+ " as max_test_date FROM " + this.config.getEndDateFromTable() + ";";
 
 		BigQueryJob bqj = new BigQueryJob(this.options.getProject());
@@ -150,12 +150,12 @@ public class NDTReadPipeline implements Runnable {
 		}
 
 		if (seekNDT) {
-			startDateRangeQuery = "#standardSQL\n SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(min(web100_log_entry.log_time) * 1000000), HOUR, 'UTC'))"
+			startDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(min(web100_log_entry.log_time) * 1000000), HOUR, 'UTC'))"
 					+ " as min_test_date FROM " + this.config.getEndDateFromTable() + ";";
-			timestamps[0] = bqj.executeQueryForValue(startDateRangeQuery);
+			timestamps[0] = bqj.executeQueryForValue(startDateRangeQuery, false);
 		}
 
-		timestamps[1] = bqj.executeQueryForValue(endDateRangeQuery);
+		timestamps[1] = bqj.executeQueryForValue(endDateRangeQuery, false);
 
 		LOG.info("NDT pipeline date range comptued as: " + timestamps[0] + "-" + timestamps[1]);
 		return timestamps;
@@ -273,6 +273,7 @@ public class NDTReadPipeline implements Runnable {
 			PCollection<TableRow> rows = this.pipeline.apply(
 					BigQueryIO.Read
 					.named("Running query " + normalizedQueryFile)
+					.usingStandardSql()
 					.fromQuery(qb.getQuery()));
 
 			rows.apply(BigQueryIO.Write

@@ -129,8 +129,8 @@ public class MergeUploadDownloadPipeline {
 		String dateMaxQueryUploadResult;
 		String dateMaxQueryMergeResult = "";
 
-		String queryBaseMin = "select STRFTIME_UTC_USEC(min(test_date), \"%Y-%m-%d %H:%M:%S\") as date from ";
-		String queryBaseMax = "select STRFTIME_UTC_USEC(max(test_date), \"%Y-%m-%d %H:%M:%S\") as date from ";
+		String queryBaseMin = "select STRFTIME_UTC_USEC(min(test_date), \"%F %X\") as date from ";
+		String queryBaseMax = "select STRFTIME_UTC_USEC(max(test_date), \"%F %X\") as date from ";
 
 		String dateMinQueryDownload = queryBaseMin + this.downloadTable;
 		String dateMinQueryUpload = queryBaseMin + this.uploadTable;

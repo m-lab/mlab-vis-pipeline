@@ -97,14 +97,34 @@ public class BigQueryJob {
 	
 	/**
 	 * Executes a query when the known response is a single string value.
+	 * By default uses legacy SQL.
 	 * @param querySql
 	 * @return response String value
 	 * @throws IOException
 	 */
 	public String executeQueryForValue(String querySql) throws IOException {
+		return executeQueryForValue(querySql, true);
+	}
+	
+	/**
+	 * Executes a query when the known response is a single string value.
+	 * @param querySql
+	 * @param legacySQL let's you override legacy or standard.
+	 * @return response String value
+	 * @throws IOException
+	 */
+	public String executeQueryForValue(String querySql, boolean legacySql) throws IOException {
+		
+		QueryRequest qr = new QueryRequest();
+		if (legacySql) {
+			qr.setUseLegacySql(true);
+		} else {
+			qr.setUseLegacySql(false);
+		}
+		qr.setQuery(querySql);
+		qr.setTimeoutMs(null);
 		QueryResponse query = bigquery.jobs()
-				.query(projectId,
-						new QueryRequest().setQuery(querySql))
+				.query(projectId, qr)
 				.execute();
 
 		GetQueryResultsResponse queryResult = bigquery.jobs()
@@ -128,6 +148,10 @@ public class BigQueryJob {
 					}
 				}
 			}
+		} catch (NullPointerException e) {
+			LOG.error(e.getMessage());
+			LOG.error("query: " + querySql);
+			throw e;
 		} catch (ClassCastException e) {
 			e.printStackTrace();
 			return null;

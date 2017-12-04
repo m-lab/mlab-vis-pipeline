@@ -136,12 +136,12 @@ public class MergeUploadDownloadPipeline {
 		String dateMinQueryUpload = queryBaseMin + this.uploadTable;
 		String dateMaxQueryDownload = queryBaseMax + this.downloadTable;
 		String dateMaxQueryUpload = queryBaseMax + this.uploadTable;
-		String dateMaxQueryMerge = queryBaseMax + this.outputTable;
+		String dateMaxQueryMerge = queryBaseMax + "[" + this.outputTable + "]";
 
 		// sort all dates
 		SortedSet<Date> sortedSet = new TreeSet<Date>();
 		try {
-			BigQueryJob bqj = new BigQueryJob(this.options.getProject());
+			BigQueryJob bqj = new BigQueryJob();
 
 			// merge table
 			boolean found = true;
@@ -199,10 +199,7 @@ public class MergeUploadDownloadPipeline {
 			};
 
 			// parse as dates
-		} catch (IOException e) {
-			LOG.error(e.getMessage());
-			e.printStackTrace();
-		} catch (ParseException e) {
+		} catch (IOException | ParseException | InterruptedException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}
@@ -255,7 +252,7 @@ public class MergeUploadDownloadPipeline {
 		String outputSchema = "./data/bigquery/schemas/merged_all_ip.json";
 		String downloadTable = "[mlab-staging:data_viz.base_downloads_ip_by_day]";
 		String uploadTable = "[mlab-staging:data_viz.base_uploads_ip_by_day]";
-		String outputTable = "[mlab-staging:data_viz.base_all_ip_by_day]";
+		String outputTable = "mlab-staging:data_viz.all_ip_by_day";
 
 		HistoricPipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(HistoricPipelineOptions.class);
 

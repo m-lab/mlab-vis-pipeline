@@ -108,11 +108,17 @@
 		</dependency>
 
 		<dependency>
+  			<groupId>com.google.cloud</groupId>
+  			<artifactId>google-cloud-bigquery</artifactId>
+  			<version>0.30.0-beta</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>com.google.cloud.dataflow</groupId>
 			<artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
 			<version>1.9.1</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>com.google.cloud.datastore</groupId>
 			<artifactId>datastore-v1-protos</artifactId>

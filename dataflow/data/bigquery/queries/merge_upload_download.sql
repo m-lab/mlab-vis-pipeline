@@ -1,4 +1,3 @@
-
 SELECT
   IFNULL(download.test_date, upload.test_date) as test_date,
 
@@ -68,7 +67,7 @@ ON
   download.server_latitude = upload.server_latitude AND
   download.server_longitude = upload.server_longitude)
 WHERE
-  download.test_date > "{2}" AND
-  download.test_date < "{3}" AND
-  upload.test_date > "{2}" AND
-  upload.test_date < "{3}"
+  download.test_date >= "{2}" AND
+  download.test_date <= "{3}" AND
+  upload.test_date >= "{2}" AND
+  upload.test_date <= "{3}"

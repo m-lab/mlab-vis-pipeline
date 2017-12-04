@@ -114,8 +114,9 @@ public class NDTReadPipeline implements Runnable {
 	 * @todo change the test_date to parse_date when that data gets there.
 	 * @return
 	 * @throws IOException
+	 * @throws InterruptedException 
 	 */
-	public synchronized String[] getDatesFromBQ() throws IOException {
+	public synchronized String[] getDatesFromBQ() throws IOException, InterruptedException {
 
 		// read date from our output table as A
 		// read max date from NDT as B
@@ -133,7 +134,7 @@ public class NDTReadPipeline implements Runnable {
 		String endDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(max(web100_log_entry.log_time) * 1000000), HOUR, 'UTC'))"
 				+ " as max_test_date FROM " + this.config.getEndDateFromTable() + ";";
 
-		BigQueryJob bqj = new BigQueryJob(this.options.getProject());
+		BigQueryJob bqj = new BigQueryJob();
 
 		String[] timestamps = new String[2];
 		boolean seekNDT = false;
@@ -144,7 +145,7 @@ public class NDTReadPipeline implements Runnable {
 			} else {
 				timestamps[0] = startDate;
 			}
-		} catch (GoogleJsonResponseException | ClassCastException e) {
+		} catch (GoogleJsonResponseException | ClassCastException | InterruptedException e) {
 			// our table doesn't exist yet.
 			seekNDT = true;
 		}
@@ -172,8 +173,9 @@ public class NDTReadPipeline implements Runnable {
 	 * @throws IOException
 	 * @throws SQLException
 	 * @throws GeneralSecurityException
+	 * @throws InterruptedException 
 	 */
-	private synchronized String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException {
+	private synchronized String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException, InterruptedException {
 
 		// if we already have the dates from a previous run, use them.
 		// since this pipeline is used twice, once for daily and one for hourly
@@ -293,15 +295,9 @@ public class NDTReadPipeline implements Runnable {
 				LOG.info("will not run");
 			}
 
-		} catch (IOException |  InterruptedException e) {
+		} catch (IOException |  InterruptedException | SQLException | GeneralSecurityException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();
-		} catch (SQLException e) {
-			LOG.error(e.getMessage());
-			e.printStackTrace();
-		} catch (GeneralSecurityException e1) {
-			LOG.error(e1.getMessage());
-			e1.printStackTrace();
 		}
 	}
 }

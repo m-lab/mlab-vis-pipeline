@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
+import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
 import com.google.cloud.bigtable.dataflow.CloudBigtableScanConfiguration;
 import com.google.cloud.dataflow.sdk.Pipeline;
@@ -95,15 +96,15 @@ public class BigtablePipeline implements Runnable {
         return queryString;
     }
 
-    private boolean doesSourceTableExist() throws IOException {
+    private boolean doesSourceTableExist() throws IOException, InterruptedException {
     		// check to see if table exists. If it doesn't, don't run.
         // only relevant the first time.
 		String dataset = this.btConfig.getBigQueryTable().split("\\.")[0];
 		String table = this.btConfig.getBigQueryTable().split("\\.")[1];
 		String query = "SELECT size_bytes FROM " + dataset + ".__TABLES__ WHERE table_id='" + table + "'";
         
-        BigQueryJob bqj = new BigQueryJob(this.options.getProject());
-        java.util.List<TableRow> results = bqj.executeQuery(query);
+        BigQueryJob bqj = new BigQueryJob();
+        Iterable<FieldValueList> results = bqj.executeQuery(query);
         
         if (results == null) {
         		return false;
@@ -152,7 +153,7 @@ public class BigtablePipeline implements Runnable {
 		            }
 	            }
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             LOG.error(e.getMessage());
             e.printStackTrace();
         }

@@ -24,6 +24,7 @@ import mlab.dataviz.dofn.ExtractZoneKeynameFn;
 import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
 import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.Schema;
+
 public class AddLocalTimePipeline extends BasePipeline {
 	private static final Logger LOG = LoggerFactory.getLogger(AddLocalTimePipeline.class);
 

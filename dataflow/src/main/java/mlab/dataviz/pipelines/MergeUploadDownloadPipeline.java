@@ -148,7 +148,7 @@ public class MergeUploadDownloadPipeline {
 			boolean found = true;
 			try {
 				dateMaxQueryMergeResult = bqj.executeQueryForValue(dateMaxQueryMerge);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// not found
 				found = false;
 			}

@@ -25,11 +25,14 @@ SELECT
   -- General Information
   FORMAT_TIMESTAMP("%F %X", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), HOUR, "UTC")) as test_date,
 
-  -- Client Information
+ -- Client Information
   web100_log_entry.connection_spec.remote_ip AS client_ip,
   TO_BASE64(NET.IP_FROM_STRING(web100_log_entry.connection_spec.remote_ip)) as client_ip_base64,
   -- IP Family: 1 = IPv6, 0 = IPv4
-  connection_spec.client_af as client_ip_family,
+  (CASE
+    WHEN REGEXP_CONTAINS(web100_log_entry.connection_spec.remote_ip, ":") THEN 1
+    ELSE 0
+  END) as client_ip_family,
   connection_spec.client_geolocation.city AS client_city,
   connection_spec.client_geolocation.region as client_region_code,
   connection_spec.client_geolocation.continent_code as client_continent_code,
@@ -41,7 +44,10 @@ SELECT
   web100_log_entry.connection_spec.local_ip AS server_ip,
   TO_BASE64(NET.IP_FROM_STRING(web100_log_entry.connection_spec.local_ip)) as server_ip_base64,
   -- IP Family: 1 = IPv6, 0 = IPv4
-  web100_log_entry.connection_spec.local_af as server_ip_family,
+  (CASE
+    WHEN REGEXP_CONTAINS(web100_log_entry.connection_spec.local_ip, ":") THEN 1
+    ELSE 0
+  END) as server_ip_family,
   connection_spec.server_geolocation.city AS server_city,
   connection_spec.server_geolocation.region AS server_region_code,
   connection_spec.server_geolocation.continent_code as server_continent_code,

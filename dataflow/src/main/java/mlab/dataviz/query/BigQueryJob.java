@@ -3,6 +3,8 @@ package mlab.dataviz.query;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.FieldValueList;
@@ -11,6 +13,7 @@ import com.google.cloud.bigquery.QueryResponse;
 import com.google.cloud.bigquery.QueryResult;
 import com.google.cloud.bigquery.BigQuery.QueryOption;
 import com.google.cloud.bigquery.BigQuery.QueryResultsOption;
+import com.google.cloud.bigquery.BigQueryException;
 
 public class BigQueryJob {
 
@@ -64,7 +67,7 @@ public class BigQueryJob {
 	 * @throws IOException
 	 * @throws InterruptedException 
 	 */
-	public String executeQueryForValue(String querySql) throws IOException, InterruptedException {
+	public String executeQueryForValue(String querySql) throws IOException, InterruptedException, GoogleJsonResponseException, BigQueryException {
 		return executeQueryForValue(querySql, true);
 	}
 	
@@ -76,7 +79,7 @@ public class BigQueryJob {
 	 * @throws IOException
 	 * @throws InterruptedException 
 	 */
-	public String executeQueryForValue(String querySql, boolean legacySql) throws IOException, InterruptedException {
+	public String executeQueryForValue(String querySql, boolean legacySql) throws IOException, InterruptedException, GoogleJsonResponseException, BigQueryException {
 		
 		try {
 			// Create a query request
@@ -99,7 +102,7 @@ public class BigQueryJob {
 			}
 			
 			return val;
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			LOG.error(e.getMessage());
 			System.out.println("Error in query: " + querySql);
 			throw e;

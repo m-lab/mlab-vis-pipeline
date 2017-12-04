@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 
@@ -199,7 +200,7 @@ public class MergeUploadDownloadPipeline {
 			};
 
 			// parse as dates
-		} catch (IOException | ParseException | InterruptedException e) {
+		} catch (IOException | ParseException | InterruptedException | BigQueryException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}

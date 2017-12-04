@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.PipelineResult.State;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
@@ -116,7 +117,7 @@ public class NDTReadPipeline implements Runnable {
 	 * @throws IOException
 	 * @throws InterruptedException 
 	 */
-	public synchronized String[] getDatesFromBQ() throws IOException, InterruptedException {
+	public synchronized String[] getDatesFromBQ() throws IOException, InterruptedException, BigQueryException {
 
 		// read date from our output table as A
 		// read max date from NDT as B
@@ -145,7 +146,7 @@ public class NDTReadPipeline implements Runnable {
 			} else {
 				timestamps[0] = startDate;
 			}
-		} catch (GoogleJsonResponseException | ClassCastException | InterruptedException e) {
+		} catch (GoogleJsonResponseException | ClassCastException | InterruptedException | BigQueryException e) {
 			// our table doesn't exist yet.
 			seekNDT = true;
 		}
@@ -175,7 +176,7 @@ public class NDTReadPipeline implements Runnable {
 	 * @throws GeneralSecurityException
 	 * @throws InterruptedException 
 	 */
-	private synchronized String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException, InterruptedException {
+	private synchronized String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException, InterruptedException, BigQueryException {
 
 		// if we already have the dates from a previous run, use them.
 		// since this pipeline is used twice, once for daily and one for hourly
@@ -295,7 +296,7 @@ public class NDTReadPipeline implements Runnable {
 				LOG.info("will not run");
 			}
 
-		} catch (IOException |  InterruptedException | SQLException | GeneralSecurityException e) {
+		} catch (IOException |  InterruptedException | SQLException | GeneralSecurityException | BigQueryException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}

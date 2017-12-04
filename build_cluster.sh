@@ -86,7 +86,8 @@ if [ $PUSH == 1 ] && [ -n "${KEY_FILE}" ]; then
   # except these, because we need to know the specific container name.
   mkdir -p deploy-build/k8s/
   cp templates/k8s/configmap.yaml deploy-build/k8s/
-  cp templates/k8s/deployment.yaml deploy-build/k8s/
+  cp templates/k8s/deployment_bq.yaml deploy-build/k8s/
+  cp templates/k8s/deployment_bt.yaml deploy-build/k8s/
 
   ./travis/substitute_values.sh deploy-build/k8s/ \
     CONTAINER_NAME ${CONTAINER_NAME} \

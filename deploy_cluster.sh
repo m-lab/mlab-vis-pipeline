@@ -1,9 +1,8 @@
 #!/bin/bash
 # Options:
 # -m environment
-# -b to build or not to build (1|0)
 # -t to trais or not to travis
-USAGE="KEY_FILE=pathto.json $0 -m production|staging|sandbox -b 1|0 -t"
+USAGE="KEY_FILE=pathto.json $0 -m production|staging|sandbox -t"
 
 set -e
 set -x
@@ -33,11 +32,10 @@ function git_is_dirty {
     [[ -n "${bits}" ]]
 }
 
-BUILD=0
 TRAVIS=0
 GIT_COMMIT=$(git log -n 1 | head -n 1 | awk '{print $2}')
 # Initialize correct environment variables based on type of deployment
-while getopts ":m:b:" opt; do
+while getopts ":m:" opt; do
   case $opt in
     m)
       echo "${OPTARG} environment"
@@ -66,12 +64,6 @@ while getopts ":m:b:" opt; do
       TRAVIS=1
       GIT_COMMIT=${TRAVIS_COMMIT}
       ;;
-    b)
-      echo "Also building jar and docker image"
-      if [[ "${OPTARG}" == "1" ]]; then
-        BUILD=1
-      fi
-      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
@@ -89,7 +81,8 @@ gcloud config set container/cluster ${K8_CLUSTER}
 
 # Update container
 kubectl apply -f deploy-build/k8s/configmap.yaml
-kubectl apply -f deploy-build/k8s/deployment.yaml
+kubectl apply -f deploy-build/k8s/deployment_bq.yaml
+kubectl apply -f deploy-build/k8s/deployment_bt.yaml
 
 echo "Your service is being created. You might need to wait a few minutes."
 echo "Run kubectl proxy to see the status."

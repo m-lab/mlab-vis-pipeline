@@ -218,10 +218,12 @@ public class MergeUploadDownloadPipeline {
 		LOG.debug("MergeUploadDownloadPipeline - Upload table: " + this.uploadTable);
 		LOG.debug("MergeUploadDownloadPipeline - Output table: " + this.outputTable);
 
-		// Build query string
-		String [] dates = getDates();
-		LOG.debug("Merge pipeline running on dates " + dates[0] + "-" + dates[1]);
-		Object[] queryParams = { downloadTable, uploadTable, dates[0], dates[1] };
+		// Build query string:
+		// Query will run on full tables and truncate original table each time.
+		// For now, that is fast enough.
+		// String [] dates = getDates();
+		// LOG.debug("Merge pipeline running on dates " + dates[0] + "-" + dates[1]);
+		Object[] queryParams = { downloadTable, uploadTable };
 
 		QueryBuilder qb = new QueryBuilder(queryFile, queryParams);
 		String queryString = qb.getQuery();
@@ -229,7 +231,10 @@ public class MergeUploadDownloadPipeline {
 
 		// set up the big query read
 		PCollection<TableRow> rows = this.p
-				.apply(BigQueryIO.Read.named("run query: " + queryName).fromQuery(queryString));
+				.apply(BigQueryIO.Read
+					.named("run query: " + queryName)
+					.usingStandardSql()
+					.fromQuery(queryString));
 
 		rows.apply(BigQueryIO.Write.named("write table " + this.outputTable)
 				.to(this.outputTable)

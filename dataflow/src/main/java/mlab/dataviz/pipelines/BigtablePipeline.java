@@ -102,46 +102,46 @@ public class BigtablePipeline implements Runnable {
 		String dataset = this.btConfig.getBigQueryTable().split("\\.")[0];
 		String table = this.btConfig.getBigQueryTable().split("\\.")[1];
 		String query = "SELECT size_bytes FROM " + dataset + ".__TABLES__ WHERE table_id='" + table + "'";
-        
+
         BigQueryJob bqj = new BigQueryJob();
         Iterable<FieldValueList> results = bqj.executeQuery(query);
-        
+
         if (results == null) {
         		return false;
         } else {
         		return true;
         }
     }
-    
+
     @Override
     public void run() {
         try {
             String queryString = this.getQueryString();
-            
+
             if (!doesSourceTableExist()) {
             		LOG.info("Source table not created yet. Skipping " + this.btConfig.getBigtableTable());
             } else {
 	            // Formally called this.pipeline.apply.
 	            PCollection<TableRow> bigQueryCollection = this.pipe
 	                    .apply(BigQueryIO.Read.named(btConfig.getBigtableTable() + " BQ Read").fromQuery(queryString));
-	
+
 	            LOG.info("Setting up bigtable job: " + btConfig.getBigtableTable());
-	
+
 	            // create configuration for writing to the Bigtable
 	            CloudBigtableScanConfiguration config = new CloudBigtableScanConfiguration.Builder()
 	                    .withProjectId(this.options.getProject())
 	                    .withInstanceId(this.options.getInstance())
-	                    .withTableId(btConfig.getBigtableTable())
+                        .withTableId(btConfig.getBigtableTable())
 	                    .build();
-	
+
 	            // convert from TableRow objects to hbase compatible mutations (Put)
 	            PCollection<Mutation> hbasePuts = bigQueryCollection.apply(
 	                    ParDo.named(btConfig.getBigtableTable() + " BT Transform")
 	                    .of(new TableRowToHBase(btConfig)));
-	
+
 	            // write the mutations to Bigtable
 	            hbasePuts.apply(CloudBigtableIO.writeToTable(config));
-	
+
 	            // only execute the pipeline if we are doing this in parallel.
 	            if (this.parallel) {
 		            DataflowPipelineJob result = (DataflowPipelineJob) this.pipe.run();

@@ -10,6 +10,11 @@
     "mode": "NULLABLE"
   },
   {
+    "name": "partition_date",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE"
+  },
+  {
     "name": "client_ip",
     "type": "STRING",
     "mode": "NULLABLE"

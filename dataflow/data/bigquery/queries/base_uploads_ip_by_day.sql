@@ -18,6 +18,7 @@ SELECT
 
   -- General Information
   FORMAT_TIMESTAMP("%F %X", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), DAY, "UTC")) as test_date,
+  FORMAT_TIMESTAMP("%F %X", TIMESTAMP(partition_date)) as partition_date,
 
  -- Client Information
   web100_log_entry.connection_spec.remote_ip AS client_ip,
@@ -55,8 +56,8 @@ FROM
   `measurement-lab.public.ndt_all_valid`
 WHERE
   -- Limit to within a time region
-  TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), DAY, "UTC") >= PARSE_TIMESTAMP("%F %X", "{0}")
-  AND TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), DAY, "UTC") < PARSE_TIMESTAMP("%F %X", "{1}")
+  TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), SECOND, "UTC") >= PARSE_TIMESTAMP("%F %X", "{0}")
+  AND TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), SECOND, "UTC") < PARSE_TIMESTAMP("%F %X", "{1}")
 
   AND web100_log_entry.snap.Duration IS NOT NULL
   AND connection_spec.data_direction IS NOT NULL
@@ -70,6 +71,7 @@ WHERE
 
 GROUP BY
   test_date,
+  partition_date,
   -- Client Information
   client_ip,
   client_ip_base64,

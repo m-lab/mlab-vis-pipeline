@@ -48,8 +48,8 @@ public class BigqueryTransferPipeline implements Runnable {
 	private BQPipelineRunDatastore datastore = null;
 	private Gauge duration;
 	private Gauge ndtReadDuration;
-	private Gauge mergeDuration; 
-	
+	private Gauge mergeDuration;
+
 	private final String[] args;
 	private boolean isRunning = false;
 	private String timePeriod;
@@ -61,13 +61,13 @@ public class BigqueryTransferPipeline implements Runnable {
 	public BigqueryTransferPipeline(String[] args, String timePeriod) {
 		 this.args = args;
 		 this.timePeriod = timePeriod;
-		 
+
 		 this.duration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_duration_" + this.timePeriod)
 					.help("Historic pipeline duration - Bigquery").register();
-		 
+
 		 this.ndtReadDuration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_ndtread_duration_" +  this.timePeriod)
 					.help("Historic pipeline duration - Bigquery NDT Read").register();
-		 
+
 		 this.mergeDuration = Gauge.build().name("mlab_vis_pipeline_historic_bigquery_merge_duration_" +  this.timePeriod)
 					.help("Historic pipeline duration - Bigquery Merge").register();
 
@@ -242,7 +242,7 @@ public class BigqueryTransferPipeline implements Runnable {
 			// when both pipelines are done, proceed to merge, add ISP and local time
 			// information.
 			if (next) {
-				
+
 				// if we didn't do an NDT run, we have to figure out dates for this pipeline. @todo
 				// prometheus, augmentation & merge pipeline write
 				Gauge.Timer mergeTimer = mergeDuration.startTimer();
@@ -262,8 +262,8 @@ public class BigqueryTransferPipeline implements Runnable {
 				mergeUploadDownload
 						.setDataStartDate(this.status.getDataStartDate())
 						.setDataEndDate(this.status.getDataEndDate())
-						.setDownloadTable(bqUtils.wrapTableWithBrakets(downloadsConfig.getOutputTable()))
-						.setUploadTable(bqUtils.wrapTableWithBrakets(uploadsConfig.getOutputTable()))
+						.setDownloadTable(bqUtils.wrapTableWithBackticks(downloadsConfig.getOutputTable()))
+						.setUploadTable(bqUtils.wrapTableWithBackticks(uploadsConfig.getOutputTable()))
 						.setOutputTable(bqUtils.wrapTable(downloadsConfig.getMergeTable()))
 						.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
 						.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);

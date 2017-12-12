@@ -1,9 +1,10 @@
+#standardSQL
 SELECT
   IFNULL(download.test_date, upload.test_date) as test_date,
 
-  YEAR(IFNULL(download.test_date, upload.test_date)) as test_date_year,
-  MONTH(IFNULL(download.test_date, upload.test_date)) as test_date_month,
-  DAY(IFNULL(download.test_date, upload.test_date)) as test_date_day,
+  EXTRACT(YEAR from IFNULL(download.test_date, upload.test_date)) as test_date_year,
+  EXTRACT(MONTH from IFNULL(download.test_date, upload.test_date)) as test_date_month,
+  EXTRACT(DAY from IFNULL(download.test_date, upload.test_date)) as test_date_day,
 
   IFNULL(download.client_ip, upload.client_ip) as client_ip,
   IFNULL(download.client_ip_base64, upload.client_ip_base64) as client_ip_base64,
@@ -45,29 +46,53 @@ SELECT
   upload.upload_test_count as upload_test_count
 
 FROM
-  {0} as download
-  FULL OUTER JOIN EACH {1} as upload
-ON
-  (download.test_date = upload.test_date AND
-  download.client_ip = upload.client_ip AND
-  download.client_city = upload.client_city AND
-  download.client_region_code = upload.client_region_code AND
-  download.client_continent_code = upload.client_continent_code AND
-  download.client_country_code = upload.client_country_code AND
-  download.client_ip_family = upload.client_ip_family AND
-  download.client_latitude = upload.client_latitude AND
-  download.client_longitude = upload.client_longitude AND
+  {0} as download,
+  {1} as upload
 
-  download.server_ip = upload.server_ip AND
-  download.server_ip_family = upload.server_ip_family AND
-  download.server_city = upload.server_city AND
-  download.server_continent_code = upload.server_continent_code AND
-  download.server_region_code = upload.server_region_code AND
-  download.server_country_code = upload.server_country_code AND
-  download.server_latitude = upload.server_latitude AND
-  download.server_longitude = upload.server_longitude)
 WHERE
-  download.test_date >= "{2}" AND
-  download.test_date <= "{3}" AND
-  upload.test_date >= "{2}" AND
-  upload.test_date <= "{3}"
+  download.test_date = upload.test_date AND
+  download.client_ip = upload.client_ip AND
+  download.server_ip = upload.server_ip AND
+  (
+    (download.client_city = upload.client_city)
+    OR (download.client_city IS NULL AND upload.client_city IS NULL)
+  ) AND (
+    (download.client_region_code = upload.client_region_code) OR
+    (download.client_region_code IS NULL AND upload.client_region_code IS NULL)
+  ) AND (
+    (download.client_continent_code = upload.client_continent_code) OR
+    (download.client_continent_code IS NULL AND upload.client_continent_code IS NULL)
+  ) AND (
+    (download.client_country_code = upload.client_country_code) OR
+    (download.client_country_code IS NULL AND upload.client_country_code IS NULL)
+  ) AND (
+    (download.client_ip_family = upload.client_ip_family) OR
+    (download.client_ip_family IS NULL AND upload.client_ip_family IS NULL)
+  ) AND (
+    (download.client_latitude = upload.client_latitude) OR
+    (download.client_latitude IS NULL AND upload.client_latitude IS NULL)
+  ) AND (
+    (download.client_longitude = upload.client_longitude) OR
+    (download.client_longitude IS NULL AND upload.client_longitude IS NULL)
+  ) AND (
+    (download.server_ip_family = upload.server_ip_family) OR
+    (download.server_ip_family IS NULL AND upload.server_ip_family IS NULL)
+  ) AND (
+    (download.server_city = upload.server_city) OR
+    (download.server_city IS NULL AND upload.server_city IS NULL)
+  ) AND (
+    (download.server_continent_code = upload.server_continent_code) OR
+    (download.server_continent_code IS NULL AND upload.server_continent_code IS NULL)
+  ) AND (
+    (download.server_region_code = upload.server_region_code) OR
+    (download.server_region_code IS NULL AND upload.server_region_code IS NULL)
+  ) AND (
+    (download.server_country_code = upload.server_country_code) OR
+    (download.server_country_code IS NULL AND upload.server_country_code IS NULL)
+  ) AND (
+    (download.server_latitude = upload.server_latitude) OR
+    (download.server_latitude IS NULL AND upload.server_latitude IS NULL)
+  ) AND (
+    (download.server_longitude = upload.server_longitude) OR
+    (download.server_longitude IS NULL AND upload.server_longitude IS NULL)
+  )

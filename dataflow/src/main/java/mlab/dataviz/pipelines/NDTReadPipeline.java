@@ -27,7 +27,6 @@ import mlab.dataviz.entities.BQPipelineRun;
 import mlab.dataviz.entities.BQPipelineRunDatastore;
 import mlab.dataviz.query.BigQueryJob;
 import mlab.dataviz.query.QueryBuilder;
-import mlab.dataviz.util.Formatters;
 import mlab.dataviz.util.Schema;
 import mlab.dataviz.util.PipelineConfig;
 
@@ -42,65 +41,125 @@ public class NDTReadPipeline implements Runnable {
 	private Pipeline pipeline;
 	private boolean runPipeline = false;
 	private BQPipelineRun pipelineRunRecord = null;
-	private static SimpleDateFormat dtf = new SimpleDateFormat(Formatters.TIMESTAMP);
-
 	private String[] dates;
 
+	/**
+	 * Create a new NDT read pipeline. Pass a pipeline to share, options to share and 
+	 * a status to track.
+	 * @param p
+	 * @param options
+	 * @param status
+	 */
 	public NDTReadPipeline(Pipeline p, BigQueryOptions options, BQPipelineRun status) {
 		this.pipeline = p;
 		this.options = options;
 		this.pipelineRunRecord = status;
 	}
 
+	/**
+	 * Create a new NDT read pipeline. A new pipeline will be created, from
+	 * shared options and shared status.
+	 * @param options
+	 * @param status
+	 */
 	public NDTReadPipeline(BigQueryOptions options, BQPipelineRun status) {
 		this.options = options;
 		this.pipelineRunRecord = status;
 	}
 
+	/**
+	 * Set the configuration for this pipeline.
+	 * @param config
+	 * @return
+	 */
 	public NDTReadPipeline setPipelineConfiguration(PipelineConfig config) {
 		this.config = config;
 		return this;
 	}
 
+	/**
+	 * Returns the pipeline configuration object.
+	 * @return
+	 */
 	public PipelineConfig getPipelineConfig() {
 		return this.config;
 	}
 
+	/**
+	 * Returns the write disposition for this pipeline.
+	 * @return
+	 */
 	public WriteDisposition getWriteDisposition() {
 		return this.writeDisposition;
 	}
 
+	/**
+	 * Sets the write disposition of this pipeline. (truncate/append etc)
+	 * @param writeDisposition
+	 * @return
+	 */
 	public NDTReadPipeline setWriteDisposition(WriteDisposition writeDisposition) {
 		this.writeDisposition = writeDisposition;
 		return this;
 	}
 
+	/**
+	 * Gets the create disposition
+	 * @return
+	 */
 	public CreateDisposition getCreateDisposition() {
 		return this.createDisposition;
 	}
 
+	/**
+	 * Gets the create disposition
+	 * @param createDisposition
+	 * @return
+	 */
 	public NDTReadPipeline setCreateDisposition(CreateDisposition createDisposition) {
 		this.createDisposition = createDisposition;
 		return this;
 	}
 
+	/** 
+	 * Gets state - running or not
+	 * @return State
+	 */
 	public State getState() {
 		return this.state;
 	}
 
+	/**
+	 * Sets the state - running or not.
+	 * @param s
+	 */
 	public void setState(State s) {
 		this.state = s;
 	}
 
+	/**
+	 * Indicates whether a pipeline should execute or not
+	 * @param execute boolean
+	 * @return
+	 */
 	public NDTReadPipeline shouldExecute(boolean execute) {
 		this.runPipeline  = execute;
 		return this;
 	}
 
+	/**
+	 * Returns whether a pipeline is executable
+	 * @return
+	 */
 	public boolean isExecutable() {
 		return this.runPipeline;
 	}
 
+	/**
+	 * Sets the date range for the queries.
+	 * @param dates
+	 * @return
+	 */
 	public NDTReadPipeline setDates(String [] dates) {
 		this.dates = dates;
 		return this;
@@ -115,7 +174,7 @@ public class NDTReadPipeline implements Runnable {
 	 * @todo change the test_date to parse_date when that data gets there.
 	 * @return
 	 * @throws IOException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public synchronized String[] getDatesFromBQ() throws IOException, InterruptedException, BigQueryException {
 
@@ -132,7 +191,7 @@ public class NDTReadPipeline implements Runnable {
 				+ this.config.getOutputTable();
 
 		// read from NDT
-		String endDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(max(web100_log_entry.log_time) * 1000000), HOUR, 'UTC'))"
+		String endDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(max(web100_log_entry.log_time) * 1000000), SECOND, 'UTC'))"
 				+ " as max_test_date FROM " + this.config.getEndDateFromTable() + ";";
 
 		BigQueryJob bqj = new BigQueryJob();
@@ -152,7 +211,7 @@ public class NDTReadPipeline implements Runnable {
 		}
 
 		if (seekNDT) {
-			startDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(min(web100_log_entry.log_time) * 1000000), HOUR, 'UTC'))"
+			startDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(min(web100_log_entry.log_time) * 1000000), SECOND, 'UTC'))"
 					+ " as min_test_date FROM " + this.config.getEndDateFromTable() + ";";
 			timestamps[0] = bqj.executeQueryForValue(startDateRangeQuery, false);
 		}
@@ -160,6 +219,37 @@ public class NDTReadPipeline implements Runnable {
 		timestamps[1] = bqj.executeQueryForValue(endDateRangeQuery, false);
 
 		LOG.info("NDT pipeline date range comptued as: " + timestamps[0] + "-" + timestamps[1]);
+		return timestamps;
+	}
+
+	/**
+	 * Computes the full NDT date range. To be used when truncating the
+	 * tables and starting over.
+	 * @return dates String array of range.
+	 */
+	private synchronized String[] getFullDateRange() throws IOException,
+		SQLException, GeneralSecurityException, InterruptedException,
+		BigQueryException {
+
+		String[] timestamps = new String[2];
+
+		// start date from NDT
+		String startDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(min(web100_log_entry.log_time) * 1000000), SECOND, 'UTC'))"
+				+ " as min_test_date FROM " + this.config.getEndDateFromTable() + ";";
+
+		// end dates from NDT
+		String endDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(max(web100_log_entry.log_time) * 1000000), SECOND, 'UTC'))"
+				+ " as max_test_date FROM " + this.config.getEndDateFromTable() + ";";
+
+		BigQueryJob bqj = new BigQueryJob();
+		timestamps[0] = bqj.executeQueryForValue(startDateRangeQuery, false);
+		timestamps[1] = bqj.executeQueryForValue(endDateRangeQuery, false);
+		
+		this.pipelineRunRecord.setDataStartDate(timestamps[0]);
+		this.pipelineRunRecord.setDataEndDate(timestamps[1]);
+
+		LOG.info("Full NDT table refresh. Dates: " + timestamps[0] + "-" + timestamps[1]);
+		
 		return timestamps;
 	}
 
@@ -174,7 +264,7 @@ public class NDTReadPipeline implements Runnable {
 	 * @throws IOException
 	 * @throws SQLException
 	 * @throws GeneralSecurityException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	private synchronized String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException, InterruptedException, BigQueryException {
 
@@ -252,7 +342,14 @@ public class NDTReadPipeline implements Runnable {
 		QueryBuilder qb;
 
 		try {
-			determineRunDates();
+			// if we are appending, figure out the time range. If we are not
+			// then we are replacing the tables, so just get the full NDT range
+			// and use that.
+			if (this.getWriteDisposition() == WriteDisposition.WRITE_APPEND) {
+				determineRunDates();
+			} else {
+				this.dates = getFullDateRange();
+			}
 
 			LOG.info(">>> Kicking off pipeline for dates: " + this.dates[0] + " " + this.dates[1]);
 			LOG.info("Setup - Query file: " + queryFile);

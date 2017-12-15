@@ -54,6 +54,8 @@ public class BigqueryTransferPipeline implements Runnable {
 	private boolean isRunning = false;
 	private String timePeriod;
 
+	private boolean refreshNDT = false;
+
 	/**
 	 * @constructor
 	 * Creates a new historic pipeline
@@ -200,7 +202,9 @@ public class BigqueryTransferPipeline implements Runnable {
 				ehrPDL.setPipelineConfiguration(downloadsConfig)
 						.setDates(dates)
 						.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
-						.setWriteDisposition(WriteDisposition.WRITE_APPEND)
+						.setWriteDisposition(this.refreshNDT ?
+							WriteDisposition.WRITE_TRUNCATE :
+							WriteDisposition.WRITE_APPEND)
 						.shouldExecute(shouldExecute);
 
 				// === get uploads for timePeriod
@@ -217,7 +221,9 @@ public class BigqueryTransferPipeline implements Runnable {
 				ehrPUL.setPipelineConfiguration(uploadsConfig)
 						.setDates(dates)
 						.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
-						.setWriteDisposition(WriteDisposition.WRITE_APPEND)
+						.setWriteDisposition(this.refreshNDT ?
+							WriteDisposition.WRITE_TRUNCATE :
+							WriteDisposition.WRITE_APPEND)
 						.shouldExecute(shouldExecute);
 
 				// write the status to datastore to capture he run dates
@@ -339,6 +345,16 @@ public class BigqueryTransferPipeline implements Runnable {
 		}
 
 		this.isRunning = false;
+	}
+
+
+	/**
+	 * If set to true, the NDT tables will be truncated and rewritten from
+	 * the beginning of time.
+	 * @param
+	 */
+	public void setRefreshNDTTable(boolean refresh) {
+		this.refreshNDT = true;
 	}
 
 	/**

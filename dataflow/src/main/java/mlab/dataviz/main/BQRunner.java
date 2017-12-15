@@ -7,7 +7,8 @@ import mlab.dataviz.pipelines.BigqueryTransferPipeline;
 
 public class BQRunner {
 	private static final Logger LOG = LoggerFactory.getLogger(BQRunner.class);
-
+	private static final int DAYS_BEFORE_FULL_REFRESH = 7;
+	private static int dayCounter = 0;
 
 	public static void main(String[] args) throws InterruptedException {
 
@@ -15,7 +16,11 @@ public class BQRunner {
 		MetricsServer m = new MetricsServer();
 		BigqueryTransferPipeline dayPipeline = new BigqueryTransferPipeline(args, "day");
 		BigqueryTransferPipeline hourPipeline = new BigqueryTransferPipeline(args, "hour");
-
+		
+		// first run, refresh NDT tables.
+		dayPipeline.setRefreshNDTTable(true);
+		hourPipeline.setRefreshNDTTable(true);
+		
 		// historic pipeline thread
 		Thread dayPipelineThread = new Thread(dayPipeline);
 		Thread hourPipelineThread = new Thread(hourPipeline);
@@ -26,6 +31,7 @@ public class BQRunner {
 		metricsThread.start();
 		dayPipelineThread.start();
 		hourPipelineThread.start();
+		dayCounter++;
 
 		LOG.info(">>> Metrics server running");
 		LOG.info(">>> Pipeline threads running");
@@ -40,6 +46,14 @@ public class BQRunner {
 			if (!dayPipelineThread.isAlive() || !dayPipeline.getStatus()) {
 				LOG.info(">>> Starting pipeline thread");
 				dayPipelineThread = new Thread(dayPipeline);
+
+				// if we've run enough cycles, do a clean refresh of the NDT tables
+				if (dayCounter >= DAYS_BEFORE_FULL_REFRESH) {
+					LOG.info(">>>>> Doing a refresh of our Day NDT tables");
+					dayPipeline.setRefreshNDTTable(true);
+				} else {
+					dayPipeline.setRefreshNDTTable(false);
+				}
 				dayPipelineThread.start();
 			} else {
 				LOG.info(">>> Day Pipeline still running. Going back to sleep.");
@@ -50,9 +64,25 @@ public class BQRunner {
 				LOG.info(">>> Starting pipeline thread");
 				// reset the pipeline
 				hourPipelineThread = new Thread(hourPipeline);
+
+				// if we've run enough cycles, do a clean refresh of the NDT tables
+				if (dayCounter >= DAYS_BEFORE_FULL_REFRESH) {
+					LOG.info(">>>>> Doing a refresh of our Hour NDT tables");
+					hourPipeline.setRefreshNDTTable(true);
+				} else {
+					hourPipeline.setRefreshNDTTable(false);
+				}
 				hourPipelineThread.start();
 			} else {
 				LOG.info(">>> Hour Pipeline still running. Going back to sleep.");
+			}
+
+			// reset the counter if we need to, otherwise increment it
+			// since only a regular run occured.
+			if (dayCounter >= DAYS_BEFORE_FULL_REFRESH) {
+				dayCounter = 0;
+			} else {
+				dayCounter += 1;
 			}
 		}
 	}

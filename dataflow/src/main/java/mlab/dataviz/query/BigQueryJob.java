@@ -5,21 +5,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.QueryResponse;
 import com.google.cloud.bigquery.QueryResult;
+import com.google.cloud.http.HttpTransportOptions;
 import com.google.cloud.bigquery.BigQuery.QueryOption;
 import com.google.cloud.bigquery.BigQuery.QueryResultsOption;
 import com.google.cloud.bigquery.BigQueryException;
+import org.threeten.bp.Duration;
 
 public class BigQueryJob {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BigQueryJob.class);
 	private BigQuery bigquery;
-
+	
+	/**
+	 * Building retry settings to prevent an HTTP timeout for bigquery
+	 * jobs. Extending the timeout on the bigquery rpc isn't enough 
+	 * since it goes over HTTP and that connection can timeout too.
+	 * @return
+	 */
+	private static RetrySettings retrySettings() {
+	    return RetrySettings.newBuilder().setMaxAttempts(10)
+	        .setMaxRetryDelay(Duration.ofMillis(30000L))
+	        .setTotalTimeout(Duration.ofMillis(120000L))
+	        .setInitialRetryDelay(Duration.ofMillis(250L))
+	        .setRetryDelayMultiplier(1.0)
+	        .setInitialRpcTimeout(Duration.ofMillis(120000L))
+	        .setRpcTimeoutMultiplier(1.0)
+	        .setMaxRpcTimeout(Duration.ofMillis(120000L))
+	        .build();
+	  }
+	
 	/**
 	 * @constructor
 	 * Creates a new bigquery querier. Can be used to run legacy and standard
@@ -27,7 +48,21 @@ public class BigQueryJob {
 	 * @throws IOException
 	 */
 	public BigQueryJob() throws IOException {
-		this.bigquery = BigQueryOptions.getDefaultInstance().getService();
+	    
+		HttpTransportOptions transportOptions = BigQueryOptions.getDefaultHttpTransportOptions();
+		transportOptions = transportOptions.toBuilder()
+				.setConnectTimeout(120000)
+				.setReadTimeout(120000)
+		        .build();
+		
+		BigQueryOptions bigqueryOptions = BigQueryOptions.newBuilder()
+				.setRetrySettings(retrySettings())
+				.setTransportOptions(transportOptions)
+				.build();
+		
+		this.bigquery = bigqueryOptions.getService();
+		
+		
 	}
 
 	/**

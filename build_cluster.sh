@@ -72,6 +72,7 @@ fi
 
 
 if [ $PUSH == 1 ] && [ -n "${KEY_FILE}" ]; then
+  gcloud config set project ${PROJECT}
   gcloud auth activate-service-account --key-file=${KEY_FILE}
 
   echo "Pushing docker image '${CONTAINER_NAME}' to container registry"

@@ -155,6 +155,29 @@ This script will setup a cluster, copy over the encrypted service key so it can 
 mounted as an key later, and setup the namespace for this cluter.
 This will take some time.
 
+Your cluster will need to have the following permissions:
+
+| Name | Permissions |
+|------|-------------|
+| User info | Disabled |
+| Compute Engine | Read Write |
+| Storage | Full |
+| Task queue | Enabled |
+| BigQuery | Enabled |
+| Cloud SQL | Disabled |
+| Cloud Datastore | Enabled |
+| Stackdriver Logging API | Write Only |
+| Stackdriver Monitoring API | Full |
+| Cloud Platform | Enabled |
+| Bigtable Data | Read Write |
+| Bigtable Admin | Full |
+| Cloud Pub/Sub | Enabled |
+| Service Control | Enabled |
+| Service Management | Read Write |
+| Stackdriver Trace | Write Only |
+| Cloud Source Repositories | Disabled |
+| Cloud Debugger | Disabled |
+
 2. Use an existing cluster
 
 We also might be sharing a cluster with other services.

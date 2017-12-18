@@ -34,12 +34,15 @@ while getopts ":m:" opt; do
 done
 
 # Create Kubernetes cluster
-gcloud container \
-  --project ${PROJECT} clusters create ${K8_CLUSTER} \
-  --zone "us-central1-b" \
-  --machine-type=n1-standard-8 \
-  --num-nodes 5 \
-  --node-labels=vis-pipeline-jobs-node=true
+# gcloud container \
+#   --project ${PROJECT} clusters create ${K8_CLUSTER} \
+#   --zone "us-central1-b" \
+#   --machine-type=n1-standard-8 \
+#   --num-nodes 3 \
+#   --node-labels=vis-pipeline-jobs-node=true
+
+gcloud container clusters get-credentials ${K8_CLUSTER} \
+  --zone us-central1-a --project ${PROJECT}
 
 # Set as active cluster
 gcloud config set container/cluster ${K8_CLUSTER}

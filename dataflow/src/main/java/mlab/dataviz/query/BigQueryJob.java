@@ -39,68 +39,68 @@ public class BigQueryJob {
 	 * @param projectId  the id of the project under which to run the query.
 	 * @return a list of the results of the query.
 	 * @throws IOException  if there's an error communicating with the API.
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public Iterable<FieldValueList> executeQuery(String querySql)
 			throws IOException, InterruptedException {
 
 		// Create a query request
-		QueryJobConfiguration queryConfig = 
+		QueryJobConfiguration queryConfig =
 		    QueryJobConfiguration.of(querySql);
-		
+
 		// Request query to be executed and wait for results
 		QueryResponse queryResponse = bigquery.query(
 		    queryConfig,
 		    QueryOption.of(QueryResultsOption.maxWaitTime(60000L)),
 		    QueryOption.of(QueryResultsOption.pageSize(1000L)));
-		
+
 		// Read rows
 		QueryResult result = queryResponse.getResult();
 		return result.getValues();
 	}
-	
+
 	/**
 	 * Executes a query when the known response is a single string value.
 	 * By default uses legacy SQL.
 	 * @param querySql
 	 * @return response String value
 	 * @throws IOException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public String executeQueryForValue(String querySql) throws IOException, InterruptedException, GoogleJsonResponseException, BigQueryException {
 		return executeQueryForValue(querySql, true);
 	}
-	
+
 	/**
 	 * Executes a query when the known response is a single string value.
 	 * @param querySql
 	 * @param legacySQL let's you override legacy or standard.
 	 * @return response String value
 	 * @throws IOException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public String executeQueryForValue(String querySql, boolean legacySql) throws IOException, InterruptedException, GoogleJsonResponseException, BigQueryException {
-		
+
 		try {
 			// Create a query request
-			QueryJobConfiguration queryConfig =  
+			QueryJobConfiguration queryConfig =
 					QueryJobConfiguration.newBuilder(querySql)
 						.setUseLegacySql(legacySql)
 						.build();
-					
+
 			// Request query to be executed and wait for results
 			QueryResponse queryResponse = bigquery.query(
 			    queryConfig,
-			    QueryOption.of(QueryResultsOption.maxWaitTime(60000L)),
+			    QueryOption.of(QueryResultsOption.maxWaitTime(300000L)), //5 min
 			    QueryOption.of(QueryResultsOption.pageSize(1000L)));
-					
+
 			// Read rows
 			QueryResult result = queryResponse.getResult();
 			String val = null;
 			for (FieldValueList row : result.getValues()) {
 				val = row.get(0).getStringValue();
 			}
-			
+
 			return val;
 		} catch (Exception e) {
 			LOG.error(e.getMessage());

@@ -11,3 +11,5 @@ data:
   BIGTABLE_POOL_SIZE: "{{BIGTABLE_POOL_SIZE}}"
   NDT_TABLE: "`measurement-lab.public_v3_1.ndt_all`"
   SLOW_DOWN_NDT_READ_BY_DAYS: "-2"
+  RUN_BQ_UPDATE_EVERY: "1"
+  RUN_BT_UPDATE_EVERY: "3"

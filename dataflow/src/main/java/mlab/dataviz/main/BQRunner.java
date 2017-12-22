@@ -16,11 +16,11 @@ public class BQRunner {
 		MetricsServer m = new MetricsServer();
 		BigqueryTransferPipeline dayPipeline = new BigqueryTransferPipeline(args, "day");
 		BigqueryTransferPipeline hourPipeline = new BigqueryTransferPipeline(args, "hour");
-		
+
 		// first run, refresh NDT tables.
 		dayPipeline.setRefreshNDTTable(true);
 		hourPipeline.setRefreshNDTTable(true);
-		
+
 		// historic pipeline thread
 		Thread dayPipelineThread = new Thread(dayPipeline);
 		Thread hourPipelineThread = new Thread(hourPipeline);
@@ -36,8 +36,15 @@ public class BQRunner {
 		LOG.info(">>> Metrics server running");
 		LOG.info(">>> Pipeline threads running");
 
+		// default number of days at which to run the bq pipeline
+		float everyNDays = 1;
+		String everyNDaysEnv = System.getenv("RUN_BQ_UPDATE_EVERY");
+		if (everyNDaysEnv != null) {
+			everyNDays = Float.parseFloat(everyNDaysEnv);
+		}
+
 		while (metricsThread.isAlive()) {
-			Thread.sleep((long) 8.64e+7); // 1 day
+			Thread.sleep((long) Math.round(8.64e+7 * everyNDays)); // 1 day's milliseconds * days
 			LOG.info(">>> Wake up to check if pipeline still running.");
 			Thread.sleep(1000);
 			System.out.println("Checking in");

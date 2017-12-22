@@ -25,8 +25,15 @@ public class BTRunner {
 		LOG.info(">>> Metrics server running");
 		LOG.info(">>> Starting new bigtable thread");
 
+		// default number of days at which to run the bt pipeline
+		float everyNDays = 3;
+		String everyNDaysEnv = System.getenv("RUN_BT_UPDATE_EVERY");
+		if (everyNDaysEnv != null) {
+			everyNDays = Float.parseFloat(everyNDaysEnv);
+		}
+
 		while (metricsThread.isAlive()) {
-			Thread.sleep(((long) 8.64e+7) * 3); // 3 days
+			Thread.sleep((long) Math.round(8.64e+7 * everyNDays)); // 1 day's milliseconds * # of days
 			LOG.info(">>> Wake up to check if Bigtable pipeline still running.");
 			Thread.sleep(1000);
 			System.out.println("Checking in");

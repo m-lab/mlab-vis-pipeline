@@ -7,7 +7,6 @@ import mlab.dataviz.pipelines.BigqueryTransferPipeline;
 
 public class BQRunner {
 	private static final Logger LOG = LoggerFactory.getLogger(BQRunner.class);
-	private static final int DAYS_BEFORE_FULL_REFRESH = 7;
 	private static int dayCounter = 0;
 
 	public static void main(String[] args) throws InterruptedException {
@@ -36,11 +35,18 @@ public class BQRunner {
 		LOG.info(">>> Metrics server running");
 		LOG.info(">>> Pipeline threads running");
 
-		// default number of days at which to run the bq pipeline
+		// default number of days at which to run the bq pipeline. 1 by default.
 		float everyNDays = 1;
 		String everyNDaysEnv = System.getenv("RUN_BQ_UPDATE_EVERY");
 		if (everyNDaysEnv != null) {
 			everyNDays = Float.parseFloat(everyNDaysEnv);
+		}
+
+		// days between full refreshes of the bq tables. 7 by default.
+		float daysBeforeFullRefresh = 7;
+		String daysBeforeFullRefreshEnv = System.getenv("DAYS_BEFORE_FULL_BQ_REFRESH");
+		if (daysBeforeFullRefreshEnv != null) {
+			daysBeforeFullRefresh = Float.parseFloat(daysBeforeFullRefreshEnv);
 		}
 
 		while (metricsThread.isAlive()) {
@@ -55,7 +61,7 @@ public class BQRunner {
 				dayPipelineThread = new Thread(dayPipeline);
 
 				// if we've run enough cycles, do a clean refresh of the NDT tables
-				if (dayCounter >= DAYS_BEFORE_FULL_REFRESH) {
+				if (dayCounter >= daysBeforeFullRefresh) {
 					LOG.info(">>>>> Doing a refresh of our Day NDT tables");
 					dayPipeline.setRefreshNDTTable(true);
 				} else {
@@ -73,7 +79,7 @@ public class BQRunner {
 				hourPipelineThread = new Thread(hourPipeline);
 
 				// if we've run enough cycles, do a clean refresh of the NDT tables
-				if (dayCounter >= DAYS_BEFORE_FULL_REFRESH) {
+				if (dayCounter >= daysBeforeFullRefresh) {
 					LOG.info(">>>>> Doing a refresh of our Hour NDT tables");
 					hourPipeline.setRefreshNDTTable(true);
 				} else {
@@ -86,7 +92,7 @@ public class BQRunner {
 
 			// reset the counter if we need to, otherwise increment it
 			// since only a regular run occured.
-			if (dayCounter >= DAYS_BEFORE_FULL_REFRESH) {
+			if (dayCounter >= daysBeforeFullRefresh) {
 				dayCounter = 0;
 			} else {
 				dayCounter += 1;

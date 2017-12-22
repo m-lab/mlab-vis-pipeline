@@ -12,4 +12,5 @@ data:
   NDT_TABLE: "`measurement-lab.public_v3_1.ndt_all`"
   SLOW_DOWN_NDT_READ_BY_DAYS: "-2"
   RUN_BQ_UPDATE_EVERY: "1"
+  DAYS_BEFORE_FULL_BQ_REFRESH: "7"
   RUN_BT_UPDATE_EVERY: "3"

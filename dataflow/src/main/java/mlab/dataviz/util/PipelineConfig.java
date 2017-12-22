@@ -105,7 +105,16 @@ public class PipelineConfig {
 	}
 
 	public String getNDTTable() {
-		return this.values.get(NDT_TABLE);
+		// Check if we have an env variable set for this. If we do, use that
+		// instead.
+		String ndtFromEnv = System.getenv("NDT_TABLE");
+		if (ndtFromEnv != null && ndtFromEnv.length() > 0) {
+			LOG.info("Using NDT_TABLE from environment");
+			return ndtFromEnv;
+		} else {
+			LOG.info("Using NDT_TABLE from pipeline configuration file");
+			return this.values.get(NDT_TABLE);
+		}
 	}
 
 	public String getMergeTable() {

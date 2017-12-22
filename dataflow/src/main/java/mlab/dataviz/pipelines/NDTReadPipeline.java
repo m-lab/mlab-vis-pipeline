@@ -3,7 +3,9 @@ package mlab.dataviz.pipelines;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -28,10 +30,13 @@ import mlab.dataviz.entities.BQPipelineRunDatastore;
 import mlab.dataviz.query.BigQueryJob;
 import mlab.dataviz.query.QueryBuilder;
 import mlab.dataviz.util.Schema;
+import mlab.dataviz.util.Formatters;
 import mlab.dataviz.util.PipelineConfig;
 
 public class NDTReadPipeline implements Runnable {
 	private static final Logger LOG = LoggerFactory.getLogger(NDTReadPipeline.class);
+	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(Formatters.TIMESTAMP2);
+	
 	private BigQueryOptions options;
 	private PipelineConfig config;
 
@@ -42,6 +47,7 @@ public class NDTReadPipeline implements Runnable {
 	private boolean runPipeline = false;
 	private BQPipelineRun pipelineRunRecord = null;
 	private String[] dates;
+	
 
 	/**
 	 * Create a new NDT read pipeline. Pass a pipeline to share, options to share and
@@ -319,6 +325,46 @@ public class NDTReadPipeline implements Runnable {
 	}
 
 	/**
+	 * Slows down the end date by 48 hours. If the start date is now later than the end date
+	 * then returns null all together.
+	 * 
+	 * @param runDates
+	 * @return
+	 */
+	private String[] slowDownDates(String[] runDates) {
+		String startDate = runDates[0];
+		String endDate = runDates[1];
+		
+		Calendar startDateCal = Calendar.getInstance();
+		Calendar endDateCal = Calendar.getInstance();
+		try {
+			startDateCal.setTime(dateFormatter.parse(startDate));
+			endDateCal.setTime(dateFormatter.parse(endDate));
+			
+			int daysToSlowDownBy = -2;
+			if (System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS") != null) {
+				LOG.debug("Using config for number of days to slow down by: " + System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS"));
+				daysToSlowDownBy = Integer.parseInt(System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS"));
+			}
+			endDateCal.add(Calendar.DAY_OF_YEAR, daysToSlowDownBy);
+			
+			// as long as the end date is larger than the start date, return 
+			// the new slowed down dates.
+			if (endDateCal.compareTo(startDateCal) > 0) {
+				LOG.info("Slowing down pipeline by " + daysToSlowDownBy + " days.");
+				return new String[] {
+						startDate, dateFormatter.format(endDateCal.getTime())
+				};
+			} else {
+				return null;
+			}
+		} catch (ParseException e) {
+			LOG.error(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
 	* Runs one main pipeline read and write given that we have a table that
 	* does not have allowLargeResutls set to false.
 	*
@@ -351,56 +397,62 @@ public class NDTReadPipeline implements Runnable {
 				this.dates = getFullDateRange();
 			}
 
-			LOG.info(">>> Kicking off pipeline for dates: " + this.dates[0] + " " + this.dates[1]);
-			LOG.info("Setup - Query file: " + queryFile);
-
-			// build query:
-			// {0} - start date
-			// {1} - end date
-			// {2} - table name from which we read.
-			String[] templateData = {
-				this.dates[0], this.dates[1], this.config.getNDTTable()
-			};
-			qb = new QueryBuilder(queryFile, templateData);
-			try {
-				LOG.info("Setup - Table Schema: " + tableSchema.toPrettyString());
-			} catch (IOException e) {
-				LOG.error(e.getMessage());
-				LOG.error(e.getStackTrace().toString());
-			}
-			LOG.info("Setup - Output table: " + outputTableName);
-
-			if (this.pipeline == null) {
-				LOG.info("CREATING PIPELINE");
-				this.pipeline = Pipeline.create(this.options);
-			}
-
-			// DataFlow doesn't show names with / in it
-			String normalizedQueryFile = queryFile.replaceAll("/", "__");
-
-			PCollection<TableRow> rows = this.pipeline.apply(
-					BigQueryIO.Read
-					.named("Running query " + normalizedQueryFile)
-					.usingStandardSql()
-					.fromQuery(qb.getQuery()));
-
-			rows.apply(BigQueryIO.Write
-					.named("Write " + outputTableName)
-					.to(outputTableName)
-					.withSchema(tableSchema)
-					.withCreateDisposition(this.createDisposition)
-					.withWriteDisposition(this.writeDisposition));
-
-			// by default, the pipeline will not run.
-			if (this.isExecutable()) {
-				DataflowPipelineJob result = (DataflowPipelineJob) this.pipeline.run();
-				result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
-				this.setState(result.getState());
-				LOG.info("Job completed, with status: " + result.getState().toString());
+			// slow down dates
+			String [] slowDates = this.slowDownDates(this.dates);
+			if (slowDates == null) {
+				LOG.info("Slowed down dates invalid. Likley end date now less than start date because of incremental update. Waiting another day for next pipeline.");
+				this.setState(State.CANCELLED);
 			} else {
-				LOG.info("will not run");
+				LOG.info(">>> Kicking off pipeline for dates: " + this.dates[0] + " " + this.dates[1]);
+				LOG.info("Setup - Query file: " + queryFile);
+	
+				// build query:
+				// {0} - start date
+				// {1} - end date
+				// {2} - table name from which we read.
+				String[] templateData = {
+					this.dates[0], this.dates[1], this.config.getNDTTable()
+				};
+				qb = new QueryBuilder(queryFile, templateData);
+				try {
+					LOG.info("Setup - Table Schema: " + tableSchema.toPrettyString());
+				} catch (IOException e) {
+					LOG.error(e.getMessage());
+					LOG.error(e.getStackTrace().toString());
+				}
+				LOG.info("Setup - Output table: " + outputTableName);
+	
+				if (this.pipeline == null) {
+					LOG.info("CREATING PIPELINE");
+					this.pipeline = Pipeline.create(this.options);
+				}
+	
+				// DataFlow doesn't show names with / in it
+				String normalizedQueryFile = queryFile.replaceAll("/", "__");
+	
+				PCollection<TableRow> rows = this.pipeline.apply(
+						BigQueryIO.Read
+						.named("Running query " + normalizedQueryFile)
+						.usingStandardSql()
+						.fromQuery(qb.getQuery()));
+	
+				rows.apply(BigQueryIO.Write
+						.named("Write " + outputTableName)
+						.to(outputTableName)
+						.withSchema(tableSchema)
+						.withCreateDisposition(this.createDisposition)
+						.withWriteDisposition(this.writeDisposition));
+	
+				// by default, the pipeline will not run.
+				if (this.isExecutable()) {
+					DataflowPipelineJob result = (DataflowPipelineJob) this.pipeline.run();
+					result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+					this.setState(result.getState());
+					LOG.info("Job completed, with status: " + result.getState().toString());
+				} else {
+					LOG.info("Will not run");
+				}
 			}
-
 		} catch (IOException |  InterruptedException | SQLException | GeneralSecurityException | BigQueryException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();

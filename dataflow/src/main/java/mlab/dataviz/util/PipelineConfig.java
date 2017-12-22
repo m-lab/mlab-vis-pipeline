@@ -20,7 +20,7 @@ import java.util.HashMap;
         "schemaFile": "./data/bigquery/schemas/base_downloads_ip.json",
         "outputTable": "data_viz.base_downloads_ip_by_day",
         "startDateFromTable": "data_viz.base_downloads_ip_by_day",
-        "endDateFromTable": "`measurement-lab.public.ndt_all_valid`",
+        "endDateFromTable": "`measurement-lab.public_v3_1.ndt_all`",
         "mergeTable": "data_viz.base_merged_ip_by_day",
         "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
         "withISPTable": "data_viz.all_ip_by_day",

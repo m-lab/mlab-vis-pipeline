@@ -95,7 +95,7 @@ SELECT
   SUM(web100_log_entry.snap.SndLimTimeCwnd) as sum_lim_time_cwnd,
   SUM(web100_log_entry.snap.SndLimTimeSnd) as sum_lim_time_snd
 FROM
-  `measurement-lab.public.ndt_all_valid`
+  `measurement-lab.public_v3_1.ndt_all`
 WHERE
   -- Limit to within a time region
   TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), SECOND, "UTC") >= PARSE_TIMESTAMP("%F %X", "{0}")

@@ -36,7 +36,7 @@ import mlab.dataviz.util.PipelineConfig;
 public class NDTReadPipeline implements Runnable {
 	private static final Logger LOG = LoggerFactory.getLogger(NDTReadPipeline.class);
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(Formatters.TIMESTAMP2);
-	
+
 	private BigQueryOptions options;
 	private PipelineConfig config;
 
@@ -47,7 +47,7 @@ public class NDTReadPipeline implements Runnable {
 	private boolean runPipeline = false;
 	private BQPipelineRun pipelineRunRecord = null;
 	private String[] dates;
-	
+
 
 	/**
 	 * Create a new NDT read pipeline. Pass a pipeline to share, options to share and
@@ -327,28 +327,28 @@ public class NDTReadPipeline implements Runnable {
 	/**
 	 * Slows down the end date by 48 hours. If the start date is now later than the end date
 	 * then returns null all together.
-	 * 
+	 *
 	 * @param runDates
 	 * @return
 	 */
 	private String[] slowDownDates(String[] runDates) {
 		String startDate = runDates[0];
 		String endDate = runDates[1];
-		
+
 		Calendar startDateCal = Calendar.getInstance();
 		Calendar endDateCal = Calendar.getInstance();
 		try {
 			startDateCal.setTime(dateFormatter.parse(startDate));
 			endDateCal.setTime(dateFormatter.parse(endDate));
-			
+
 			int daysToSlowDownBy = -2;
 			if (System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS") != null) {
 				LOG.debug("Using config for number of days to slow down by: " + System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS"));
 				daysToSlowDownBy = Integer.parseInt(System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS"));
 			}
 			endDateCal.add(Calendar.DAY_OF_YEAR, daysToSlowDownBy);
-			
-			// as long as the end date is larger than the start date, return 
+
+			// as long as the end date is larger than the start date, return
 			// the new slowed down dates.
 			if (endDateCal.compareTo(startDateCal) > 0) {
 				LOG.info("Slowing down pipeline by " + daysToSlowDownBy + " days.");
@@ -398,14 +398,14 @@ public class NDTReadPipeline implements Runnable {
 			}
 
 			// slow down dates
-			String [] slowDates = this.slowDownDates(this.dates);
-			if (slowDates == null) {
+			this.dates = this.slowDownDates(this.dates);
+			if (this.dates == null) {
 				LOG.info("Slowed down dates invalid. Likley end date now less than start date because of incremental update. Waiting another day for next pipeline.");
 				this.setState(State.CANCELLED);
 			} else {
 				LOG.info(">>> Kicking off pipeline for dates: " + this.dates[0] + " " + this.dates[1]);
 				LOG.info("Setup - Query file: " + queryFile);
-	
+
 				// build query:
 				// {0} - start date
 				// {1} - end date
@@ -421,28 +421,28 @@ public class NDTReadPipeline implements Runnable {
 					LOG.error(e.getStackTrace().toString());
 				}
 				LOG.info("Setup - Output table: " + outputTableName);
-	
+
 				if (this.pipeline == null) {
 					LOG.info("CREATING PIPELINE");
 					this.pipeline = Pipeline.create(this.options);
 				}
-	
+
 				// DataFlow doesn't show names with / in it
 				String normalizedQueryFile = queryFile.replaceAll("/", "__");
-	
+
 				PCollection<TableRow> rows = this.pipeline.apply(
 						BigQueryIO.Read
 						.named("Running query " + normalizedQueryFile)
 						.usingStandardSql()
 						.fromQuery(qb.getQuery()));
-	
+
 				rows.apply(BigQueryIO.Write
 						.named("Write " + outputTableName)
 						.to(outputTableName)
 						.withSchema(tableSchema)
 						.withCreateDisposition(this.createDisposition)
 						.withWriteDisposition(this.writeDisposition));
-	
+
 				// by default, the pipeline will not run.
 				if (this.isExecutable()) {
 					DataflowPipelineJob result = (DataflowPipelineJob) this.pipeline.run();

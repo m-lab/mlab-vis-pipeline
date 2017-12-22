@@ -1,0 +1,43 @@
+{
+    "row_keys": [
+        {
+            "length": 10,
+            "type": "string",
+            "name": "client_asn_number",
+            "family": "meta"
+        }
+    ],
+    "bigquery_queryfile": "./data/bigtable/queries/client_asn_number_search.sql",
+    "bigtable_table_name": "client_asn_number_search",
+    "key": "client_asn_number_search",
+    "columns": [
+        {
+            "length": 100,
+            "type": "string",
+            "name": "client_asn_name_lookup",
+            "family": "meta"
+        },
+        {
+            "length": 10,
+            "type": "string",
+            "name": "client_asn_number",
+            "family": "meta"
+        },
+        {
+            "length": 100,
+            "type": "string",
+            "name": "client_asn_name",
+            "family": "meta"
+        },
+        {
+            "type": "integer",
+            "name": "test_count",
+            "family": "meta"
+        },
+        {
+            "type": "integer",
+            "name": "last_three_month_test_count",
+            "family": "data"
+        }
+    ]
+}

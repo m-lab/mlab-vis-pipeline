@@ -2,12 +2,10 @@ package mlab.dataviz.util;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -20,7 +18,7 @@ import java.util.HashMap;
         "schemaFile": "./data/bigquery/schemas/base_downloads_ip.json",
         "outputTable": "data_viz.base_downloads_ip_by_day",
         "startDateFromTable": "data_viz.base_downloads_ip_by_day",
-        "endDateFromTable": "`measurement-lab.public_v3_1.ndt_all`",
+        "ndtTable": "`measurement-lab.public_v3_1.ndt_all`",
         "mergeTable": "data_viz.base_merged_ip_by_day",
         "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
         "withISPTable": "data_viz.all_ip_by_day",
@@ -34,7 +32,7 @@ public class PipelineConfig {
 	private static final String SCHEMA_FILE = "schemaFile";
 	private static final String OUTPUT_TABLE = "outputTable";
 	private static final String START_DATE_FROM_TABLE = "startDateFromTable";
-	private static final String END_DATE_FROM_TABLE = "endDateFromTable";
+	private static final String NDT_TABLE = "ndtTable";
 	private static final String MERGE_TABLE = "mergeTable";
 	private static final String MERGE_TABLE_SCHEMA = "mergeTableSchema";
 	private static final String WITH_ISP_TABLE = "withISPTable"; // @todo rename this
@@ -106,8 +104,8 @@ public class PipelineConfig {
 		return this.values.get(START_DATE_FROM_TABLE);
 	}
 
-	public String getEndDateFromTable() {
-		return this.values.get(END_DATE_FROM_TABLE);
+	public String getNDTTable() {
+		return this.values.get(NDT_TABLE);
 	}
 
 	public String getMergeTable() {

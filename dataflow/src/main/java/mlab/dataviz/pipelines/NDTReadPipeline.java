@@ -44,7 +44,7 @@ public class NDTReadPipeline implements Runnable {
 	private String[] dates;
 
 	/**
-	 * Create a new NDT read pipeline. Pass a pipeline to share, options to share and 
+	 * Create a new NDT read pipeline. Pass a pipeline to share, options to share and
 	 * a status to track.
 	 * @param p
 	 * @param options
@@ -121,7 +121,7 @@ public class NDTReadPipeline implements Runnable {
 		return this;
 	}
 
-	/** 
+	/**
 	 * Gets state - running or not
 	 * @return State
 	 */
@@ -192,7 +192,7 @@ public class NDTReadPipeline implements Runnable {
 
 		// read from NDT
 		String endDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(max(web100_log_entry.log_time) * 1000000), SECOND, 'UTC'))"
-				+ " as max_test_date FROM " + this.config.getEndDateFromTable() + ";";
+				+ " as max_test_date FROM " + this.config.getNDTTable() + ";";
 
 		BigQueryJob bqj = new BigQueryJob();
 
@@ -212,7 +212,7 @@ public class NDTReadPipeline implements Runnable {
 
 		if (seekNDT) {
 			startDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(min(web100_log_entry.log_time) * 1000000), SECOND, 'UTC'))"
-					+ " as min_test_date FROM " + this.config.getEndDateFromTable() + ";";
+					+ " as min_test_date FROM " + this.config.getNDTTable() + ";";
 			timestamps[0] = bqj.executeQueryForValue(startDateRangeQuery, false);
 		}
 
@@ -235,21 +235,21 @@ public class NDTReadPipeline implements Runnable {
 
 		// start date from NDT
 		String startDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(min(web100_log_entry.log_time) * 1000000), SECOND, 'UTC'))"
-				+ " as min_test_date FROM " + this.config.getEndDateFromTable() + ";";
+				+ " as min_test_date FROM " + this.config.getNDTTable() + ";";
 
 		// end dates from NDT
 		String endDateRangeQuery = "SELECT FORMAT_TIMESTAMP(\"%F %X\", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(max(web100_log_entry.log_time) * 1000000), SECOND, 'UTC'))"
-				+ " as max_test_date FROM " + this.config.getEndDateFromTable() + ";";
+				+ " as max_test_date FROM " + this.config.getNDTTable() + ";";
 
 		BigQueryJob bqj = new BigQueryJob();
 		timestamps[0] = bqj.executeQueryForValue(startDateRangeQuery, false);
 		timestamps[1] = bqj.executeQueryForValue(endDateRangeQuery, false);
-		
+
 		this.pipelineRunRecord.setDataStartDate(timestamps[0]);
 		this.pipelineRunRecord.setDataEndDate(timestamps[1]);
 
 		LOG.info("Full NDT table refresh. Dates: " + timestamps[0] + "-" + timestamps[1]);
-		
+
 		return timestamps;
 	}
 
@@ -353,7 +353,15 @@ public class NDTReadPipeline implements Runnable {
 
 			LOG.info(">>> Kicking off pipeline for dates: " + this.dates[0] + " " + this.dates[1]);
 			LOG.info("Setup - Query file: " + queryFile);
-			qb = new QueryBuilder(queryFile, this.dates);
+
+			// build query:
+			// {0} - start date
+			// {1} - end date
+			// {2} - table name from which we read.
+			String[] templateData = {
+				this.dates[0], this.dates[1], this.config.getNDTTable()
+			};
+			qb = new QueryBuilder(queryFile, templateData);
 			try {
 				LOG.info("Setup - Table Schema: " + tableSchema.toPrettyString());
 			} catch (IOException e) {

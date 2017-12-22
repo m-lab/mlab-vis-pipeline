@@ -53,7 +53,7 @@ SELECT
   APPROX_QUANTILES(8 * (web100_log_entry.snap.HCThruOctetsReceived /
          web100_log_entry.snap.Duration), 101)[SAFE_ORDINAL(51)] AS upload_speed_mbps
 FROM
-  {3}
+  {2}
 WHERE
   -- Limit to within a time region
   TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), SECOND, "UTC") >= PARSE_TIMESTAMP("%F %X", "{0}")

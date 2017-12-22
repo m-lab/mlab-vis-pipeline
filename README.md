@@ -9,13 +9,16 @@ There are two main components in this repo:
 2. `tools` - Python files for preparing data that we join with (like maxmind,
 location data etc.)
 
-The pipeline is actually comprised of two separate main pipelines:
+The dataflow pipeline (#1 above) is actually comprised of two separate main pipelines:
 
-1. Bigquery pipeline - responsible for reading from NDT and augmenting the data.
+1. Bigquery pipeline - responsible for reading from NDT and augmenting the data. Kicked off
+by `BQRunner.java`.
 1. Bigtable pipeline - responsible for taking the produced data from the bq
-pipeline and transforming it into bigtable tables.
+pipeline and transforming it into bigtable tables. Kicked off by `BTRunner.java`.
 
 In production, the pipelines run in Kubernetes. See below for more information.
+By default, the bigquery pipeline runs ever 1 day, and the bigtable pipeline
+runs every 3 days. You can change those configurations.
 
 # Running the pipelines
 
@@ -31,6 +34,10 @@ Below we define the ways to do so, and the benefit / drawback of each.
 
 1. Before diving into any of these, ensure the configurations in `/environments`
 represent the environment you'll be running against. They should by default.
+If you plan to deploy to kubernetes, check `templates/k8s/configmap.yaml`. Any
+properties that do not change between environments are just set there. There
+are defaults for all of them in the code, so they aren't required in other runs
+but you can configure them by setting those env variables in other contexts.
 
 2. You need to have a storage bucket setup. You can do so by calling after
 choosing the correct project via `gcloud config set project <mlab-sandbox|mlab-staging...>`
@@ -120,7 +127,7 @@ Then, to run the container for either pipeline, call it like so:
 ```
 docker run -it \
     -v <path to local service key folder>:/keys \
-    -e KEY_FILE=/keys/<key name>.json \
+    -e KEY_FILE=/keys/<key file name>.json \
     -e API_MODE=<sandbox|staging|production> pipeline \
     ./run_{bq|bt}.sh -m <sandbox|staging|production>
 ```
@@ -135,6 +142,9 @@ docker run -it \
      ./run_bq.sh -m sandbox
 ```
 
+In this example you should have a key file called `/dev/opensource/mlab/mlab-keys/sandbox.json`
+on your machine.
+
 ## 3. Running on a kubernetes cluster
 
 In order to run on kubernetes you need to have it setup locally. You can do that
@@ -147,13 +157,8 @@ First, you need to setup a cluster. Make sure that you're running in the
 right project by calling `gcloud config set <project name>`, which could be
 `mlab-sandbox`, `mlab-staging`, or `mlab-oti`.
 
-Then, run the following script to setup your cluster:
-
-`KEY_FILE=<path to your key file>./setup_cluster.sh -m <sandbox|staging|production>`
-
-This script will setup a cluster, copy over the encrypted service key so it can be
-mounted as an key later, and setup the namespace for this cluter.
-This will take some time.
+Create the cluster by hand. Make sure the name of the cluster is documented in
+the right `/environments/` file under the `K8_CLUSTER` property.
 
 Your cluster will need to have the following permissions:
 
@@ -178,6 +183,13 @@ Your cluster will need to have the following permissions:
 | Cloud Source Repositories | Disabled |
 | Cloud Debugger | Disabled |
 
+Then, run the following script to setup your cluster:
+
+`KEY_FILE=<path to your key file>./setup_cluster.sh -m <sandbox|staging|production>`
+
+This script will setup an _existing_ cluster by copying over the encrypted service key so it can be
+mounted as an key later, and setup the namespace for this cluter.
+
 2. Use an existing cluster
 
 We also might be sharing a cluster with other services.
@@ -189,6 +201,10 @@ gcloud auth activate-service-account --key-file <path to key file>
 ```
 
 Then, you will first need to fetch the credentials for that cluster:
+
+`gcloud container clusters get-credentials <your cluster name> --zone <your cluster zone>`
+
+For example:
 
 `gcloud container clusters get-credentials data-processing-cluster --zone us-central1-a`
 
@@ -205,7 +221,6 @@ You can build the cluster container image and required templates by calling:
 This will build and push a docker image to gcr.io that will then be pulled
 by kubernetes. It is required to be able to deploy pods.
 If you just want to build a local image, specify -d as 0.
-The -t parameter is only relevant to travis.
 
 **Deploy to cluster**
 
@@ -217,7 +232,19 @@ To deploy (and start) your pipelines on the cluster you can call:
 
 `KEY_FILE=<path to your key file>./deploy_cluster.sh -m <sandbox|staging|production>`
 
-This will deploy your image and startup the pods.
+This will deploy your image and startup the pods. The pipelines will execute
+immedietly. Note that you might not want to execute both the bigquery and bigtable
+pipelines, since the bigtable pipeline relies on content in the bigquery tables.
+The Bigtable pipeline will just skip the run if tables aren't present, but you'll
+need to wait some number of days for it to try again. It is better to deploy the
+bq pipeline, and then after it completes, deploy the bt pipeline. You can monitor
+them in the dataflow dashboard on google cloud.
+
+Note that a fresh Bigquery pipeline deploy will wipe the accumulated data and
+refresh those tables.
+This is to account for the fact that changes in the sourve ETL pipeline may have
+invalidated the data in some form. Subsequent runs of the pipeline will be
+incremental (though delayed by 48 hours.)
 
 # Testing
 
@@ -232,6 +259,41 @@ And then running the tests by calling
 
 `docker run -it -w /mlab-vis-pipeline/dataflow pipeline mvn test`
 
+# Configuring the pipeline
+
+## In /environments files
+
+* `BIGTABLE_INSTANCE` - Name of bigtable cluster instance (NOT the Kubernetes cluster.)
+* `PROJECT` - Name of the project you're working with
+* `API_MODE` - Type of deployement. Can be 'sandbox', 'staging' or 'production'
+* `BIGTABLE_POOL_SIZE` - Size of the bigtable pool
+* `STAGING_LOCATION` - The storage bucket used for temporary files
+* `K8_CLUSTER` - Name of the Kubernetes cluster.
+
+## In templates/k8s/configmap.yaml
+
+The configuration options specificed in `/environments` files are passed down
+to the configmap which will make them available as env variables on the k8s nodes.
+
+Additional settings that are consistent between environments can be configured
+inside the template file itself:
+
+* `NDT_TABLE` - Name of the ndt table or view from which to read the data. If
+new table versions are released, just update the string here. Note that it will
+need to be inside of backticks "`", for example: "`measurement-lab.public_v3_1.ndt_all`".
+* `SLOW_DOWN_NDT_READ_BY_DAYS` - number of days to slow down the NDT read pipeline.
+Most recent tests are not always parsed sequentially. We assume that after 2
+days (or another value provided by you), entire days will be complete. This
+value should be negative and in quotes, for example: "-2".
+* `RUN_BQ_UPDATE_EVERY` - how often should the bigquery pipeline run. Default
+is: "1" day.
+* `DAYS_BEFORE_FULL_BQ_REFRESH` - how often the bq tables should be wiped
+clean. The default is every "7" days.
+* `RUN_BT_UPDATE_EVERY` - how often should bigtable updates run. The default is
+every "3" days.
+
+Be sure not to change the settings in `deploy-build/k8s/configmap.yaml` - that
+file gets overwritten by the deployment script.
 
 ## Troubleshooting
 
@@ -246,8 +308,3 @@ KEY_FILE=<key file path> make test_connection
 
 Relies on the detals in the `environments/` files at the root of the
 application. Be sure to change them to map to the instance you're pointing at.
-
-#### 2. My kubernetes container is not getting a public IP assigned.
-
-It's likley because there are no more public IPs to go around. Try switching
-to another zone.

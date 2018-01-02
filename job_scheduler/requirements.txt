@@ -1,7 +1,0 @@
-# This apns library's release version still doesn't support python 3.5!
-git+git://github.com/djacobs/PyAPNs.git#egg=PyAPNs
-
-git+https://github.com/Nextdoor/ndscheduler.git#egg=ndscheduler
-
-requests == 2.9
-gunicorn == 19.6.0

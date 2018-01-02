@@ -1,0 +1,28 @@
+language: java
+jdk:
+  - oraclejdk8
+sudo: required
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+sudo: required
+os: linux
+dist: trusty
+
+before_install:
+  - wget http://apache.claz.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+  - tar zxvf apache-maven-3.3.9-bin.tar.gz
+  - chmod +x apache-maven-3.3.9/bin/mvn
+  - export M2_HOME=$PWD/apache-maven-3.3.9
+  - export PATH=$PWD/apache-maven-3.3.9/bin:${PATH}
+
+jobs:
+  include:
+    # Run test
+    - stage: test
+      script: ./build_cluster.sh -m sandbox -d 0 -t 1
+
+

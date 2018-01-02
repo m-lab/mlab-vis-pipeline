@@ -118,7 +118,7 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 		Put put = new Put(rowKey);
 
 		this.addColumns(row, put, this.schema);
-
+		
 		c.output(put);
 	}
 

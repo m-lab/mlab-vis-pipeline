@@ -15,8 +15,8 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
 public class BaseIPMatchingFn extends DoFn<TableRow, TableRow> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BaseIPMatchingFn.class);
-	private static final int IP_FAMILY_IPV4 = 2;
-	private static final int IP_FAMILY_IPV6 = 10;
+	private static final int IP_FAMILY_IPV4 = 0;
+	private static final int IP_FAMILY_IPV6 = 1;
 	
 	/** Side input view NavigableMap from min IP to AS data */
 	protected PCollectionView<NavigableMap<String, TableRow>> asnView;

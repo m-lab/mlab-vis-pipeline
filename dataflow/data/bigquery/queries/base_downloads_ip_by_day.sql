@@ -1,3 +1,5 @@
+#standardSQL
+
 -- Finds various metrics grouped by remote_ip (client) based on
 -- passed in timestamps.
 --
@@ -21,13 +23,17 @@ SELECT
   count(*) AS download_test_count,
 
   -- General Information
-  USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(web100_log_entry.log_time * INTEGER(POW(10, 6)))) AS test_date,
+  FORMAT_TIMESTAMP("%F %X", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), DAY, "UTC")) as test_date,
+  FORMAT_TIMESTAMP("%F %X", TIMESTAMP(partition_date)) as partition_date,
 
-  -- Client Information
+ -- Client Information
   web100_log_entry.connection_spec.remote_ip AS client_ip,
-  TO_BASE64(PARSE_PACKED_IP(web100_log_entry.connection_spec.remote_ip)) as client_ip_base64,
-  -- IP Family: 10 = IPv6, 2 = IPv4
-  case when PARSE_IP(web100_log_entry.connection_spec.remote_ip) is null then 10 else 2 end as client_ip_family,
+  TO_BASE64(NET.IP_FROM_STRING(web100_log_entry.connection_spec.remote_ip)) as client_ip_base64,
+  -- IP Family: 1 = IPv6, 0 = IPv4
+  (CASE
+    WHEN REGEXP_CONTAINS(web100_log_entry.connection_spec.remote_ip, ":") THEN 1
+    ELSE 0
+  END) as client_ip_family,
   connection_spec.client_geolocation.city AS client_city,
   connection_spec.client_geolocation.region as client_region_code,
   connection_spec.client_geolocation.continent_code as client_continent_code,
@@ -37,9 +43,12 @@ SELECT
 
   -- Server Information
   web100_log_entry.connection_spec.local_ip AS server_ip,
-  TO_BASE64(PARSE_PACKED_IP(web100_log_entry.connection_spec.local_ip)) as server_ip_base64,
-  -- IP Family: 10 = IPv6, 2 = IPv4
-  case when PARSE_IP(web100_log_entry.connection_spec.local_ip) is null then 10 else 2 end as server_ip_family,
+  TO_BASE64(NET.IP_FROM_STRING(web100_log_entry.connection_spec.local_ip)) as server_ip_base64,
+  -- IP Family: 1 = IPv6, 0 = IPv4
+  (CASE
+    WHEN REGEXP_CONTAINS(web100_log_entry.connection_spec.local_ip, ":") THEN 1
+    ELSE 0
+  END) as server_ip_family,
   connection_spec.server_geolocation.city AS server_city,
   connection_spec.server_geolocation.region AS server_region_code,
   connection_spec.server_geolocation.continent_code as server_continent_code,
@@ -47,12 +56,11 @@ SELECT
   connection_spec.server_geolocation.latitude AS server_latitude,
   connection_spec.server_geolocation.longitude AS server_longitude,
 
-
   -- Throughput
-  nth(51, quantiles(8 * (web100_log_entry.snap.HCThruOctetsAcked /
+  APPROX_QUANTILES(8 * (web100_log_entry.snap.HCThruOctetsAcked /
        (web100_log_entry.snap.SndLimTimeRwin +
         web100_log_entry.snap.SndLimTimeCwnd +
-        web100_log_entry.snap.SndLimTimeSnd)), 101)) AS download_speed_mbps,
+        web100_log_entry.snap.SndLimTimeSnd)), 101)[SAFE_ORDINAL(51)] AS download_speed_mbps,
 
 
   -- Round-trip time
@@ -60,13 +68,13 @@ SELECT
   sum(web100_log_entry.snap.CountRTT) AS rtt_count,
   min(web100_log_entry.snap.MinRTT) AS rtt_min,
   sum(web100_log_entry.snap.SumRTT) / sum(web100_log_entry.snap.CountRTT) AS rtt_avg,
-  nth(51, quantiles(web100_log_entry.snap.SumRTT / web100_log_entry.snap.CountRTT, 101)) AS rtt_median,
+  APPROX_QUANTILES(web100_log_entry.snap.SumRTT / web100_log_entry.snap.CountRTT, 101)[SAFE_ORDINAL(51)] AS rtt_median,
 
   -- Packet retransmission rate
   sum(web100_log_entry.snap.SegsRetrans) AS segs_retrans,
   sum(web100_log_entry.snap.DataSegsOut) AS segs_out,
   sum(web100_log_entry.snap.SegsRetrans) / sum(web100_log_entry.snap.DataSegsOut) AS packet_retransmit_rate,
-  nth(51, quantiles(web100_log_entry.snap.SegsRetrans / web100_log_entry.snap.DataSegsOut, 101)) AS packet_retransmit_rate_median,
+  APPROX_QUANTILES(web100_log_entry.snap.SegsRetrans / web100_log_entry.snap.DataSegsOut, 101)[SAFE_ORDINAL(51)] AS packet_retransmit_rate_median,
 
 
   -- Network-limited time ratio =
@@ -86,22 +94,19 @@ SELECT
   SUM(web100_log_entry.snap.SndLimTimeCwnd) as sum_lim_time_cwnd,
   SUM(web100_log_entry.snap.SndLimTimeSnd) as sum_lim_time_snd
 FROM
-  [plx.google:m_lab.ndt.all]
+  {2}
 WHERE
   -- Limit to within a time region
-  USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(web100_log_entry.log_time * INTEGER(POW(10, 6)))) >= "{0}"
-  AND USEC_TO_TIMESTAMP(UTC_USEC_TO_DAY(web100_log_entry.log_time * INTEGER(POW(10, 6)))) < "{1}"
+  TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), SECOND, "UTC") >= PARSE_TIMESTAMP("%F %X", "{0}")
+  AND TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), SECOND, "UTC") < PARSE_TIMESTAMP("%F %X", "{1}")
+  AND connection_spec.data_direction = 1
 
   AND web100_log_entry.snap.SndLimTimeSnd IS NOT NULL
   AND web100_log_entry.snap.SndLimTimeCwnd IS NOT NULL
   AND web100_log_entry.snap.SndLimTimeRwin IS NOT NULL
-  AND project = 0
-  AND blacklist_flags = 0
-  AND web100_log_entry.is_last_entry = True
-  AND connection_spec.data_direction = 1
   AND web100_log_entry.snap.CongSignals > 0
   AND web100_log_entry.snap.HCThruOctetsAcked >= 8192
-  AND (web100_log_entry.snap.State == 1
+  AND (web100_log_entry.snap.State = 1
    OR (web100_log_entry.snap.State >= 5
        AND web100_log_entry.snap.State <= 11))
   AND (web100_log_entry.snap.SndLimTimeRwin +
@@ -113,6 +118,7 @@ WHERE
   AND web100_log_entry.snap.CountRTT > 10
 GROUP BY
   test_date,
+  partition_date,
   -- Client Information
   client_ip,
   client_ip_base64,

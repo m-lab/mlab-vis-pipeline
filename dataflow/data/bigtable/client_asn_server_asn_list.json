@@ -1,55 +1,55 @@
 {
   "row_keys": [
     {
-      "length": 10,
-      "type": "string",
-      "name": "client_asn_number",
+      "length": 10, 
+      "type": "string", 
+      "name": "client_asn_number", 
       "family": "meta"
-    },
+    }, 
     {
-      "length": 100,
-      "type": "string",
-      "name": "server_asn_name_lookup",
+      "length": 100, 
+      "type": "string", 
+      "name": "server_asn_name_lookup", 
       "family": "meta"
     }
-  ],
-  "bigquery_queryfile": "./data/bigtable/queries/client_asn_server_asn_list.sql",
-  "bigtable_table_name": "client_asn_server_asn_list",
-  "key": "client_asn_server_asn_list",
-  "bigquery_table": "[mlab-oti:data_viz.all_ip_by_day]",
+  ], 
+  "bigquery_queryfile": "./data/bigtable/queries/client_asn_server_asn_list.sql", 
+  "bigtable_table_name": "client_asn_server_asn_list", 
+  "key": "client_asn_server_asn_list", 
+  "bigquery_table": "data_viz.all_ip_by_day", 
   "columns": [
     {
-      "length": 10,
-      "type": "string",
-      "name": "client_asn_number",
+      "length": 10, 
+      "type": "string", 
+      "name": "client_asn_number", 
       "family": "meta"
-    },
+    }, 
     {
-      "length": 10,
-      "type": "string",
-      "name": "server_asn_number",
+      "length": 10, 
+      "type": "string", 
+      "name": "server_asn_number", 
       "family": "meta"
-    },
+    }, 
     {
-      "length": 100,
-      "type": "string",
-      "name": "server_asn_name",
+      "length": 100, 
+      "type": "string", 
+      "name": "server_asn_name", 
       "family": "meta"
-    },
+    }, 
     {
-      "length": 100,
-      "type": "string",
-      "name": "client_asn_name",
+      "length": 100, 
+      "type": "string", 
+      "name": "client_asn_name", 
       "family": "meta"
-    },
+    }, 
     {
-      "type": "integer",
-      "name": "test_count",
+      "type": "integer", 
+      "name": "test_count", 
       "family": "meta"
-    },
+    }, 
     {
-      "type": "integer",
-      "name": "last_three_month_test_count",
+      "type": "integer", 
+      "name": "last_three_month_test_count", 
       "family": "data"
     }
   ]

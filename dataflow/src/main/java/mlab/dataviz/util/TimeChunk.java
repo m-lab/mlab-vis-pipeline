@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import mlab.dataviz.data.DateRange;
-
 public class TimeChunk {
 
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat(Formatters.TIMESTAMP);
@@ -15,8 +13,8 @@ public class TimeChunk {
 	/**
 	 * Creates a predetermined number ranges of unix dates that fall between two dates. They are
 	 * equally sized.
-	 * @param startDate String - start date of the format {@link mlab.dataviz.util.Formatters.TEST_DATE}
-	 * @param endDate String - start date of the format {@link mlab.dataviz.util.Formatters.TEST_DATE}
+	 * @param startDate String - start date of the format {@link mlab.dataviz.pipelines.util.Formatters.TEST_DATE}
+	 * @param endDate String - start date of the format {@link mlab.dataviz.pipelines.util.Formatters.TEST_DATE}
 	 * @param numberOfDays int - number of days between ranges
 	 * @return dates ArrayList<mlab.dataviz.data.DateRange>
 	 * @throws ParseException - if date cannot be parsed.
@@ -50,8 +48,8 @@ public class TimeChunk {
 	/**
 	 * Creates a set of ranges of unix dates that are incremented by number of days between
 	 * two end dates
-	 * @param startDate String - start date of the format {@link mlab.dataviz.util.Formatters.TEST_DATE}
-	 * @param endDate String - start date of the format {@link mlab.dataviz.util.Formatters.TEST_DATE}
+	 * @param startDate String - start date of the format {@link mlab.dataviz.pipelines.util.Formatters.TEST_DATE}
+	 * @param endDate String - start date of the format {@link mlab.dataviz.pipelines.util.Formatters.TEST_DATE}
 	 * @param numberOfChunks int - number of chunks to create.
 	 * @return dates ArrayList<mlab.dataviz.data.DateRange>
 	 * @throws ParseException - if date cannot be parsed.

@@ -1,17 +1,34 @@
 #!/bin/bash
 
-basedir=`dirname $0`
+USAGE="$0 [production|staging|sandbox]"
+basedir=`dirname "$BASH_SOURCE"`
 
-ipv4File=$basedir/../../../dataflow/data/bigquery/asn/GeoIPASNum2.csv
-ipv6File=$basedir/../../../dataflow/data/bigquery/asn/GeoIPASNum2v6.csv
-asnNameFile=$basedir/../../../dataflow/data/bigquery/asn/asn_name_map.csv
+set -e
+set -x
 
-tableName=data_viz_helpers.maxmind_asn
-tableSchema=$basedir/../../../dataflow/data/bigquery/asn/schemas/maxmind_asn_schema.json
+# Initialize correct environment variables
+if [[ "$1" == production ]]; then
+  source ./environments/production.sh
+elif [[ "$1" == staging ]]; then
+  source ./environments/staging.sh
+elif [[ "$1" == sandbox ]]; then
+  source ./environments/sandbox.sh
+else
+  echo "BAD ARGUMENT TO $0"
+  exit 1
+fi
+
+ipv4File=./$basedir/data/GeoIPASNum2.csv
+ipv6File=./$basedir/data//GeoIPASNum2v6.csv
+asnNameFile=./$basedir/data/asn_name_map.csv
+
+tableName="${PROJECT}:data_viz_helpers.maxmind_asn"
+tableSchema=./$basedir/data/schemas/maxmind_asn_schema.json
 
 # This outputs the ./output/maxmind_asn.csv
 echo "Processing maxmind CSV"
-./format_maxmind_csv.py $ipv4File $ipv6File $asnNameFile
+
+./$basedir/format_maxmind_csv.py $ipv4File $ipv6File $asnNameFile
 
 echo "Removing $tableName from BigQuery"
 bq rm -f $tableName

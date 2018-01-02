@@ -8,43 +8,43 @@ from __future__ import print_function
 
 import os
 import csv
-from datetime import datetime
-import calendar
 
 CUR_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__))))
-TIMEZONE_DIR = os.path.join(CUR_DIR, "..", "..", "..", "dataflow", "data", "bigquery", "timezonedb")
-
-
+TIMEZONE_DIR = os.path.join(CUR_DIR, "data")
+OUTPUT_DIR = os.path.join(CUR_DIR, "output")
 ZONES_FILE = os.path.join(TIMEZONE_DIR, "zone.csv")
 TIMEZONES_FILE = os.path.join(TIMEZONE_DIR, "timezone.csv")
-MERGED_TIMEZONE_FILE = os.path.join(TIMEZONE_DIR, "merged_timezone.csv")
-
-dt = datetime(2008, 1, 1)
-lower_bound = calendar.timegm(dt.utctimetuple())
+MERGED_TIMEZONE_FILE = os.path.join(OUTPUT_DIR, "merged_timezone.csv")
 
 def build_zone_map():
+    '''
+    Build zone map
+    '''
     with open(ZONES_FILE, 'rb') as csvfile:
         fieldnames = ["zone_id", "country_name", "zone_name"]
         reader = csv.DictReader(csvfile, fieldnames=fieldnames)
 
-        zoneDict = {}
+        zone_dict = {}
 
         # zone id, country code, zone name
         for row in reader:
-            zoneDict[row["zone_id"]] = row["zone_name"]
+            zone_dict[row["zone_id"]] = row["zone_name"]
 
-    return zoneDict
+    return zone_dict
 
 def build_timezone_map():
-    zoneDict = build_zone_map()
+    '''
+    Build zone map
+    '''
+    zone_dict = build_zone_map()
     fieldnames = ["zone_id", "timezone_name", "timestart",
-            "gmt_offset_seconds", "dst_flag"]
+                  "gmt_offset_seconds", "dst_flag"]
     with open(TIMEZONES_FILE, 'rb') as csvfile:
         reader = csv.DictReader(csvfile, fieldnames=fieldnames)
 
         rows = []
         for row in reader:
-            row["zone_id"] = zoneDict[row["zone_id"]]
+            row["zone_id"] = zone_dict[row["zone_id"]]
             rows.append(row)
 
         # Write the new CSV file with new columns
@@ -60,11 +60,7 @@ def main():
     """
     The main program starting point, processes the CSV.
     """
-
-    # don't care about dates before this date.
-
     build_timezone_map()
-
 
 if __name__ == "__main__":
     main()

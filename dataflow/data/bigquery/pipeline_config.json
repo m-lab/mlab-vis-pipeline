@@ -1,0 +1,49 @@
+{
+    "downloads_ip_by_day_base": {
+        "queryFile": "./data/bigquery/queries/base_downloads_ip_by_day.sql",
+        "schemaFile": "./data/bigquery/schemas/base_downloads_ip.json",
+        "outputTable": "data_viz.base_downloads_ip_by_day",
+        "startDateFromTable": "data_viz.base_downloads_ip_by_day",
+        "ndtTable": "`measurement-lab.public_v3_1.ndt_all`",
+        "mergeTable": "data_viz.base_merged_ip_by_day",
+        "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
+        "withISPTable": "data_viz.all_ip_by_day",
+        "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
+    },
+
+    "downloads_ip_by_hour_base": {
+        "queryFile": "./data/bigquery/queries/base_downloads_ip_by_hour.sql",
+        "schemaFile": "./data/bigquery/schemas/base_downloads_ip.json",
+        "outputTable": "data_viz.base_downloads_ip_by_hour",
+        "startDateFromTable": "data_viz.base_downloads_ip_by_hour",
+        "ndtTable": "`measurement-lab.public_v3_1.ndt_all`",
+        "mergeTable": "data_viz.base_merged_ip_by_hour",
+        "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
+        "withISPTable": "data_viz.all_ip_by_hour",
+        "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
+    },
+
+    "uploads_ip_by_day_base": {
+        "queryFile": "./data/bigquery/queries/base_uploads_ip_by_day.sql",
+        "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
+        "outputTable": "data_viz.base_uploads_ip_by_day",
+        "startDateFromTable": "data_viz.base_uploads_ip_by_day",
+        "ndtTable": "`measurement-lab.public_v3_1.ndt_all`",
+        "mergeTable": "data_viz.base_merged_ip_by_day",
+        "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
+        "withISPTable": "data_viz.all_ip_by_day",
+        "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
+    },
+
+    "uploads_ip_by_hour_base": {
+        "queryFile": "./data/bigquery/queries/base_uploads_ip_by_hour.sql",
+        "schemaFile": "./data/bigquery/schemas/base_uploads_ip.json",
+        "outputTable": "data_viz.base_uploads_ip_by_hour",
+        "startDateFromTable": "data_viz.base_uploads_ip_by_hour",
+        "ndtTable": "`measurement-lab.public_v3_1.ndt_all`",
+        "mergeTable": "data_viz.base_merged_ip_by_hour",
+        "mergeTableSchema": "./data/bigquery/schemas/all_ip.json",
+        "withISPTable": "data_viz.all_ip_by_hour",
+        "withISPTableSchema": "./data/bigquery/schemas/all_ip.json"
+    }
+}

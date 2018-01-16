@@ -39,12 +39,14 @@ properties that do not change between environments are just set there. There
 are defaults for all of them in the code, so they aren't required in other runs
 but you can configure them by setting those env variables in other contexts.
 
-2. You need to have a storage bucket setup. You can do so by calling after
+2. M-Lab team members have one service account for each project (sandbox, staging, production), which we exchange securely and use when running these pipelines and scripts. If deploying a completely new instance to a new GCP project, storage bucket, etc., [create a new service account in the GCP console](https://console.cloud.google.com/projectselector/iam-admin/serviceaccounts) with the following permissions: _Project Editor, Project Viewer; BigQuery Admin, BigQuery User; Cloud Scheduler Admin; Storage Object Creator_. Create a .json key for this service account, and save it securely. Finally, the service account must be subscribed to [M-Lab Discuss](https://groups.google.com/a/measurementlab.net/forum/#!forum/discuss).
+
+3. You need to have a storage bucket setup. You can do so by calling after
 choosing the correct project via `gcloud config set project <mlab-sandbox|mlab-staging...>`
 
 `gsutil mb -c regional -l us-east1 gs://viz-pipeline-{sandbox|staging|production}`
 
-3. You need to create a bigtable instance to write to. You can do so by calling:
+4. You need to create a bigtable instance to write to. You can do so by calling:
 
 ```
 gcloud beta bigtable instances create viz-pipeline --cluster=viz-pipeline \
@@ -54,10 +56,10 @@ gcloud beta bigtable instances create viz-pipeline --cluster=viz-pipeline \
 ```
 
 Note that the instance name should match what's in your `/environment` files.
-In this case we are using 'viz-pipeline`, but it can be anything (and has
+In this case we are using `viz-pipeline`, but it can be anything (and has
 a different name in production.)
 
-4. You need to create helper tables in biqeury. To do so, run:
+5. You need to create helper tables in BigQuery. To do so, run:
 
 ```
 pip install -r requirements.txt
@@ -66,7 +68,9 @@ KEY_FILE=<path to cred file> \
 make setup_bigquery
 ```
 
-5. You need to create the final container tables in bigtable. To do so, run:
+**Note:** On Linux systems, you may need to define the `API_MODE` and `KEY_FILE` environment variables using `export API_MODE=sandbox|staging|production` and `export KEY_FILE=<path to cred file>`.
+
+6. You need to create the final container tables in bigtable. To do so, run:
 
 ```
 API_MODE=sandbox|staging|production \

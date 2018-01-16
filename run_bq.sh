@@ -9,6 +9,7 @@
 
 set -e
 set -x
+set -u
 
 usage() {
   echo "Usage: KEY_FILE=<path> $0 -s <YYYY-MM-DD> -e <YYYY-MM-DD> -m staging|production|sandbox [-t]" $1 1>&2; exit 1;

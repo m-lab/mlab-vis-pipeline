@@ -256,9 +256,9 @@ public class MergeUploadDownloadPipeline {
 
 		String queryFile = "./data/bigquery/queries/merge_upload_download.sql";
 		String outputSchema = "./data/bigquery/schemas/merged_all_ip.json";
-		String downloadTable = "[mlab-staging:data_viz.base_downloads_ip_by_day]";
-		String uploadTable = "[mlab-staging:data_viz.base_uploads_ip_by_day]";
-		String outputTable = "mlab-staging:data_viz.all_ip_by_day";
+		String downloadTable = "[mlab-oti:data_viz.base_downloads_ip_by_day]";
+		String uploadTable = "[mlab-oti:data_viz.base_uploads_ip_by_day]";
+		String outputTable = "mlab-oti:data_viz.all_ip_by_day";
 
 		HistoricPipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(HistoricPipelineOptions.class);
 

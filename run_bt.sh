@@ -53,11 +53,11 @@ if [ -n "${KEY_FILE}" ]; then
   GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BTRunner \
     --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
     --project=${PROJECT} --instance=${BIGTABLE_INSTANCE} \
-    --stagingLocation="${STAGING_LOCATION}"
+    --stagingLocation="${STAGING_LOCATION}" --maxNumWorkers=150
 else
   java -cp ${JAR_FILE} mlab.dataviz.main.BTRunner \
     --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
     --project=${PROJECT} --instance=${BIGTABLE_INSTANCE} \
-    --stagingLocation="${STAGING_LOCATION}"
+    --stagingLocation="${STAGING_LOCATION}" --maxNumWorkers=150
 fi
 

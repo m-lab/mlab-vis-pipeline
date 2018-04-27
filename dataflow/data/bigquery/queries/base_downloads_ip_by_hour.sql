@@ -120,12 +120,12 @@ WHERE
 
  -- Do not include rows with none or null values in client annotation fields:
  --     city, region_code, continent_code, country_code, latitude, longitude
- -- AND (connection_spec.client_geolocation.city IS NOT NULL OR LENGTH(connection_spec.client_geolocation.city) > 0)
- -- AND (connection_spec.client_geolocation.region IS NOT NULL OR LENGTH(connection_spec.client_geolocation.region) > 0)
- -- AND (connection_spec.client_geolocation.continent_code IS NOT NULL OR LENGTH(connection_spec.client_geolocation.continent_code) > 0)
- -- AND (connection_spec.client_geolocation.country_code IS NOT NULL OR LENGTH(connection_spec.client_geolocation.country_code) > 0)
- -- AND connection_spec.client_geolocation.latitude IS NOT NULL
- -- AND connection_spec.client_geolocation.longitude IS NOT NULL
+  AND (connection_spec.client_geolocation.city IS NOT NULL OR LENGTH(connection_spec.client_geolocation.city) > 0)
+  AND (connection_spec.client_geolocation.region IS NOT NULL OR LENGTH(connection_spec.client_geolocation.region) > 0)
+  AND (connection_spec.client_geolocation.continent_code IS NOT NULL OR LENGTH(connection_spec.client_geolocation.continent_code) > 0)
+  AND (connection_spec.client_geolocation.country_code IS NOT NULL OR LENGTH(connection_spec.client_geolocation.country_code) > 0)
+  AND connection_spec.client_geolocation.latitude IS NOT NULL
+  AND connection_spec.client_geolocation.longitude IS NOT NULL
   
 GROUP BY
   test_date,

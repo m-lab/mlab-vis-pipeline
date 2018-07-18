@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Tool for creating the data for the maxmind_asn table in BigQuery based on
-MaxMind GeoIPASNum input files.
+MaxMin  d GeoIPASNum input files.
 
 The ASN_NAME_MAP_FILENAME is used to override the names provided from MaxMind.
 

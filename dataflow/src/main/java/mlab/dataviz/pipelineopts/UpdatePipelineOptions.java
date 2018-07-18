@@ -10,4 +10,10 @@ public interface UpdatePipelineOptions extends PipelineOptions, BigQueryOptions 
 	@Default.String("sample")
 	String getTimePeriod();
 	void setTimePeriod(String timePeriod);
+	
+	@Description("Which M-Lab Project")
+	@Default.String("mlab-sandbox")
+	String getProject();
+	void setProject(String project);
+	
 }

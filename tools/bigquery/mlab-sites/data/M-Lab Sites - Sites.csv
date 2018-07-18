@@ -1,0 +1,149 @@
+Site,Country,State,City,Host,In service,Retired,Machine IPv4 prefix,Machine IPv6 prefix,Type of IPv6 connectivity,Transit provider,Region,Site
+ACC01,GH,,Accra,Ghana IXP,2014-12-03,2015-08-01,196.201.2.192/26,,,Ghana IXP,Africa,ACC01
+ACC02,GH,,Accra,Ghana IXP,2014-11-17,,196.49.14.192/26,,,Ghana IXP,Africa,ACC02
+AKL01,NZ,,Auckland,REANNZ,2013-01-02,,163.7.129.0/26,2404:138:4009::/64,native,REANNZ,Oceania,AKL01
+AMS01,NL,,Amsterdam,Google (L3),2009-07-09,,213.244.128.128/26,2001:4C08:2003:2::/64 ,native,Level3,Europe,AMS01
+AMS02,NL,,Amsterdam,Internap,2009-07-23,,72.26.217.64/26,2001:48c8:7::/64,,Internap,Europe,AMS02
+AMS03,NL,,Amsterdam,Google,2017-07-06,,80.239.169.0/26,2001:2030:32::/48,,Telia,Europe,AMS03
+AMS04,NL,,Amsterdam,Google,2017-07-06,,77.67.114.64/26,2001:0668:001F:005F::/64,,GTT,Europe,AMS04
+AMS05,NL,,Amsterdam,Google,2017-11-29,,195.89.145.0/26,2001:5002:100:21::/64,,Vodafone,Europe,AMS05
+AMS06,NL,,Amsterdam,Leaseweb,2017-12-04,,212.32.246.192/26,2001:1af8:4900:B070::1,,Leaseweb,Europe,AMS06
+AMS07,NL,,Amsterdam,INAP,,,31.186.242.0/26,2a02:b50:4020:cfb1::/64,,Internap,,AMS07
+ARN01,SE,,Stockholm,Google,,2017-10-31,213.248.112.64/26,2001:2030:0000:001B::/64,native,Telia,Europe,ARN01
+ARN02,SE,,Stockholm,Google,2017-07-25,,195.89.146.192/26,2001:5012:100:24::/64,,Vodafone,Europe,ARN02
+ARN03,SE,,Stockholm,Google,2017-10-19,,213.242.86.64/26,2001:4c08:2003:44::/64,,Level3,Europe,ARN03
+ARN04,SE,,Stockholm,Google,2017-10-19,,62.115.225.128/26,2001:2030:0:38::/64,,Telia,Europe,ARN04
+ARN05,SE,,Stockholm,Google,2017-07-27,,77.67.119.64/26,2001:668:1f:6a::/64,,GTT,Europe,ARN05
+ATH01,GR,,Athens,EETT/GRnet,2009-08-10,2016-07-06,83.212.4.0/26,2001:648:2ffc:2101::/64,native,GRNET,Europe,ATH01
+ATH02,GR,,Athens,EETT/GRnet,2011-07-11,2016-07-06,83.212.5.128/26,2001:648:2ffc:2102::/64,native,GRNET,Europe,ATH02
+ATH03,GR,,Athens,EETT/GRnet,2016-07-22,,193.201.166.128/26,2001:648:25e0::/64,,GRNET,Europe,ATH03
+ATL01,US,GA,Atlanta,Google,2009-05-04,,4.71.254.128/26,2001:1900:3001:C::/64,native,Level3,North America,ATL01
+ATL02,US,GA,Atlanta,Equinix,2016-06-17,,38.112.151.64/26,2001:550:5B00:1::/64,native,Cogent,North America,ATL02
+ATL03,US,GA,Atlanta,Equinix,2014-09-25,,64.86.200.192/26,2001:5a0:3b02::/64,native,Tata,North America,ATL03
+ATL04,US,GA,Atlanta,Equinix,2014-09-25,,173.205.0.192/26,2001:0668:001F:001C::/64,native,GTT,North America,ATL04
+ATL05,US,GA,Atlanta,Equinix,2016-01-01,,67.106.215.192/26,2610:0018:0111:C002::/64,native,XO,North America,ATL05
+ATL06,US,GA,Atlanta,Equinix,2017-03-28,,70.42.177.64/26,2600:c0b:2002:5::,native,Internap,North America,ATL06
+BEG01,RS,,Belgrade,Serbian Open eXchange,2014-06-13,,188.120.127.0/26,2001:7f8:1e:6::/64,native,Serbian Open eXchange,Europe,BEG01
+BCN01,ES,,Barcelona,CATNIX,2017-10-11,,91.213.30.192/26,2001:67c:137c:5::1/64,,Orange,Europe,BCN01
+BKK01,TH,,Bangkok,CAT Telecom,2015-01-28,2018-03-09,61.7.252.0/26,2001:c38:902f::/64,,CAT Telecom,Asia,BKK01
+BOG01,CO,,Bogota,RENATA,2014-05-20,2018-03-09,190.15.11.0/26,,,Telefonica,South America,BOG01
+BOM01,IN,,Mumbai,,2018-03-23,,125.18.112.64/26,2404:a800:2000:217::/64,,Airtel,Asia,BOM01
+BOM02,IN,,Mumbai,,2018-03-27,,14.143.58.128/26,2403:0:100:66::/64,,Tata,Asia,BOM02
+BRU01,BE,,Brussells,Interxion,2017-07-20,,195.89.146.128/26,2001:5005:200::/64,,Vodafone,Europe,BRU01
+BRU02,BE,,Brussells,Interxion,2017-08-17,,212.3.248.192/26,2001:4c08:2003:45::/64,,Level3,Europe,BRU02
+BRU03,BE,,Brussells,Interxion,2017-08-18,,62.115.229.192/26,2001:2030:0:39::/64,,Telia,Europe,BRU03
+BRU04,BE,,Brussells,Interxion,2017-07-25,,77.67.119.0/26,2001:668:1f:69::/64,,GTT,Europe,BRU04
+DEN01,US,CO,Denver,Equinix,2014-11-06,,184.105.23.64/26,2001:470:1:250::/64,native,GTT,North America,DEN01
+DEN02,US,CO,Denver,Equinix,2015-08-01,,4.34.58.0/26,2001:1900:2200:49::/64,,Level3,North America,DEN02
+DEN03,US,CO,Denver,Equinix,2016-01-01,,65.46.46.128/26,2610:0018:010e:8003::/64,native,XO,North America,DEN03
+DEN04,US,CO,Denver,Equinix,2014-11-06,,128.177.109.64/26,2001:438:fffd:2c::/64,native,Zayo,North America,DEN04
+DFW01,US,TX,Dallas,Google,2009-07-08,,38.107.216.0/26,2001:550:2000::/64,native,Cogent,North America,DFW01
+DFW02,US,TX,Dallas,Equinix,2014-09-25,,64.86.132.64/26,2001:5a0:3f00::/64,native,Tata,North America,DFW02
+DFW03,US,TX,Dallas,Equinix,2015-01-05,,4.15.35.128/26,2001:1900:2200:44::/64,native,Level3,North America,DFW03
+DFW04,US,TX,Dallas,Equinix,2016-01-01,,208.177.76.64/26,2610:0018:010E:0002::64,native,XO,North America,DFW04
+DFW05,US,TX,Dallas,Equinix,2014-10-01,,128.177.163.64/26,2001:438:fffd:30::/64,native,Zayo,North America,DFW05
+DFW06,US,TX,Dallas,Equinix,2017-03-28,,63.251.44.192/26,2600:c12:1002:4::,native,Internap,North America,DFW06
+DUB01,IE,,Dublin,HEAnet,,, 193.1.12.192/26,2001:770:B5::/64,,HEanet,Europe,DUB01
+FLN01,BR,,Florian¢polis,Rede Nacional de Ensino e Pesquisa - RNP,2017-02-22, ,200.237.203.0/26,2801:80:a88:4006::/64,,RNP (ASN 1916) and FAPESC (ASN 52950).,South America,FLN01
+FRA01,DE,,Frankfurt,,2017-07-28,,80.239.199.0/26,2001:2030:2f::/48,,Telia,Europe,FRA01
+FRA02,DE,,Frankfurt,,2017-08-23,,77.67.114.0/26,2001:0668:001F:005E::/64,,GTT,Europe,FRA02
+FRA03,DE,,Frankfurt,,2017-07-28,,195.89.146.64/26,2001:5001:200:30::/64,,Vodafone,Europe,FRA03
+FRA04,DE,,Frankfurt,,2017-07-28,,62.67.198.192/26,2001:4c08:2003:40::/64,,Level 3,Europe,FRA04
+HAM01,DE,,Hamburg,Google,2009-10-19,,80.239.142.192/26,2001:2030:0000:0019::/64,native,Telia,Europe,HAM01
+HND01,JP,,Tokyo,WIDE,2011-11-28,,203.178.130.192/26,2001:200:0:b801::/64,native,WIDE,Asia,HND01
+HND02,JP,,Tokyo,,2018-03-02,,210.151.179.128/26,2001:260:8a::/64,,Biglobe,Asia,HND02
+IAD01,US,VA,Reston,Google,2011-10-12,,216.156.197.128/26,2610:18:111:8001::/64,native,XO,North America,IAD01
+IAD02,US,VA,Ashburn,Equinix,2014-09-01,,38.90.140.128/26,2001:550:200:7::/64,native,Cogent,North America,IAD02
+IAD03,US,VA,Ashburn,Equinix,2014-11-17,,66.198.10.128/26,2001:5a0:3c03::/64,native,Tata,North America,IAD03
+IAD04,US,VA,Ashburn,Equinix,2014-09-25,,173.205.4.0/26,2001:0668:001F:0021::/64,native,GTT,North America,IAD04
+IAD05,US,VA,Ashburn,Equinix,2014-12-17,,4.35.238.192/26,2001:1900:2200:46::/64,native,Level3,North America,IAD05
+JNB01,ZA,,Johannesburg,Tenet,2013-02-11,,196.24.45.128/26,2001:4200:fff0:4512::/64,native,Tenet,Africa,JNB01
+LAX01,US,CA,Los Angeles,Google,2009-05-14,,38.98.51.0/26,2001:550:6800::/64 ,native,Cogent,North America,LAX01
+LAX02,US,CA,Los Angeles,Equinix,2014-11-10,,63.243.240.64/26,2001:550:A600::/64,native,Tata,North America,LAX02
+LAX03,US,CA,Los Angeles,Equinix,2014-09-25,,173.205.3.64/26,2001:0668:001F:001E::/64,native,GTT,North America,LAX03
+LAX04,US,CA,Los Angeles,Equinix,2014-12-17,,4.15.166.0/26,2001:1900:2100:15::/64,native,Level3,North America,LAX04
+LAX05,US,CA,Los Angeles,Equinix,2014-09-25,,128.177.109.192/26,2001:438:fffd:2e::/64,native,Zayo,North America,LAX05
+LBA01,UK,,Leeds,aql,2012-08-03,,109.239.110.0/26,2a00:1a80:1:8::/64,,aql,Europe,LBA01
+LCA01,CY,,Nicosia,OCECPR,2013-02-20,,82.116.199.0/26 ,,,CyNet,Europe,LCA01
+LGA01,US,NY,New York,"Voxel
+Internap",2009-02-10,2016-04-21,74.63.50.0/26,2001:48c8:5:f::/64,,Voxel,North America,LGA01
+LGA02,US,NY,New York,Google,2009-06-08,,38.106.70.128/26, 2001:550:1D00:100::/64 ,native,Cogent,North America,LGA02
+LGA03,US,NY,New York,Equinix,2015-05-05,,64.86.148.128/26,2001:5a0:4300::/64,native,Tata,North America,LGA03
+LGA04,US,NY,New York,Equinix,2014-09-25,,173.205.4.64/26,2001:0668:001F:0022::/64,native,GTT,North America,LGA04
+LGA05,US,NY,New York,Equinix,2014-11-14,,4.35.94.0/26,2001:1900:2100:14::/64,native,Level3,North America,LGA05
+LGA06,US,NY,New York,Equinix,2014-10-21,,128.177.119.192/26,2001:438:fffd:2b::/64,native,Zayo,North America,LGA06
+LGA07,US,NY,New York,Google,,,66.151.223.128/26,2600:c0f:2002::/64,,Internap,North America,LGA07
+LHR01,UK,,London,Google,2009-06-04,2017-05-30,217.163.1.64/26,2001:4C08:2003:3::/64,native,Level3,Europe,LHR01
+LHR02,UK,,London,Google,2017-06-15,,80.239.170.192/26,2001:2030:33::/48,,Telia,Europe,LHR02
+LHR03,UK,,London,Google,2017-06-15,,77.67.114.192/26,2001:0668:001F:0061::/64,,GTT,Europe,LHR03
+LHR04,UK,,London,Google,2017-06-15,,195.89.146.0/26,2001:5000:1100:31::/64,,Vodafone,Europe,LHR04
+LHR05,UK,,London,Google,2017-06-15,,212.113.31.0/26,2001:4c08:2003:3c::/64,,Level3,Europe,LHR05
+LIS01,EU,,Lisbon,Google,2017-06-20,,213.242.96.192/26,2001:4c08:2003:3d::/64,,Level3,Europe,LIS01
+LIS02,EU,,Lisbon,Google,2017-06-20,,195.89.147.128/26,2001:500d:200:3::/64,,Vodafone,Europe,LIS02
+LJU01,SI,,Ljubljana,go6,2012-08-03,,91.239.96.64/26,2001:67c:27e4:100::/64,native?,go6,Europe,LJU01
+LOS01,NG,,Lagos,Nigeria IXP,2015-01-15,,196.216.149.64/26,,,Nigeria IXP,Africa,LOS01
+MAD01,ES,,Madrid,Google,,2017-08-02,213.200.103.128/26,2001:0668:001F:0016::/64,native,Tinet,Europe,MAD01
+MAD02,ES,,Madrid,Google,2017-07-18,,213.242.96.128/26,2001:4c08:2003:3e::/64,,Level 3,Europe,MAD02
+MAD03,ES,,Madrid,Google,2017-07-18,,80.239.229.128/26,2001:2030:34::/48,,Telia,Europe,MAD03
+MAD04,ES,,Madrid,Google,2017-07-18,,77.67.115.64/26,2001:0668:001F:0063::/64,,GTT,Europe,MAD04
+MIA01,US,FL,Miami,Google,2009-05-28,,4.71.210.192/26,2001:1900:3001:A::/64,native,Level3,North America,MIA01
+MIA02,US,FL,Miami,Terremark,2014-11-10,,38.109.21.0/26,2001:550:6C01::/64,native,Cogent,North America,MIA02
+MIA03,US,FL,Miami,Terremark,2014-11-10,,66.110.73.0/26,2001:5a0:3801::/64,native,Tata,North America,MIA03
+MIA04,US,FL,Miami,Terremark,2014-11-10,,173.205.3.128/26,2001:0668:001F:001F::/64,native,GTT,North America,MIA04
+MIA05,US,FL,Miami,Terremark,2014-11-10,,128.177.109.0/26,2001:438:FFFD:29::/64,native,Zayo,North America,MIA05
+MIL01,IT,,Milan,Google,? (old site),2017-08-02, 213.200.99.192/26,2001:0668:001F:0017::/64,native,Tinet,Europe,MIL01
+MIL02,IT,,Milan,Google,2017-07-18,,80.239.222.0/26,2001:2030:30::/48,native,Telia,Europe,MIL02
+MIL03,IT,,Milan,Google,2017-07-18,,77.67.115.0/26,2001:668:1f:62::/64,native,GTT,Europe,MIL03
+MIL04,IT,,Milan,Google,2017-07-18,,213.242.77.128/26,2001:1900:2200:AF::/64,native,Level3,Europe,MIL04
+MIL05,IT,,Milan,Google,2017-07-18,,195.89.147.0/26,2001:5008:100:14::/64,,Vodafone,Europe,MIL05
+MNL01,PH,,Quezon City,PHOpenIX,2015-05-01,,202.90.156.0/26,2001:d18:0:35::/64,native,PHOpenIX,Asia,MNL01
+MPM01,MZ,,Maputo,Maluana Science and Technology Park,2017-08-17,,41.94.23.0/26,,,Morenet,Africa,MPM01
+NBO01,KE,,Nairobi,KENET,2013-02-13,,197.136.0.64/26,2c0f:fe08:13:64::/64,,Ubuntunet,Africa,NBO01
+NUQ01,US,CA,Mountain View,Google,2009-01-28,2015-01-01,64.9.225.128/26,2604:ca00:f000::/64,native,Google,North America,NUQ01
+NUQ02,US,CA,Redwood City,ISC,2012-10-26,, 149.20.5.64/26,2001:4F8:1:1001::/64,native,ISC,North America,NUQ02
+NUQ03,US,CA,San Jose,Equinix,2014-10-01,,38.102.163.128/26,2001:550:1502::/64,native,Cogent,North America,NUQ03
+NUQ04,US,CA,San Jose,Equinix,2014-09-25,,66.110.32.64/26,2001:5a0:3e00::/64,native,Tata,North America,NUQ04
+NUQ05,US,CA,San Jose,Equinix,2016-01-01,,216.156.85.192/26,2610:0018:0111:0007::/64,native,XO,North America,NUQ05
+NUQ06,US,CA,San Jose,Equinix,2014-10-01,,128.177.109.128/26,2001:438:fffd:2d::/64,native,Zayo,North America,NUQ06
+ORD01,US,IL,Chicago,Google,2009-03-20,,4.71.251.128/26,2001:1900:3001:B::/64,native,Level3,North America,ORD01
+ORD02,US,IL,Chicago,Equinix,2014-10-01,,38.65.210.192/26,2001:550:1B01:1::/64,native,Cogent,North America,ORD02
+ORD03,US,IL,Chicago,Equinix,2014-10-01,,66.198.24.64/26,2001:5a0:4400::/64,native,Tata,North America,ORD03
+ORD04,US,IL,Chicago,Equinix,2014-09-25,,173.205.3.192/26,2001:0668:001F:0020::/64,native,GTT,North America,ORD04
+ORD05,US,IL,Chicago,Equinix,2014-10-01,,128.177.163.0/26,2001:438:fffd:2f::/64,native,Zayo,North America,ORD05
+PAR01,FR,,Paris,Google,2009-07-09,2017-08-02,80.239.168.192/26,2001:2030:0000:001A::/64,native,Telia,Europe,PAR01
+PAR02,FR,,Paris,Google,2017-09-13,,212.73.231.192/26,2001:4C08:2003:3F::/64,,Level3,Europe,PAR02
+PAR03,FR,,Paris,Google,2017-07-05,,80.239.222.64/26,2001:2030:35::/48,,Telia,Europe,PAR03
+PAR04,FR,,Paris,Google,2017-10-12,,77.67.115.128/26,2001:0668:001F:0064::/64,,GTT,Europe,PAR04
+PAR05,FR,,Paris,Google,2017-07-05,,195.89.147.192/26,2001:5003:300:e::/64,,Vodafone,Europe,PAR05
+PRG01,CZ,,Prague,Google,2012-12-05,2017-08-02,212.162.51.64/26 ,2001:4c08:2003:4::/64,native,Level3,Europe,PRG01
+PRG02,CZ,,Prague,Google,2017-08-01,,195.122.159.128/26,2001:4c08:2003:42::/64,,Level3,Europe,PRG02
+PRG03,CZ,,Prague,Google,2017-08-01,,80.239.156.128/26,2001:2030:31::/48,,Telia,Europe,PRG03
+PRG04,CZ,,Prague,Google,2017-08-02,,77.67.114.128/26,2001:0668:001F:0060::/64,,GTT,Europe,PRG04
+PRG05,CZ,,Prague,Google,2017-08-01,,195.89.147.64/26,2001:5016:100:3::/64,,Vodafone,Europe,PRG05
+SEA01,US,WA,Seattle,Google,2009-03-13,,38.102.0.64/26,2001:550:3200:1::/64 ,native,Cogent,North America,SEA01
+SEA02,US,WA,Seattle,Equinix,2014-09-25,,63.243.224.0/26,2001:5a0:4400::/64,native,Tata,North America,SEA02
+SEA03,US,WA,Seattle,Equinix,2014-09-25,,173.205.3.0/26,2001:0668:001F:001D::/64,native,GTT,North America,SEA03
+SEA04,US,WA,Seattle,Equinix,2015-01-05,,4.71.157.128/26,2001:1900:2100:16::/64,native,Level3,North America,SEA04
+SEA05,US,WA,Seattle,Equinix,2016-01-01,,64.3.225.64/26,2610:0018:0114:4001::/64,native,XO,North America,SEA05
+SEA06,US,WA,Seattle,Equinix (site code SE3),2017-03-28,,64.74.15.192/26,2600:c00:0:202::,native,Internap,North America,SEA06
+SIN01,SG,,Changi,Google,2014-01-30,,180.87.97.64/26,2405:2000:301::/64,,Tata,Asia,SIN01
+SJC01,US,CA,San Jose,Equinix,2017-03-27,,70.42.244.64/26,2600:c02:2:82::/64,native,Internap,North America,SJC01
+SVG01,NO,,Sola,Altibox,,,81.167.39.0/26,2a01:798:0:13::/64,native,Altibox,Europe,SVG01
+SYD01,AU,,Sydney,AARNET,2010-05-05,,203.5.76.128/26,2001:388:00d0::/64,native,AARNET,Oceania,SYD01
+SYD02,AU,,Sydney,Vocus,2012-05-14,,175.45.79.0/26,2402:7800:0:12::/64,native,Vocus,Oceania,SYD02
+TNR01,MG,,Antananarivo,Telecom Malagasy,2016-04-14,,41.188.12.64/26,,,Telecom Malagasy,Africa,TNR01
+TPE01,TW,,Taipei,National Chi Nan University,2012-05-29,,163.22.28.0/26,2001:e10:6840:28::/64,native,National Chi Nan University,Asia,TPE01
+TRN01,IT,,Turin,Topix,2012-02-03,,194.116.85.192/26,2001:7F8:23:307::/64,native,Topix,Europe,TRN01
+TUN01,TN,,Tunis,ATI,2013-04-24,,41.231.21.0/26,2c0f:fab0:ffff:1000::/64,native,ATI,Africa,TUN01
+VIE01,AT,,Vienna,RTR,2012-05-10,,213.208.152.0/26,2a01:190:1700:38::/64,,RTR,Europe,VIE01
+WLG01,NZ,,Wellington,Victoria University of Wellington,2011-09-13,2016-01-01,103.10.233.0/26,2404:2000:3000::/64,native,Victoria University of Wellington,Oceania,WLG01
+WLG02,NZ,,Wellington,REANNZ,2016-01-01,,163.7.129.64/26,2404:138:4009:1::/64,native,REANNZ,Oceania,WLG02
+YQM01,CA,,Moncton,CIRA,2017-11-13,,209.51.169.128/26,2001:470:1:820::/64,,Hurricane Electric,North America,YQM01
+YUL01,CA,,Montreal,CIRA,,2017-10-25,162.219.49.0/26,2620:10a:80fe::/48,native,Hurricane Electric,North America,YUL01
+YUL02,CA,,Montreal,CIRA,2017-10-25,,216.66.14.64/26,2001:470:1:48f::/64,native,Hurricane Electric,North America,YUL02
+YVR01,CA,,Vancouver,CIRA,2017-10-13,,184.105.70.192/26,2001:470:1:822::/64,,Hurricane Electric,North America,YVR01
+YWG01,CA,,Winnipeg,CIRA,2017-10-10,,184.105.55.64/26,2001:470:1:81f::/64,,Hurricane Electric,North America,YWG01
+YYC01,CA,,Calgary,CIRA,2014-09-01,2017-09-27,162.219.50.0/26,2620:10a:80ff::/48,native,Hurricane Electric,North America,YYC01
+YYC02,CA,,Calgary,CIRA,2017-09-27,,65.49.72.192/26,2001:470:1:42c::/64,native,Hurricane Electric,North America,YYC02
+YYZ01,CA,,Toronto,CIRA,,2017-10-18,162.219.48.0/26,2620:10a:80fd::/48,native,Hurricane Electric,North America,YYZ01
+YYZ02,CA,,Toronto,CIRA,2017-10-18,,216.66.68.128/26,2001:470:1:70a::/64,native,Hurricane Electric,North America,YYZ02

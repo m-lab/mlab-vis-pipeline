@@ -7,6 +7,21 @@ import com.google.cloud.dataflow.sdk.options.PipelineOptions;
 
 public interface BigtableTransferPipelineOptions extends PipelineOptions, BigQueryOptions {
 
+	@Description("Which M-Lab Project")
+	@Default.String("mlab-sandbox")
+	String getProject();
+	void setProject(String project);
+	
+	@Description("Which Bigtable instance to write to?")
+	@Default.String("mlab-data-viz")
+	String getInstance();
+	void setInstance(String instance);
+	
+	@Description("Which Prometheus Instance")
+	@Default.String("prometheus")
+	String getPrometheus();
+	void setPrometheus(String prometheus);
+	
 	@Description("Do not actually execute the pipeline")
 	@Default.Integer(0)
 	int getTest();

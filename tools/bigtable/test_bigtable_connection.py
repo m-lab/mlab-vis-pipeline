@@ -1,29 +1,45 @@
 #!/usr/bin/env python
+#pylint: disable=no-name-in-module, relative-import
 
+import os
 import argparse
-from gcloud import bigtable
-from gcloud.bigtable import happybase
+from google.cloud import bigtable
+from google.cloud import happybase
+from google.oauth2 import service_account
 
-DEFAULT_PROJECT_ID = 'mlab-oti'
-DEFAULT_INSTANCE_ID = 'mlab-data-viz-prod'
+def main():
+    '''
+    Main connection establishmnent
+    '''
+    credentials = service_account.Credentials.from_service_account_file(
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 
-def main(project_id, instance_id):
-    client = bigtable.Client(project=project_id, admin=True)
-    instance = client.instance(instance_id)
+    connection_pool = None
+    project_id = os.environ.get("PROJECT")
+    bigtable_instance = os.environ.get("BIGTABLE_INSTANCE")
+    bigtable_pool_size = os.environ.get("BIGTABLE_POOL_SIZE")
 
-    connection = happybase.Connection(instance=instance)
-    all_tables = connection.tables()
-    print "There are {} tables for project {} on instance {}".format(len(all_tables), project_id, instance_id)
-    for table in all_tables: print table
+    if project_id and bigtable_instance:
+        try:
+            client = bigtable.Client(project=project_id,
+                                     admin=True,
+                                     credentials=credentials)
 
+            instance = client.instance(bigtable_instance)
+            size = int(bigtable_pool_size) if bigtable_pool_size else 10
+
+            connection_pool = happybase.pool.ConnectionPool(size,
+                                                            instance=instance)
+
+            with connection_pool.connection(timeout=5) as connection:
+                connection.open()
+                all_tables = connection.tables()
+                print "There are {} tables for project {} on instance {}".format(len(all_tables), project_id, bigtable_instance)
+                for table in all_tables:
+                    print table
+        except Exception as err:
+            print "Failed to connect"
+            print err
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--project_id', help='Your Cloud Platform project ID.', default=DEFAULT_PROJECT_ID)
-    parser.add_argument(
-        '--instance_id', help='ID of the Cloud Bigtable instance to connect to.', default=DEFAULT_INSTANCE_ID)
-
-    args = parser.parse_args()
-    main(args.project_id, args.instance_id)
+    main()

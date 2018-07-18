@@ -1,3 +1,5 @@
 ipaddr>=2.1.11
 sqlparse>=0.2.0
-gcloud>=0.17.0
+google-cloud==0.27.0
+google-cloud-happybase==0.26.0
+google-api-python-client==1.6.3

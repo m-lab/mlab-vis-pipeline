@@ -1,43 +1,43 @@
 {
   "row_keys": [
     {
-      "length": 100,
-      "type": "string",
-      "name": "server_asn_name_lookup",
+      "length": 100, 
+      "type": "string", 
+      "name": "server_asn_name_lookup", 
       "family": "meta"
     }
-  ],
-  "bigquery_queryfile": "./data/bigtable/queries/server_asn_search.sql",
-  "bigtable_table_name": "server_asn_search",
-  "key": "server_asn_search",
-  "bigquery_table": "[mlab-oti:data_viz.all_ip_by_day]",
+  ], 
+  "bigquery_queryfile": "./data/bigtable/queries/server_asn_search.sql", 
+  "bigtable_table_name": "server_asn_search", 
+  "key": "server_asn_search", 
+  "bigquery_table": "data_viz.all_ip_by_day", 
   "columns": [
     {
-      "length": 100,
-      "type": "string",
-      "name": "server_asn_name_lookup",
+      "length": 100, 
+      "type": "string", 
+      "name": "server_asn_name_lookup", 
       "family": "meta"
-    },
+    }, 
     {
-      "length": 100,
-      "type": "string",
-      "name": "server_asn_name",
+      "length": 100, 
+      "type": "string", 
+      "name": "server_asn_name", 
       "family": "meta"
-    },
+    }, 
     {
-      "length": 10,
-      "type": "string",
-      "name": "server_asn_number",
+      "length": 10, 
+      "type": "string", 
+      "name": "server_asn_number", 
       "family": "meta"
-    },
+    }, 
     {
-      "type": "integer",
-      "name": "test_count",
+      "type": "integer", 
+      "name": "test_count", 
       "family": "meta"
-    },
+    }, 
     {
-      "type": "integer",
-      "name": "last_three_month_test_count",
+      "type": "integer", 
+      "name": "last_three_month_test_count", 
       "family": "data"
     }
   ]

@@ -12,22 +12,22 @@ import mlab.dataviz.util.FileIO;
 /**
  * Builds a query from a query file path and an array of parameters in order.
  * Parameters must be specified in the path as follows {0}, {1} ... {n}.
- * 
+ *
  * Parameters are not required, at which point, the contents of the file will
  * be returned as the query itself.
  * @author iros
  *
  */
 public class QueryBuilder {
-	
+
 	private String queryFile;
 	private String queryString;
 	private Object[] queryParams;
 	private static final Logger LOG = LoggerFactory.getLogger(QueryBuilder.class);
-	
+
 	/**
 	 * @private
-	 * Reads a query from a file, and replaces any arguments with the 
+	 * Reads a query from a file, and replaces any arguments with the
 	 * query parameters passed in the constructor. Saves the query string.
 	 * @throws IOException
 	 */
@@ -40,18 +40,19 @@ public class QueryBuilder {
 			} else {
 				this.queryString = content;
 			}
-	
+
 		} catch (FileNotFoundException e) {
 			LOG.error(e.getMessage());
+			LOG.error(e.getStackTrace().toString());
 		}
 	}
-	
+
 	/**
 	 * Takes a query file and a set of parameters, and places those
 	 * parameters in the query file in order. The parameters should be in numbered
 	 * form like so: {0}, {1}. The replacement will happen in the order of the
 	 * provided parameters array.
-	 * @param queryfile  the path to the query file. 
+	 * @param queryfile  the path to the query file.
 	 * @param params  an array of parameter objects to replace.
 	 * @throws IOException
 	 */
@@ -60,7 +61,7 @@ public class QueryBuilder {
 		this.queryParams = params;
 		_init();
 	}
-	
+
 	/**
 	 * Takes a query file and reads it into the query string without any additional
 	 * parameters.
@@ -71,7 +72,7 @@ public class QueryBuilder {
 		this.queryFile = queryfile;
 		_init();
 	}
-	
+
 	/**
 	 * Returns the query string
 	 * @return String  the query with substituted params.
@@ -79,7 +80,7 @@ public class QueryBuilder {
 	public String getQuery() {
 		return this.queryString;
 	}
-	
+
 	/**
 	 * Returns a string-ified version of parameters separated by a comma if
 	 * parameters exist. Otherwise, return the queryString.
@@ -91,7 +92,7 @@ public class QueryBuilder {
 			for(int i = 0; i < this.queryParams.length; i++) {
 				output[i] = this.queryParams[i].toString();
 			}
-		
+
 			return String.join(", ", output);
 		} else {
 			return this.getQuery();

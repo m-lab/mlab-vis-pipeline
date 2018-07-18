@@ -11,11 +11,16 @@ import csv
 import base64
 from ipaddr import IPNetwork
 
-CUR_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_DIRECTORY = "{0}/output".format(CUR_DIR)
-OUTPUT_FILE = "{0}/mlab_sites_processed.csv".format(OUTPUT_DIRECTORY)
-INPUT_FILE = "../../../dataflow/data/bigquery/mlab-sites/M-Lab Sites - Sites.csv"
-INPUT_LOCATIONS_FILE = "../../../dataflow/data/bigquery/mlab-sites/mlab_site_locations.csv"
+CUR_DIR = os.path.abspath(os.path.join(
+    os.path.dirname(os.path.realpath(__file__))))
+
+OUTPUT_DIR = os.path.join(CUR_DIR, "output")
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, "mlab_sites_processed.csv")
+
+INPUT_FILE = os.path.join(CUR_DIR, "data", "M-Lab Sites - Sites.csv")
+INPUT_LOCATIONS_FILE = os.path.join(
+    CUR_DIR, "data", "mlab_site_locations.csv")
+
 IP_MIN_COLUMN = "Machine IPv4 Min IP"
 IP_MAX_COLUMN = "Machine IPv4 Max IP"
 IP_NETMASK_COLUMN = "Machine IPv4 IP prefix netmask"
@@ -226,8 +231,8 @@ def main():
     """
 
     # Ensure the output directory exists
-    if not os.path.exists(OUTPUT_DIRECTORY):
-        os.makedirs(OUTPUT_DIRECTORY)
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
 
     process_csv()
 

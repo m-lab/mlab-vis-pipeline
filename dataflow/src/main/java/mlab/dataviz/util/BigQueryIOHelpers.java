@@ -29,5 +29,4 @@ public class BigQueryIOHelpers {
 			.withWriteDisposition(writeDisposition)
 			.withCreateDisposition(createDisposition));
 	}
-	
 }

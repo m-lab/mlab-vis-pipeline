@@ -1,12 +1,13 @@
 package mlab.dataviz.pipelines;
 
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.values.PCollection;
+
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.dataviz.util.BigQueryIOHelpers;
 
@@ -32,24 +33,21 @@ public class BasePipeline {
 	 */
 	public PCollection<TableRow> loadData() {
 		// read in the by IP data from `by_ip_day_base`
-		PCollection<TableRow> byIpData = this.pipeline.apply(
-				BigQueryIO.Read
-				.named("Read " + this.inputTable)
-				.from(this.inputTable));
-
-		return byIpData;
+		return pipeline.apply("Read " + inputTable, BigQueryIO.readTableRows().from(inputTable));
 	}
 
 	/**
 	 * Write the modified rows to a destination table in BigQuery
 	 *
-	 * @param data The PCollection of rows to output
-	 * @param outputTable The identifier for the table to write to (e.g. `data_viz.my_table`)
+	 * @param data              The PCollection of rows to output
+	 * @param outputTable       The identifier for the table to write to (e.g.
+	 *                          `data_viz.my_table`)
 	 * @param outputTableSchema The schema describing the output table
 	 */
 	public void writeDataToTable(PCollection<TableRow> data) {
 		// Write the changes to the specified table
-		BigQueryIOHelpers.writeTable(data, this.outputTable, this.outputSchema, this.writeDisposition, this.createDisposition);
+		BigQueryIOHelpers.writeTable(data, this.outputTable, this.outputSchema, this.writeDisposition,
+				this.createDisposition);
 	}
 
 	public Pipeline getPipeline() {
@@ -127,6 +125,7 @@ public class BasePipeline {
 
 	/**
 	 * Template method for subclasses to just override the inner part of apply.
+	 * 
 	 * @param rows
 	 * @return the modified rows
 	 */
@@ -137,6 +136,7 @@ public class BasePipeline {
 
 	/**
 	 * The main work of the pipeline goes here.
+	 * 
 	 * @param rows
 	 * @return the modified rows
 	 */
@@ -163,6 +163,7 @@ public class BasePipeline {
 
 	/**
 	 * Delegates to apply(null) to cause the pipeline to load data
+	 * 
 	 * @return the modified rows
 	 */
 	public PCollection<TableRow> apply() {

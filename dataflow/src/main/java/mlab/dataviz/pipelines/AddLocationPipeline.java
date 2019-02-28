@@ -2,21 +2,19 @@ package mlab.dataviz.pipelines;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.View;
+import org.apache.beam.sdk.values.KV;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.PCollectionView;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.transforms.View;
-import com.google.cloud.dataflow.sdk.values.KV;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 import mlab.dataviz.dofn.AddLocationNamesFn;
 import mlab.dataviz.dofn.ExtractCountryCodeFn;
@@ -26,7 +24,6 @@ import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.Schema;
 
 public class AddLocationPipeline extends BasePipeline {
-	private static final Logger LOG = LoggerFactory.getLogger(AddLocationPipeline.class);
 
 	private static final String COUNTRY_CODE_TABLE = "data_viz_helpers.location_country_codes";
 	private static final String REGION_CODE_TABLE = "data_viz_helpers.location_region_codes";
@@ -39,7 +36,6 @@ public class AddLocationPipeline extends BasePipeline {
 	private BQTableUtils bqUtils;
 	private String countryCodeTable;
 	private String regionCodeTable;
-	
 
 	public AddLocationPipeline(Pipeline p, BQTableUtils bqUtils) {
 		super(p);
@@ -63,66 +59,52 @@ public class AddLocationPipeline extends BasePipeline {
 	public void setRegionCodeTable(String regionCodeTable) {
 		this.regionCodeTable = this.bqUtils.wrapTable(regionCodeTable);
 	}
-	
+
 	public PCollection<TableRow> applyInner(PCollection<TableRow> data) {
-		PCollection<TableRow> countryCodes = this.pipeline.apply(
-			BigQueryIO.Read
-				.named("Read " + this.getCountryCodeTable())
-				.from(this.getCountryCodeTable()));
+		PCollection<TableRow> countryCodes = this.pipeline.apply("Read " + this.getCountryCodeTable(),
+				BigQueryIO.readTableRows().from(this.getCountryCodeTable()));
 
-		PCollection<TableRow> regionCodes = this.pipeline.apply(
-				BigQueryIO.Read
-					.named("Read " + this.getRegionCodeTable())
-					.from(this.getRegionCodeTable()));
+		PCollection<TableRow> regionCodes = this.pipeline.apply("Read " + this.getRegionCodeTable(),
+				BigQueryIO.readTableRows().from(this.getRegionCodeTable()));
 
-		PCollection<KV<String, TableRow>> countryKeys =
-				countryCodes.apply(ParDo.named("Extract Country Keys")
-						.of(new ExtractCountryCodeFn()));
+		PCollection<KV<String, TableRow>> countryKeys = countryCodes.apply("Extract Country Keys",
+				ParDo.of(new ExtractCountryCodeFn()));
 
-		PCollection<KV<String, TableRow>> regionKeys =
-				regionCodes.apply(ParDo.named("Extract Region Keys")
-						.of(new ExtractRegionCodeFn()));
-
+		PCollection<KV<String, TableRow>> regionKeys = regionCodes.apply("Extract Region Keys",
+				ParDo.of(new ExtractRegionCodeFn()));
 
 		PCollectionView<Map<String, TableRow>> countryMap = countryKeys.apply(View.asMap());
 		PCollectionView<Map<String, TableRow>> regionMap = regionKeys.apply(View.asMap());
 
 		// resolve locations
-		PCollection<TableRow> withLocations = data.apply(
-			ParDo
-				.named("Add country and region names")
-				.withSideInputs(countryMap, regionMap)
-				.of(new AddLocationNamesFn(countryMap, regionMap)));
+		PCollection<TableRow> withLocations = data.apply("Add country and region names",
+				ParDo.of(new AddLocationNamesFn(countryMap, regionMap)).withSideInputs(countryMap, regionMap));
 
 		return withLocations;
 	}
 
-	public static void main(String [] args) throws ClassNotFoundException {
-
-
-		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
-				.as(BigQueryOptions.class);
+	public static void main(String[] args) throws ClassNotFoundException {
+		
+		PipelineOptionsFactory.register(HistoricPipelineOptions.class);
+		
+		BigQueryOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(BigQueryOptions.class);
 		options.setAppName("AddLocations");
 
 		// pipeline object
 		Pipeline p = Pipeline.create(options);
 
-		HistoricPipelineOptions optionsLocation = options.cloneAs(HistoricPipelineOptions.class);
+		HistoricPipelineOptions optionsLocation = options.as(HistoricPipelineOptions.class);
 		BQTableUtils bqUtils = new BQTableUtils(optionsLocation);
-		
+
 		AddLocationPipeline addLocations = new AddLocationPipeline(p, bqUtils);
-		addLocations
-			.setWriteData(true)
-			.setOutputTable(bqUtils.wrapTable(OUTPUT_TABLE))
-		    .setInputTable(bqUtils.wrapTable(INPUT_TABLE))
-			.setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
-			.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
-			.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
+		addLocations.setWriteData(true).setOutputTable(bqUtils.wrapTable(OUTPUT_TABLE))
+				.setInputTable(bqUtils.wrapTable(INPUT_TABLE)).setOutputSchema(Schema.fromJSONFile(OUTPUT_SCHEMA))
+				.setWriteDisposition(WriteDisposition.WRITE_TRUNCATE)
+				.setCreateDisposition(CreateDisposition.CREATE_IF_NEEDED);
 
 		addLocations.apply();
 
 		p.run();
 	}
 
-	
 }

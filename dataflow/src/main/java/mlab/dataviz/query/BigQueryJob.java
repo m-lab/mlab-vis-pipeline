@@ -1,22 +1,25 @@
 package mlab.dataviz.query;
 
+import static com.google.cloud.bigquery.BigQuery.QueryResultsOption.maxWaitTime;
+import static com.google.cloud.bigquery.BigQuery.QueryResultsOption.pageSize;
+
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Duration;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.FieldValueList;
+import com.google.cloud.bigquery.Job;
+import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.QueryJobConfiguration;
-import com.google.cloud.bigquery.QueryResponse;
-import com.google.cloud.bigquery.QueryResult;
+import com.google.cloud.bigquery.TableResult;
 import com.google.cloud.http.HttpTransportOptions;
-import com.google.cloud.bigquery.BigQuery.QueryOption;
-import com.google.cloud.bigquery.BigQuery.QueryResultsOption;
-import com.google.cloud.bigquery.BigQueryException;
-import org.threeten.bp.Duration;
 
 public class BigQueryJob {
 
@@ -81,17 +84,12 @@ public class BigQueryJob {
 
 		// Create a query request
 		QueryJobConfiguration queryConfig =
-		    QueryJobConfiguration.of(querySql);
+		    QueryJobConfiguration.newBuilder(querySql).build();
 
 		// Request query to be executed and wait for results
-		QueryResponse queryResponse = bigquery.query(
-		    queryConfig,
-		    QueryOption.of(QueryResultsOption.maxWaitTime(60000L)),
-		    QueryOption.of(QueryResultsOption.pageSize(1000L)));
-
-		// Read rows
-		QueryResult result = queryResponse.getResult();
-		return result.getValues();
+		Job job = bigquery.create(JobInfo.of(queryConfig));
+		TableResult results = job.getQueryResults(maxWaitTime(60000L), pageSize(1000L));
+		return results.getValues();
 	}
 
 	/**
@@ -124,15 +122,12 @@ public class BigQueryJob {
 						.build();
 
 			// Request query to be executed and wait for results
-			QueryResponse queryResponse = bigquery.query(
-			    queryConfig,
-			    QueryOption.of(QueryResultsOption.maxWaitTime(300000L)), //5 min
-			    QueryOption.of(QueryResultsOption.pageSize(1000L)));
+			Job job = bigquery.create(JobInfo.of(queryConfig));
+			TableResult results = job.getQueryResults(maxWaitTime(300000L), pageSize(1000L));
 
 			// Read rows
-			QueryResult result = queryResponse.getResult();
 			String val = null;
-			for (FieldValueList row : result.getValues()) {
+			for (FieldValueList row : results.getValues()) {
 				val = row.get(0).getStringValue();
 			}
 

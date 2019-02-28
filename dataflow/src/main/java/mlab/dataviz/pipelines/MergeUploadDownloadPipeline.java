@@ -7,18 +7,17 @@ import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.beam.runners.dataflow.DataflowPipelineJob;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.values.PCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.bigquery.BigQueryException;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
-import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
 import mlab.dataviz.query.BigQueryJob;
@@ -107,18 +106,12 @@ public class MergeUploadDownloadPipeline {
 	}
 
 	/**
-	 * Returns the date range appropriate for the merge table. The logic is as follows:
-	 * get last date from merge table as C
-	 *		if empty,
-	 *			get min date from download table as A
-	 * 			get min date from upload table as B
-	 *			use min {A,B}
-	 *		else
-	 * 			get max date from upload table as A
-	 * 				if empty, error
-	 * 			get max date from download table as B
-	 * 				if empty, error
-	 * 			if not empty, use the earlier of {A,B,C}
+	 * Returns the date range appropriate for the merge table. The logic is as
+	 * follows: get last date from merge table as C if empty, get min date from
+	 * download table as A get min date from upload table as B use min {A,B} else
+	 * get max date from upload table as A if empty, error get max date from
+	 * download table as B if empty, error if not empty, use the earlier of {A,B,C}
+	 *
 	 * @return String[] of dates
 	 */
 	private String[] getDates() {
@@ -154,11 +147,13 @@ public class MergeUploadDownloadPipeline {
 			}
 
 			if (!found) {
-				// merge table empty, just use the full date range from the upload/download tables.
+				// merge table empty, just use the full date range from the upload/download
+				// tables.
 				// download table
 				dateMinQueryDownloadResult = bqj.executeQueryForValue(dateMinQueryDownload);
 				if (dateMinQueryDownloadResult.length() == 0) {
-					throw new IOException("Download min date not found - is the table " + this.downloadTable + " empty?");
+					throw new IOException(
+							"Download min date not found - is the table " + this.downloadTable + " empty?");
 				}
 
 				// upload table
@@ -170,16 +165,16 @@ public class MergeUploadDownloadPipeline {
 				sortedSet.add(dtf.parse(dateMinQueryDownloadResult));
 				sortedSet.add(dtf.parse(dateMinQueryUploadResult));
 
-
 			} else {
 				// we have some rows in the merge table, so get the minimum value of the max
 				// of all tables, and use that.
-				dateMaxQueryDownloadResult =  bqj.executeQueryForValue(dateMaxQueryDownload);
+				dateMaxQueryDownloadResult = bqj.executeQueryForValue(dateMaxQueryDownload);
 				if (dateMaxQueryDownloadResult.length() == 0) {
-					throw new IOException("Download max date not found - is the table " + this.downloadTable + " empty?");
+					throw new IOException(
+							"Download max date not found - is the table " + this.downloadTable + " empty?");
 				}
 
-				dateMaxQueryUploadResult =  bqj.executeQueryForValue(dateMaxQueryUpload);
+				dateMaxQueryUploadResult = bqj.executeQueryForValue(dateMaxQueryUpload);
 				if (dateMaxQueryUploadResult.length() == 0) {
 					throw new IOException("Upload max date not found - is the table " + this.uploadTable + " empty?");
 				}
@@ -195,9 +190,7 @@ public class MergeUploadDownloadPipeline {
 
 			return new String[] {
 					// get first (earliest date).
-					dtf.format(sortedSet.first()),
-					this.dataEndDate
-			};
+					dtf.format(sortedSet.first()), this.dataEndDate };
 
 			// parse as dates
 		} catch (IOException | ParseException | InterruptedException | BigQueryException e) {
@@ -230,16 +223,12 @@ public class MergeUploadDownloadPipeline {
 		String queryName = qb.toString();
 
 		// set up the big query read
-		PCollection<TableRow> rows = this.p
-				.apply(BigQueryIO.Read
-					.named("run query: " + queryName)
-					.usingStandardSql()
-					.fromQuery(queryString));
+		PCollection<TableRow> rows = this.p.apply("run query: " + queryName,
+				BigQueryIO.readTableRows().fromQuery(queryString).usingStandardSql());
 
-		rows.apply(BigQueryIO.Write.named("write table " + this.outputTable)
-				.to(this.outputTable)
-				.withSchema(this.outputSchema).withCreateDisposition(createDisposition)
-				.withWriteDisposition(writeDisposition));
+		rows.apply("write table " + this.outputTable,
+				BigQueryIO.writeTableRows().to(this.outputTable).withSchema(this.outputSchema)
+						.withCreateDisposition(createDisposition).withWriteDisposition(writeDisposition));
 
 		return rows;
 	}
@@ -260,18 +249,15 @@ public class MergeUploadDownloadPipeline {
 		String uploadTable = "[mlab-oti:data_viz.base_uploads_ip_by_day]";
 		String outputTable = "mlab-oti:data_viz.all_ip_by_day";
 
-		HistoricPipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(HistoricPipelineOptions.class);
+		HistoricPipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
+				.as(HistoricPipelineOptions.class);
 
 		Pipeline pipe = Pipeline.create(options);
 
 		MergeUploadDownloadPipeline mudP = new MergeUploadDownloadPipeline(options, pipe);
-		mudP.setQueryFile(queryFile)
-			.setDataStartDate("2017-01-01 01:00:00")
-			.setDataEndDate("2017-01-15 10:00:00")
-			.setDownloadTable(downloadTable)
-			.setOutputSchema(Schema.fromJSONFile(outputSchema))
-			.setOutputTable(outputTable)
-			.setUploadTable(uploadTable);
+		mudP.setQueryFile(queryFile).setDataStartDate("2017-01-01 01:00:00").setDataEndDate("2017-01-15 10:00:00")
+				.setDownloadTable(downloadTable).setOutputSchema(Schema.fromJSONFile(outputSchema))
+				.setOutputTable(outputTable).setUploadTable(uploadTable);
 
 		mudP.apply();
 		DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();

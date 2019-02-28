@@ -67,6 +67,8 @@ echo "End date: ${ENDDATE}"
 # echo "moving into dir: ${DATAFLOW_DIR}"
 cd ${DATAFLOW_DIR}
 
+ENVIRONMENT_PARAMETERS="--runner=DataflowRunner --project=$PROJECT --stagingLocation=${STAGING_LOCATION} --maxNumWorkers=20 --skipNDTRead=0 --test=${TEST} --diskSizeGb=30"
+
 echo "Starting server for metrics & bigquery pipeline (DAY and HOUR)"
 
 if [ -z "${ENDDATE}" ] && [ -z "${STARTDATE}" ]; then
@@ -74,30 +76,18 @@ if [ -z "${ENDDATE}" ] && [ -z "${STARTDATE}" ]; then
   echo "Empty start and end dates, going to let pipeline determine dates."
 
   if [ -n "${KEY_FILE}" ]; then
-    GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
-    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-    --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
-    --skipNDTRead=0 --test=${TEST} --diskSizeGb=30
+    export GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE}
+    mvn exec:java -Dexec.mainClass=mlab.dataviz.main.BQRunner -Dexec.args="$ENVIRONMENT_PARAMETERS"
   else
-    java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
-    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-    --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
-    --skipNDTRead=0 --test=${TEST} --diskSizeGb=30
+    mvn exec:java -Dexec.mainClass=mlab.dataviz.main.BQRunner -Dexec.args="$ENVIRONMENT_PARAMETERS"
   fi
 
 else
   echo "Running on dates ${STARTDATE} - ${ENDDATE}"
   if [ -n "${KEY_FILE}" ]; then
-    GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
-    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-    --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
-    --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} \
-    --diskSizeGb=30
+    export GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} 
+    mvn exec:java -Dexec.mainClass=mlab.dataviz.main.BQRunner -Dexec.args="$ENVIRONMENT_PARAMETERS --startDate=${STARTDATE} --endDate=${ENDDATE}"
   else
-    java -cp ${JAR_FILE} mlab.dataviz.main.BQRunner \
-    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-    --project=${PROJECT} --stagingLocation="${STAGING_LOCATION}" \
-    --skipNDTRead=0 --startDate=${STARTDATE} --endDate=${ENDDATE} --test=${TEST} \
-    --diskSizeGb=30
+    mvn exec:java -Dexec.mainClass=mlab.dataviz.main.BQRunner -Dexec.args="$ENVIRONMENT_PARAMETERS --startDate=${STARTDATE} --endDate=${ENDDATE}"
   fi
 fi

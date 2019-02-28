@@ -6,30 +6,30 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
+import org.apache.beam.runners.dataflow.DataflowPipelineJob;
+import org.apache.beam.runners.dataflow.util.MonitoringUtil;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult.State;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.values.PCollection;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.prometheus.client.Gauge;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.PipelineResult.State;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
-import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
-import com.google.cloud.dataflow.sdk.values.PCollection;
 
+import io.prometheus.client.Gauge;
 import mlab.dataviz.entities.BQPipelineRun;
 import mlab.dataviz.entities.BQPipelineRunDatastore;
 import mlab.dataviz.pipelineopts.HistoricPipelineOptions;
 import mlab.dataviz.util.BQTableUtils;
 import mlab.dataviz.util.BigQueryIOHelpers;
 import mlab.dataviz.util.Formatters;
-import mlab.dataviz.util.Schema;
 import mlab.dataviz.util.PipelineConfig;
+import mlab.dataviz.util.Schema;
 
 public class BigqueryTransferPipeline implements Runnable {
 
@@ -210,7 +210,7 @@ public class BigqueryTransferPipeline implements Runnable {
 				// === get uploads for timePeriod
 				// set up big query IO options (it doesn't seem to let us share the download
 				// ones)
-				HistoricPipelineOptions optionsUl = options.cloneAs(HistoricPipelineOptions.class);
+				HistoricPipelineOptions optionsUl = options.as(HistoricPipelineOptions.class);
 				optionsUl.setAppName("HistoricPipeline-Upload-" + this.timePeriod + "-" + System.currentTimeMillis());
 
 				NDTReadPipeline ehrPUL = new NDTReadPipeline(optionsUl, this.status);
@@ -254,7 +254,7 @@ public class BigqueryTransferPipeline implements Runnable {
 				Gauge.Timer mergeTimer = mergeDuration.startTimer();
 
 				// set up big query IO options
-				HistoricPipelineOptions optionsMergeAndISP = options.cloneAs(HistoricPipelineOptions.class);
+				HistoricPipelineOptions optionsMergeAndISP = options.as(HistoricPipelineOptions.class);
 				optionsMergeAndISP
 						.setAppName("HistoricPipeline-MergeAndISP-" + this.timePeriod + "-" + System.currentTimeMillis());
 				Pipeline pipe = Pipeline.create(optionsMergeAndISP);
@@ -304,7 +304,7 @@ public class BigqueryTransferPipeline implements Runnable {
 					DataflowPipelineJob resultsMergeAndISPs = (DataflowPipelineJob) pipe.run();
 
 					// wait for the pipeline to finish executing
-					resultsMergeAndISPs.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+					resultsMergeAndISPs.waitUntilFinish(Duration.ZERO, new MonitoringUtil.LoggingHandler());
 
 					LOG.info("Merge + ISPs job completed for" + this.timePeriod + ", with status: " + resultsMergeAndISPs.getState().toString());
 				}

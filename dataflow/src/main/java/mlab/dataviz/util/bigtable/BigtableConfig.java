@@ -55,6 +55,7 @@ public class BigtableConfig implements java.io.Serializable {
 		this.columns = new ArrayList<BigtableColumnSchema>();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static BigtableConfig fromJSONFile(String filepath) {
 		FileReader reader;
 		JSONParser jsonParser;
@@ -79,7 +80,7 @@ public class BigtableConfig implements java.io.Serializable {
 
 
 			while (i.hasNext()) {
-				JSONObject schemaItem = (JSONObject) i.next();
+				JSONObject schemaItem = i.next();
 
 				String name = (String) schemaItem.get("name");
 				Integer size = ((Long) schemaItem.get("length")).intValue();
@@ -91,7 +92,7 @@ public class BigtableConfig implements java.io.Serializable {
 			JSONArray columns = (JSONArray)schemaObject.get("columns");
 			i = columns.iterator();
 			while (i.hasNext()) {
-				JSONObject schemaItem = (JSONObject) i.next();
+				JSONObject schemaItem = i.next();
 
 				String name = (String) schemaItem.get("name");
 				String type = (String) schemaItem.get("type");

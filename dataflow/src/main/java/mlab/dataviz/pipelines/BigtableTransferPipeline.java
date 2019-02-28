@@ -4,19 +4,19 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import java.util.ArrayList;
 
+import org.apache.beam.runners.dataflow.DataflowPipelineJob;
+import org.apache.beam.runners.dataflow.util.MonitoringUtil;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
-import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
+import com.google.cloud.bigtable.beam.CloudBigtableIO;
 
 import io.prometheus.client.Gauge;
 import mlab.dataviz.entities.BTPipelineRun;
@@ -110,7 +110,8 @@ public class BigtableTransferPipeline implements Runnable {
 				
 				if (!RUN_IN_PARALLEL) {
 					pipe = Pipeline.create(options);
-					CloudBigtableIO.initializeForWrite(pipe);
+					// TODO
+				//	CloudBigtableIO.initializeForWrite(pipe);
 				}
 				
 				int test = options.getTest();
@@ -166,7 +167,7 @@ public class BigtableTransferPipeline implements Runnable {
 					} else if (pipe != null) {
 						DataflowPipelineJob result = (DataflowPipelineJob) pipe.run();
 			            try {
-			                result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+			                result.waitUntilFinish(Duration.ZERO, new MonitoringUtil.LoggingHandler());
 			            } catch (InterruptedException | IOException e) {
 			                LOG.error(e.getMessage());
 			                e.printStackTrace();

@@ -24,6 +24,7 @@ RUN apt-get install unzip && \
 # Setup maven
 ARG MAVEN_VERSION=3.3.9
 ARG BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
+ENV MAVEN_OPTS=-Xss2m
 
 RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
   && curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz \

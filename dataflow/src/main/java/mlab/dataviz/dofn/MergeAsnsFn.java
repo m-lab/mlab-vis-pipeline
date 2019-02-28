@@ -2,22 +2,22 @@ package mlab.dataviz.dofn;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.values.PCollectionView;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 public class MergeAsnsFn extends DoFn<TableRow, TableRow> {
-	private static final Logger LOG = LoggerFactory.getLogger(MergeAsnsFn.class);
+
+	private static final long serialVersionUID = 1L;
+	
 	private PCollectionView<Map<String, TableRow>> mergeAsnMap;
 
 	public MergeAsnsFn(PCollectionView<Map<String, TableRow>> mergeAsnMap) {
 		this.mergeAsnMap = mergeAsnMap;
 	}
 
-	@Override
+	@ProcessElement
 	public void processElement(DoFn<TableRow, TableRow>.ProcessContext c) throws Exception {
 
 		TableRow dataRow = c.element().clone();

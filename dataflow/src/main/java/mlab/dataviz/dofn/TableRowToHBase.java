@@ -1,17 +1,15 @@
 package mlab.dataviz.dofn;
 
-import org.apache.hadoop.hbase.client.Mutation;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.util.Bytes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.hadoop.hbase.client.Mutation;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.util.Bytes;
+
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
 
 import mlab.dataviz.util.bigtable.BigtableColumnSchema;
 import mlab.dataviz.util.bigtable.BigtableConfig;
@@ -28,10 +26,6 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private static final Logger LOG = LoggerFactory.getLogger(TableRowToHBase.class);
-	private static final String COLUMN_FAMILY_DATA = "data";
-	private static final String COLUMN_FAMILY_META = "meta";
 
 	private BigtableConfig schema;
 
@@ -110,6 +104,7 @@ public class TableRowToHBase extends DoFn<TableRow, Mutation> {
 		return rowKey.getBytes(StandardCharsets.UTF_8);
 	}
 
+	@ProcessElement
 	public void processElement(ProcessContext c) throws Exception {
 		TableRow row = c.element();
 

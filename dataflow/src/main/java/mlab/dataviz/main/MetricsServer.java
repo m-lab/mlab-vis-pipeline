@@ -23,7 +23,7 @@ import io.prometheus.client.hotspot.DefaultExports;
  * @author iros
  */
 public class MetricsServer implements Runnable {
-	private static final Logger LOG = LoggerFactory.getLogger(BQRunner.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MetricsServer.class);
 	public MetricsServer() {
 	}
 	

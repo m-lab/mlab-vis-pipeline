@@ -1,9 +1,9 @@
 package mlab.dataviz.pipelineopts;
 
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.options.Default;
-import com.google.cloud.dataflow.sdk.options.Description;
-import com.google.cloud.dataflow.sdk.options.PipelineOptions;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Description;
+import org.apache.beam.sdk.options.PipelineOptions;
 
 public interface UpdatePipelineOptions extends PipelineOptions, BigQueryOptions {
 	@Description("Time period, options are: 'day' or 'hour'")

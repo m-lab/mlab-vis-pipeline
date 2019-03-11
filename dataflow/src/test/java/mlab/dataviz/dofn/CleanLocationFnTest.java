@@ -114,41 +114,4 @@ public class CleanLocationFnTest {
 		// requires the values.
 		locationMapIterable = getLocationCleaningMap(locationCleaningList);
 	}
-	
-	@Test
-	public void testLocationCleaning() {		
-//		// create the DoFn to test
-//		CleanLocationFn cleanLocationFn = new CleanLocationFn(locationCleaningView);
-//
-//		// create the tester
-//		DoFnTester<TableRow, TableRow> fnTester = DoFnTester.of(cleanLocationFn);
-//
-//		// set side inputs
-//		fnTester.setSideInputInGlobalWindow(locationCleaningView, locationMapIterable);
-//
-//		// prepare the test data
-//		List<TableRow> inputData = new ArrayList<TableRow>();
-//		inputData.add(makeTestData("NA", "US", "NY", "New York City")); // city replacement
-//		inputData.add(makeTestData("EU", "GB", "H9", "London")); // region replacement
-//		inputData.add(makeTestData("NA", "US", "WA", "New York City")); // no replacement
-//
-//		// run the tester
-//		List<TableRow> output = fnTester.processBatch(inputData);
-//
-//		// verify the output is what is expected
-//		assertEquals("New York", (String) output.get(0).get("client_city"));
-//		assertEquals("NY", (String) output.get(0).get("client_region_code"));
-//		assertEquals("US", (String) output.get(0).get("client_country_code"));
-//		assertEquals("NA", (String) output.get(0).get("client_continent_code"));
-//
-//		assertEquals("London", (String) output.get(1).get("client_city"));
-//		assertEquals("EN", (String) output.get(1).get("client_region_code"));
-//		assertEquals("GB", (String) output.get(1).get("client_country_code"));
-//		assertEquals("EU", (String) output.get(1).get("client_continent_code"));
-//
-//		assertEquals("New York City", (String) output.get(2).get("client_city"));
-//		assertEquals("WA", (String) output.get(2).get("client_region_code"));
-//		assertEquals("US", (String) output.get(2).get("client_country_code"));
-//		assertEquals("NA", (String) output.get(2).get("client_continent_code"));
-	}
 }

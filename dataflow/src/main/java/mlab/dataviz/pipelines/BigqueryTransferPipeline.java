@@ -156,9 +156,7 @@ public class BigqueryTransferPipeline implements Runnable {
 		this.isRunning = true;
 
 		PipelineOptionsFactory.register(HistoricPipelineOptions.class);
-		HistoricPipelineOptions options = PipelineOptionsFactory.fromArgs(this.args)
-				.withValidation()
-				.as(HistoricPipelineOptions.class);
+		HistoricPipelineOptions options = getOptionsFromArgs();
 
 		Gauge.Timer durationTimer = this.duration.startTimer();
 
@@ -210,7 +208,8 @@ public class BigqueryTransferPipeline implements Runnable {
 				// === get uploads for timePeriod
 				// set up big query IO options (it doesn't seem to let us share the download
 				// ones)
-				HistoricPipelineOptions optionsUl = options.as(HistoricPipelineOptions.class);
+				HistoricPipelineOptions optionsUl = getOptionsFromArgs();
+				
 				optionsUl.setAppName("HistoricPipeline-Upload-" + this.timePeriod + "-" + System.currentTimeMillis());
 
 				NDTReadPipeline ehrPUL = new NDTReadPipeline(optionsUl, this.status);
@@ -304,7 +303,7 @@ public class BigqueryTransferPipeline implements Runnable {
 					DataflowPipelineJob resultsMergeAndISPs = (DataflowPipelineJob) pipe.run();
 
 					// wait for the pipeline to finish executing
-					resultsMergeAndISPs.waitUntilFinish(Duration.ZERO, new MonitoringUtil.LoggingHandler());
+					resultsMergeAndISPs.waitUntilFinish(Duration.standardSeconds(-1), new MonitoringUtil.LoggingHandler());
 
 					LOG.info("Merge + ISPs job completed for" + this.timePeriod + ", with status: " + resultsMergeAndISPs.getState().toString());
 				}
@@ -346,8 +345,13 @@ public class BigqueryTransferPipeline implements Runnable {
 
 		this.isRunning = false;
 	}
-
-
+	
+	private HistoricPipelineOptions getOptionsFromArgs() {
+		return PipelineOptionsFactory.fromArgs(this.args)
+									 .withValidation()
+									 .as(HistoricPipelineOptions.class);
+	}
+	
 	/**
 	 * If set to true, the NDT tables will be truncated and rewritten from
 	 * the beginning of time.

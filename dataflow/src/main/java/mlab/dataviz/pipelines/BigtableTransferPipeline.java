@@ -110,8 +110,6 @@ public class BigtableTransferPipeline implements Runnable {
 				
 				if (!RUN_IN_PARALLEL) {
 					pipe = Pipeline.create(options);
-					// TODO
-				//	CloudBigtableIO.initializeForWrite(pipe);
 				}
 				
 				int test = options.getTest();

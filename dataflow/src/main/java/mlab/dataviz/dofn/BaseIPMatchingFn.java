@@ -5,17 +5,15 @@ import java.util.NavigableMap;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.values.PCollectionView;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 public class BaseIPMatchingFn extends DoFn<TableRow, TableRow> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BaseIPMatchingFn.class);
-	private static final int IP_FAMILY_IPV4 = 0;
+	private static final long serialVersionUID = 1L;
+	
 	private static final int IP_FAMILY_IPV6 = 1;
 	
 	/** Side input view NavigableMap from min IP to AS data */
@@ -88,7 +86,7 @@ public class BaseIPMatchingFn extends DoFn<TableRow, TableRow> {
 	 * This adds the AS to the data row in the columns specified by
 	 * dataASNNameKey and dataASNNumberKey.
 	 */
-	@Override
+	@ProcessElement
 	public void processElement(DoFn<TableRow, TableRow>.ProcessContext c) throws Exception {
 		// get the data row to modify
 		TableRow dataRow = c.element().clone();

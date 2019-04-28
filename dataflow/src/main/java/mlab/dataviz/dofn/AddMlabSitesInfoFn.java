@@ -2,8 +2,9 @@ package mlab.dataviz.dofn;
 
 import java.util.NavigableMap;
 
+import org.apache.beam.sdk.values.PCollectionView;
+
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 /**
  * DoFn that adds MLab site info to a row based on a PCollectionView passed in
@@ -16,6 +17,9 @@ import com.google.cloud.dataflow.sdk.values.PCollectionView;
  *
  */
 public class AddMlabSitesInfoFn extends BaseIPMatchingFn {
+	
+	private static final long serialVersionUID = 1L;
+	
 	private static final String IP_FAMILY_KEY = "server_ip_family";
 	private static final String IP_BASE64_KEY = "server_ip_base64";
 	private static final String MLAB_MIN_IPV4_KEY = "min_ip_hex";

@@ -1,12 +1,14 @@
 package mlab.dataviz.util;
 
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.WriteResult;
+import org.apache.beam.sdk.values.PCollection;
+
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PDone;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
 
 public class BigQueryIOHelpers {
 
@@ -19,14 +21,14 @@ public class BigQueryIOHelpers {
 	 * @param createDisposition
 	 * @return
 	 */
-	public static PDone writeTable(PCollection<TableRow> rows, String outputTable, 
+	public static WriteResult writeTable(PCollection<TableRow> rows, String outputTable, 
 			TableSchema outputSchema, WriteDisposition writeDisposition, 
 			CreateDisposition createDisposition) {
-		return rows.apply(BigQueryIO.Write
-			.named("Write " + outputTable)
+		Write<TableRow> transform = BigQueryIO.writeTableRows()
 			.to(outputTable)
 			.withSchema(outputSchema)
 			.withWriteDisposition(writeDisposition)
-			.withCreateDisposition(createDisposition));
+			.withCreateDisposition(createDisposition);
+		return rows.apply("Write " + outputTable, transform);
 	}
 }

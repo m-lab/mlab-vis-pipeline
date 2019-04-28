@@ -6,8 +6,17 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
+import org.apache.beam.runners.dataflow.DataflowPipelineJob;
+import org.apache.beam.runners.dataflow.util.MonitoringUtil;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult.State;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryOptions;
+import org.apache.beam.sdk.values.PCollection;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,23 +24,14 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.bigquery.BigQueryException;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.PipelineResult.State;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.CreateDisposition;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO.Write.WriteDisposition;
-import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
-import com.google.cloud.dataflow.sdk.runners.DataflowPipelineJob;
-import com.google.cloud.dataflow.sdk.util.MonitoringUtil;
-import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.dataviz.entities.BQPipelineRun;
 import mlab.dataviz.entities.BQPipelineRunDatastore;
 import mlab.dataviz.query.BigQueryJob;
 import mlab.dataviz.query.QueryBuilder;
-import mlab.dataviz.util.Schema;
 import mlab.dataviz.util.Formatters;
 import mlab.dataviz.util.PipelineConfig;
+import mlab.dataviz.util.Schema;
 
 public class NDTReadPipeline implements Runnable {
 	private static final Logger LOG = LoggerFactory.getLogger(NDTReadPipeline.class);
@@ -48,10 +48,10 @@ public class NDTReadPipeline implements Runnable {
 	private BQPipelineRun pipelineRunRecord = null;
 	private String[] dates;
 
-
 	/**
-	 * Create a new NDT read pipeline. Pass a pipeline to share, options to share and
-	 * a status to track.
+	 * Create a new NDT read pipeline. Pass a pipeline to share, options to share
+	 * and a status to track.
+	 * 
 	 * @param p
 	 * @param options
 	 * @param status
@@ -63,8 +63,9 @@ public class NDTReadPipeline implements Runnable {
 	}
 
 	/**
-	 * Create a new NDT read pipeline. A new pipeline will be created, from
-	 * shared options and shared status.
+	 * Create a new NDT read pipeline. A new pipeline will be created, from shared
+	 * options and shared status.
+	 * 
 	 * @param options
 	 * @param status
 	 */
@@ -75,6 +76,7 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Set the configuration for this pipeline.
+	 * 
 	 * @param config
 	 * @return
 	 */
@@ -85,6 +87,7 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Returns the pipeline configuration object.
+	 * 
 	 * @return
 	 */
 	public PipelineConfig getPipelineConfig() {
@@ -93,6 +96,7 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Returns the write disposition for this pipeline.
+	 * 
 	 * @return
 	 */
 	public WriteDisposition getWriteDisposition() {
@@ -101,6 +105,7 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Sets the write disposition of this pipeline. (truncate/append etc)
+	 * 
 	 * @param writeDisposition
 	 * @return
 	 */
@@ -111,6 +116,7 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Gets the create disposition
+	 * 
 	 * @return
 	 */
 	public CreateDisposition getCreateDisposition() {
@@ -119,6 +125,7 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Gets the create disposition
+	 * 
 	 * @param createDisposition
 	 * @return
 	 */
@@ -129,6 +136,7 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Gets state - running or not
+	 * 
 	 * @return State
 	 */
 	public State getState() {
@@ -137,6 +145,7 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Sets the state - running or not.
+	 * 
 	 * @param s
 	 */
 	public void setState(State s) {
@@ -145,16 +154,18 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Indicates whether a pipeline should execute or not
+	 * 
 	 * @param execute boolean
 	 * @return
 	 */
 	public NDTReadPipeline shouldExecute(boolean execute) {
-		this.runPipeline  = execute;
+		this.runPipeline = execute;
 		return this;
 	}
 
 	/**
 	 * Returns whether a pipeline is executable
+	 * 
 	 * @return
 	 */
 	public boolean isExecutable() {
@@ -163,10 +174,11 @@ public class NDTReadPipeline implements Runnable {
 
 	/**
 	 * Sets the date range for the queries.
+	 * 
 	 * @param dates
 	 * @return
 	 */
-	public NDTReadPipeline setDates(String [] dates) {
+	public NDTReadPipeline setDates(String[] dates) {
 		this.dates = dates;
 		return this;
 	}
@@ -174,8 +186,8 @@ public class NDTReadPipeline implements Runnable {
 	/**
 	 * Gets a date range based on the last test recorded in our ndt write tables.
 	 *
-	 * The start date is the max test date that we have parsed in our table.
-	 * The end date is the max test date that is in the NDT table.
+	 * The start date is the max test date that we have parsed in our table. The end
+	 * date is the max test date that is in the NDT table.
 	 *
 	 * @todo change the test_date to parse_date when that data gets there.
 	 * @return
@@ -187,10 +199,10 @@ public class NDTReadPipeline implements Runnable {
 		// read date from our output table as A
 		// read max date from NDT as B
 		// if empty
-		// 		read min date from NDT as C
-		//		return {C, B}
+		// read min date from NDT as C
+		// return {C, B}
 		// else
-		//		return {A, B}
+		// return {A, B}
 
 		// read from one of our tables
 		String startDateRangeQuery = "select STRFTIME_UTC_USEC(max(test_date), \"%F %X\") as max_test_date from "
@@ -229,13 +241,13 @@ public class NDTReadPipeline implements Runnable {
 	}
 
 	/**
-	 * Computes the full NDT date range. To be used when truncating the
-	 * tables and starting over.
+	 * Computes the full NDT date range. To be used when truncating the tables and
+	 * starting over.
+	 * 
 	 * @return dates String array of range.
 	 */
-	private synchronized String[] getFullDateRange() throws IOException,
-		SQLException, GeneralSecurityException, InterruptedException,
-		BigQueryException {
+	private synchronized String[] getFullDateRange()
+			throws IOException, SQLException, GeneralSecurityException, InterruptedException, BigQueryException {
 
 		String[] timestamps = new String[2];
 
@@ -260,32 +272,29 @@ public class NDTReadPipeline implements Runnable {
 	}
 
 	/**
-	 * @private
-	 * Determines the run dates for the pipeline.
-	 * The order is as follows:
-	 *   - command-line dates take precedence
-	 *   - then last run in datastore. Use the end date there, alongside the last date in NDT.
-	 *   - auto detect. Start date is our last test, end date is last test in NDT.
+	 * @private Determines the run dates for the pipeline. The order is as follows:
+	 *          - command-line dates take precedence - then last run in datastore.
+	 *          Use the end date there, alongside the last date in NDT. - auto
+	 *          detect. Start date is our last test, end date is last test in NDT.
 	 *
 	 * @throws IOException
 	 * @throws SQLException
 	 * @throws GeneralSecurityException
 	 * @throws InterruptedException
 	 */
-	private synchronized String[] determineRunDates() throws IOException, SQLException, GeneralSecurityException, InterruptedException, BigQueryException {
+	private synchronized String[] determineRunDates()
+			throws IOException, SQLException, GeneralSecurityException, InterruptedException, BigQueryException {
 
 		// if we already have the dates from a previous run, use them.
 		// since this pipeline is used twice, once for daily and one for hourly
 		// we expect this to be set the first time and then be used.
-		if (!this.pipelineRunRecord.getDataStartDate().equals("") &&
-			!this.pipelineRunRecord.getDataEndDate().equals("")) {
-			this.dates = new String[] {
-					this.pipelineRunRecord.getDataStartDate(),
-					this.pipelineRunRecord.getDataEndDate()
-			};
+		if (!this.pipelineRunRecord.getDataStartDate().equals("")
+				&& !this.pipelineRunRecord.getDataEndDate().equals("")) {
+			this.dates = new String[] { this.pipelineRunRecord.getDataStartDate(),
+					this.pipelineRunRecord.getDataEndDate() };
 			LOG.info("Using existing dates from status: " + this.pipelineRunRecord.toString());
 			return dates;
-		// Pipeline run dates provided via the command-line. Use those.
+			// Pipeline run dates provided via the command-line. Use those.
 		} else if (dates != null & !dates[0].equals("") && !dates[1].equals("")) {
 			LOG.info(">>> Dates passed via commandline.");
 
@@ -295,8 +304,8 @@ public class NDTReadPipeline implements Runnable {
 			LOG.info("Using dates from commandline " + this.pipelineRunRecord.toString());
 			return dates;
 
-		// get auto dates from BQ. We will either use our last test date from
-		// previous runs or we will just both dates automatically.
+			// get auto dates from BQ. We will either use our last test date from
+			// previous runs or we will just both dates automatically.
 		} else {
 			LOG.info(">>> Looking for last pipeline run in datastore");
 
@@ -325,8 +334,8 @@ public class NDTReadPipeline implements Runnable {
 	}
 
 	/**
-	 * Slows down the end date by 48 hours. If the start date is now later than the end date
-	 * then returns null all together.
+	 * Slows down the end date by 48 hours. If the start date is now later than the
+	 * end date then returns null all together.
 	 *
 	 * @param runDates
 	 * @return
@@ -343,7 +352,8 @@ public class NDTReadPipeline implements Runnable {
 
 			int daysToSlowDownBy = -2;
 			if (System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS") != null) {
-				LOG.debug("Using config for number of days to slow down by: " + System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS"));
+				LOG.debug("Using config for number of days to slow down by: "
+						+ System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS"));
 				daysToSlowDownBy = Integer.parseInt(System.getenv("SLOW_DOWN_NDT_READ_BY_DAYS"));
 			}
 			endDateCal.add(Calendar.DAY_OF_YEAR, daysToSlowDownBy);
@@ -352,9 +362,7 @@ public class NDTReadPipeline implements Runnable {
 			// the new slowed down dates.
 			if (endDateCal.compareTo(startDateCal) > 0) {
 				LOG.info("Slowing down pipeline by " + daysToSlowDownBy + " days.");
-				return new String[] {
-						startDate, dateFormatter.format(endDateCal.getTime())
-				};
+				return new String[] { startDate, dateFormatter.format(endDateCal.getTime()) };
 			} else {
 				return null;
 			}
@@ -364,26 +372,26 @@ public class NDTReadPipeline implements Runnable {
 			return null;
 		}
 	}
+
 	/**
-	* Runs one main pipeline read and write given that we have a table that
-	* does not have allowLargeResutls set to false.
-	*
-	* Specification in that scenario do not require a "dates" array or a "numberOfDays"
-	* by which to batch things up.
-	*
-	* Example:
-	* <code>
+	 * Runs one main pipeline read and write given that we have a table that does
+	 * not have allowLargeResutls set to false.
+	 *
+	 * Specification in that scenario do not require a "dates" array or a
+	 * "numberOfDays" by which to batch things up.
+	 *
+	 * Example: <code>
 	* {
 	*     "queryFile": "./data/queries/base_downloads_ip_by_day.sql",
 	*     "schemaFile": "./data/schemas/base_downloads_ip.json",
 	*     "outputTable": "data_viz.base_downloads_ip_by_day"
 	* }
 	* </code>
-	*/
+	 */
 	public void run() {
 		String queryFile = this.config.getQueryFile();
 		TableSchema tableSchema = Schema.fromJSONFile(this.config.getSchemaFile());
-		String outputTableName =  this.config.getOutputTable();
+		String outputTableName = this.config.getOutputTable();
 
 		QueryBuilder qb;
 
@@ -400,7 +408,8 @@ public class NDTReadPipeline implements Runnable {
 			// slow down dates
 			this.dates = this.slowDownDates(this.dates);
 			if (this.dates == null) {
-				LOG.info("Slowed down dates invalid. Likley end date now less than start date because of incremental update. Waiting another day for next pipeline.");
+				LOG.info(
+						"Slowed down dates invalid. Likley end date now less than start date because of incremental update. Waiting another day for next pipeline.");
 				this.setState(State.CANCELLED);
 			} else {
 				LOG.info(">>> Kicking off pipeline for dates: " + this.dates[0] + " " + this.dates[1]);
@@ -410,9 +419,7 @@ public class NDTReadPipeline implements Runnable {
 				// {0} - start date
 				// {1} - end date
 				// {2} - table name from which we read.
-				String[] templateData = {
-					this.dates[0], this.dates[1], this.config.getNDTTable()
-				};
+				String[] templateData = { this.dates[0], this.dates[1], this.config.getNDTTable() };
 				qb = new QueryBuilder(queryFile, templateData);
 				try {
 					LOG.info("Setup - Table Schema: " + tableSchema.toPrettyString());
@@ -430,30 +437,25 @@ public class NDTReadPipeline implements Runnable {
 				// DataFlow doesn't show names with / in it
 				String normalizedQueryFile = queryFile.replaceAll("/", "__");
 
-				PCollection<TableRow> rows = this.pipeline.apply(
-						BigQueryIO.Read
-						.named("Running query " + normalizedQueryFile)
-						.usingStandardSql()
-						.fromQuery(qb.getQuery()));
+				PCollection<TableRow> rows = this.pipeline.apply("Running query " + normalizedQueryFile,
+						BigQueryIO.readTableRows().fromQuery(qb.getQuery()).usingStandardSql());
 
-				rows.apply(BigQueryIO.Write
-						.named("Write " + outputTableName)
-						.to(outputTableName)
-						.withSchema(tableSchema)
-						.withCreateDisposition(this.createDisposition)
-						.withWriteDisposition(this.writeDisposition));
+				rows.apply("Write " + outputTableName,
+						BigQueryIO.writeTableRows().to(outputTableName).withSchema(tableSchema)
+								.withCreateDisposition(this.createDisposition)
+								.withWriteDisposition(this.writeDisposition));
 
 				// by default, the pipeline will not run.
 				if (this.isExecutable()) {
 					DataflowPipelineJob result = (DataflowPipelineJob) this.pipeline.run();
-					result.waitToFinish(-1, TimeUnit.MINUTES, new MonitoringUtil.PrintHandler(System.out));
+					result.waitUntilFinish(Duration.ZERO, new MonitoringUtil.LoggingHandler());
 					this.setState(result.getState());
 					LOG.info("Job completed, with status: " + result.getState().toString());
 				} else {
 					LOG.info("Will not run");
 				}
 			}
-		} catch (IOException |  InterruptedException | SQLException | GeneralSecurityException | BigQueryException e) {
+		} catch (IOException | InterruptedException | SQLException | GeneralSecurityException | BigQueryException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}

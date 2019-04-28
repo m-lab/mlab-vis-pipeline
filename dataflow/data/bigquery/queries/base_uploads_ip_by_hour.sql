@@ -18,7 +18,7 @@ SELECT
 
   -- General Information
   FORMAT_TIMESTAMP("%F %X", TIMESTAMP_TRUNC(TIMESTAMP_MICROS(web100_log_entry.log_time * 1000000), HOUR, "UTC")) as test_date,
-  FORMAT_TIMESTAMP("%F %X", TIMESTAMP(partition_date)) as partition_date,
+  _PARTITIONTIME as partition_date,
 
  -- Client Information
   web100_log_entry.connection_spec.remote_ip AS client_ip,

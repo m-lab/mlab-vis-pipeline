@@ -22,4 +22,4 @@ basedir=`dirname "$BASH_SOURCE"`
 locationDir=./$basedir/data
 indexFile=./$locationDir/index.yaml
 
-gcloud -q datastore create-indexes ${indexFile}
+gcloud -q datastore indexes create ${indexFile}

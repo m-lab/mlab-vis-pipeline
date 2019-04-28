@@ -5,13 +5,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.values.PCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
-import com.google.cloud.dataflow.sdk.values.PCollection;
 
 import mlab.dataviz.query.QueryBuilder;
 
@@ -151,11 +151,7 @@ public class QueryPipeIterator implements Iterator<PCollection<TableRow>> {
 			}
 		}
 
-		PCollection<TableRow> rows = this.pipe.apply(
-				BigQueryIO.Read
-				.named("Running query " + this.queryName)
-				.fromQuery(this.queryString));
-
+		PCollection<TableRow> rows = this.pipe.apply("Running query " + queryName, BigQueryIO.readTableRows().fromQuery(queryString).usingStandardSql());
 
 		return rows;
 	}

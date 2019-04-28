@@ -52,7 +52,7 @@ choosing the correct project via `gcloud config set project <mlab-sandbox|mlab-s
 gcloud beta bigtable instances create viz-pipeline --cluster=viz-pipeline \
     --cluster-zone=us-east1-c \
     --cluster-num-nodes=3 \
-    --description="Viz Pipeline Cluster"
+    --display-name="Viz Pipeline Cluster"
 ```
 
 Note that the instance name should match what's in your `/environment` files.

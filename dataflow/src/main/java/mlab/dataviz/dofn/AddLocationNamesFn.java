@@ -3,15 +3,15 @@ package mlab.dataviz.dofn;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.values.PCollectionView;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.values.PCollectionView;
 
 public class AddLocationNamesFn extends DoFn<TableRow, TableRow> {
-	private static final Logger LOG = LoggerFactory.getLogger(AddLocationNamesFn.class);
+	
+	private static final long serialVersionUID = 1L;
+	
 	private PCollectionView<Map<String, TableRow>> countryMap;
 	private PCollectionView<Map<String, TableRow>> regionMap;
 
@@ -32,7 +32,7 @@ public class AddLocationNamesFn extends DoFn<TableRow, TableRow> {
 		this.regionMap = regionMap;
 	}
 	
-	@Override
+	@ProcessElement
 	public void processElement(DoFn<TableRow, TableRow>.ProcessContext c) throws Exception {
 		
 		TableRow dataRow = c.element().clone();

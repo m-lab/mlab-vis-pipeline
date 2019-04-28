@@ -40,8 +40,6 @@ while getopts ":t:e:s:m:" opt; do
 done
 
 DATAFLOW_DIR="${DIR}/dataflow"
-JAR_BASEDIR="${DIR}/dataflow/target"
-JAR_FILE="${JAR_BASEDIR}/mlab-vis-pipeline.jar"
 
 echo "Project: ${PROJECT}"
 
@@ -49,15 +47,13 @@ echo "Project: ${PROJECT}"
 cd ${DATAFLOW_DIR}
 
 echo "Starting server for bigquery metrics & bigtable pipeline"
+
+ENVIRONMENT_PARAMETERS="--runner=DataflowRunner --project=$PROJECT --instance=${BIGTABLE_INSTANCE} --stagingLocation=${STAGING_LOCATION} --maxNumWorkers=150"
+
 if [ -n "${KEY_FILE}" ]; then
-  GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE} java -cp ${JAR_FILE} mlab.dataviz.main.BTRunner \
-    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-    --project=${PROJECT} --instance=${BIGTABLE_INSTANCE} \
-    --stagingLocation="${STAGING_LOCATION}" --maxNumWorkers=150
+  export GOOGLE_APPLICATION_CREDENTIALS=${KEY_FILE}
+  mvn exec:java -Dexec.mainClass=mlab.dataviz.main.BTRunner -Dexec.args="$ENVIRONMENT_PARAMETERS"
 else
-  java -cp ${JAR_FILE} mlab.dataviz.main.BTRunner \
-    --runner=com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner \
-    --project=${PROJECT} --instance=${BIGTABLE_INSTANCE} \
-    --stagingLocation="${STAGING_LOCATION}" --maxNumWorkers=150
+  mvn exec:java -Dexec.mainClass=mlab.dataviz.main.BTRunner -Dexec.args="$ENVIRONMENT_PARAMETERS"
 fi
 

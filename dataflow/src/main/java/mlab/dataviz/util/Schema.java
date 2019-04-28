@@ -32,6 +32,7 @@ public class Schema {
 	 * @param filepath  The path to the json file.
 	 * @return TableSchema.
 	 */
+	@SuppressWarnings("unchecked")
 	public static TableSchema fromJSONFile(String filepath) {
 		JSONArray schemaArray;
 		TableSchema schema = null;

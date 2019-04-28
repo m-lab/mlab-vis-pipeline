@@ -6,8 +6,8 @@
 ###
 
 PROJECT=mlab-oti
-BIGTABLE_INSTANCE=viz-pipeline
+BIGTABLE_INSTANCE=viz-pipeline-2019
 API_MODE=production
 BIGTABLE_POOL_SIZE=40
-STAGING_LOCATION=gs://viz-pipeline-production/production
+STAGING_LOCATION=gs://viz-pipeline-2019-production/production
 K8_CLUSTER=viz-pipeline
